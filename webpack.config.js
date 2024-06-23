@@ -64,7 +64,7 @@ module.exports = (env) => {
         ],
         resolve: {
             alias: {
-                "@src": path.resolve(__dirname, '../src'),
+                "@src": path.resolve(__dirname, './src'),
                 '@mui/styled-engine': '@mui/styled-engine-sc'
             }
         },

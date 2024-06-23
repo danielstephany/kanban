@@ -10,8 +10,11 @@
   "author": "Daniel Stephany",
   "license": "ISC",
   "dependencies": {
+    "@mui/material": "^5.15.20",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "styled-components": "^6.1.11"
   },
   "devDependencies": {
     "@babel/plugin-transform-class-properties": "^7.23.3",

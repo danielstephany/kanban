@@ -7,7 +7,7 @@ const Header = styled.div`
     height: 80px;
 `
 
-const App = () => {
+const Kanban = () => {
     return (
         <KanbanDashboard
             header={<Header>header</Header>}
@@ -17,4 +17,4 @@ const App = () => {
     )
 }
 
-export default App
+export default Kanban

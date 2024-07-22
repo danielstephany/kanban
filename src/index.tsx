@@ -1,20 +1,16 @@
 import { createRoot } from 'react-dom/client'
 import React from 'react'
-import GlobalStyles from './globalStyles/index.ts'
-import mainTheme from '@src/themes/mainTheme.ts'
 import App from "./App.tsx"
-import CssBaseline from '@mui/material/CssBaseline';
-import { StyledEngineProvider, createTheme, ThemeProvider } from '@mui/material/styles';
+import ThemeController from "@src/components/contexts/ThemeController.tsx"
 
-const theme = createTheme(mainTheme)
+
 
 const rootEl: HTMLElement | null = document.getElementById("root") as HTMLElement
 
 const appRoot = createRoot(rootEl)
 
 appRoot.render(
-    <ThemeProvider theme={theme}>
-        <CssBaseline />
+    <ThemeController>
         <App />
-    </ThemeProvider>
+    </ThemeController>
 )

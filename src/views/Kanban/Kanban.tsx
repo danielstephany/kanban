@@ -2,16 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import KanbanDashboard from '@src/components/layouts/KanbanDashboard.tsx'
 import Board from './Board/index.tsx'
-
-const Header = styled.div`
-    background: blue;
-    height: 80px;
-`
+import MainHeader from '@src/components/modules/MainHeader.tsx'
 
 const Kanban: React.ElementType = () => {
     return (
         <KanbanDashboard
-            header={<Header>header</Header>}
+            header={<MainHeader />}
             sidebar={"sidebar"}
             main={<Board />}
         />

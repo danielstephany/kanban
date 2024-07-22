@@ -5,10 +5,10 @@ interface iTheme {
     }
 }
 
-const mainTheme: iTheme = {
+const mainTheme = (isDark: boolean): iTheme => ({
     palette: {
-        mode: 'dark',
+        mode: isDark ? 'dark' : 'light',
     },
-} 
+})
 
 export default mainTheme

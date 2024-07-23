@@ -2,12 +2,20 @@ import React, {useContext} from 'react'
 import styled from 'styled-components'
 import {
     Typography,
-    Switch
+    Switch,
+    FormControlLabel
 } from "@mui/material"
+import {
+    Moon,
+    Sun
+} from "react-feather"
 import { ThemeContext } from "@src/components/contexts/ThemeController.tsx"
 
-const ThemeToggleSwitch = styled(Switch)`
-    //
+const FormControlLabelCentered = styled(FormControlLabel)`
+    .MuiFormControlLabel-label {
+        display: flex;
+        align-items: center;
+    }
 `
 
 const MainHeaderComp: React.ElementType = ({className}) => {
@@ -23,11 +31,17 @@ const MainHeaderComp: React.ElementType = ({className}) => {
                 <div className="main-header__items">
                     <Typography variant="h1">Kanban</Typography>
                 </div>
-                <div className="main-header__items main-header__items--right">
-                    <ThemeToggleSwitch
-                        checked={isDarkMode}
-                        onChange={handleChangeDarkmode}
-                        inputProps={{ 'aria-label': 'Toggle Dark Mode' }}
+                <div className="main-header__items">
+                    <FormControlLabelCentered
+                        control={
+                            <Switch
+                                checked={isDarkMode}
+                                onChange={handleChangeDarkmode}
+                                inputProps={{ 'aria-label': 'Toggle Dark Mode' }}
+                            />
+                        }
+                        label={isDarkMode ? <Sun /> : <Moon />}
+                        labelPlacement="end"
                     />
                 </div>
             </div>
@@ -36,7 +50,8 @@ const MainHeaderComp: React.ElementType = ({className}) => {
 }
 
 const MainHeader = styled(MainHeaderComp)`
-    border-bottom: 1px solid ${({ theme }) => theme.palette.mode === "dark" ? "#fff" :  "#000"};
+    background-color: #1d448e;
+    color: #fff;
     .main-header {
         &__content {
             display: flex;
@@ -46,6 +61,9 @@ const MainHeader = styled(MainHeaderComp)`
             padding: 0 24px;         
         }
         &__items {
+            &:last-child {
+                margin-left: auto;
+            }
         }
     }
     h1 {

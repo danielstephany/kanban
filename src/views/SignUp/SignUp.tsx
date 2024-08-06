@@ -1,8 +1,10 @@
 import React from 'react'
 
-const SignUP: React.ElementType = () => {
+const SignUp: React.ElementType = () => {
 
     return (
         <div>sign up</div>
     )
 }
+
+export default SignUp

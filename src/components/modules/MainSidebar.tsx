@@ -44,7 +44,7 @@ const MainSidebarComp: React.ElementType = ({className}) => {
                 <Button 
                     component={Link} 
                     variant="contained" 
-                    to="auth/login"
+                    to="/auth/login"
                     fullWidth
                 >Log out</Button>
             </nav>

@@ -1,17 +1,22 @@
-import React from 'react'
+import React, {Suspense} from 'react'
 import styled from 'styled-components'
+import MainHeader from '@src/components/modules/MainHeader.tsx'
+import MainSidebar from '@src/components/modules/MainSidebar.tsx'
+import { Outlet } from "react-router-dom"
+import CenteredLoader from '@src/components/modules/CenteredLoader.tsx';
 
 const KanbanDashboardComp: React.ElementType = ({
     className,
-    header,
-    main,
-    sidebar,
 }) => {
     return (
         <div className={className}>
-            <div className='kbd__header-slot'>{header}</div>
-            <div className='kbd__sidbar-slot'>{sidebar}</div>
-            <div className='kbd__main-slot'>{main}</div>
+            <div className='kbd__header-slot'><MainHeader /></div>
+            <div className='kbd__sidbar-slot'><MainSidebar /></div>
+            <div className='kbd__main-slot'>
+                <Suspense fallback={<CenteredLoader />}>
+                    <Outlet />
+                </Suspense>
+            </div>
         </div>
     )
 }
@@ -32,6 +37,7 @@ const KanbanDashboard = styled(KanbanDashboardComp)`
         min-width: 250px;
     }
     .kbd__main-slot {
+        display: flex;
         grid-area: kbdMain;
     }
 `

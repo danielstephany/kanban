@@ -1,13 +1,16 @@
-import React from 'react'
-import styled from 'styled-components'
-import Kanban from './views/Kanban/index.tsx'
+import React, {Suspense} from 'react'
 import {
     RouterProvider
 } from "react-router-dom"
 import {router} from '@src/Router.tsx'
+import LoaderView from '@src/components/modules/LoaderView.tsx'
 
 const App = () => {
-    return <RouterProvider router={router}/>
+    return (
+        <Suspense fallback={<LoaderView/>}>
+            <RouterProvider router={router}/>
+        </Suspense>
+    )
 }
 
 export default App

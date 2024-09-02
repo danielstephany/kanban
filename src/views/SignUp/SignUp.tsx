@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SignUp: React.ElementType = () => {
+const SignUp = () => {
 
     return (
         <div>sign up</div>

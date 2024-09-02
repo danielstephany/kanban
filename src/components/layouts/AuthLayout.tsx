@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Outlet } from "react-router-dom"
+import LoaderView from '@src/components/modules/LoaderView.tsx'
 
 const AuthLayout: React.ElementType = () => {
 
     return <div>
-        <Outlet />
+        <Suspense fallback={<LoaderView />}>
+            <Outlet />
+        </Suspense>
     </div>
 }
 

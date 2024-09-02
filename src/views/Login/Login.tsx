@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Login: React.ElementType = () => {
+const Login = () => {
     return (
         <div>login</div>
     )

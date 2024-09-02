@@ -23,14 +23,12 @@ const AuthLayoutComp: React.ElementType = ({ className }) => {
 const AuthLayout = styled(AuthLayoutComp)`
     display: flex;
     align-items: stretch;
+    min-height: 100dvh;
     flex-direction: column;
-    // .auth-layout__header {
-    //     width: 100
-    // }
     .auth-layout__body {
         display: flex;
+        flex-direction: column;
         flex-grow: 1;
-
     }
 `
 

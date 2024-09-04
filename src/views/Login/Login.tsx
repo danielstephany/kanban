@@ -11,6 +11,7 @@ import {
     Box
 } from '@mui/material'
 import { signUp } from '@src/routes.ts'
+import ActionContainer from '@src/components/modules/ActionContainer.tsx'
 
 interface props {
     className?: string
@@ -26,7 +27,7 @@ const LoginComp = ({ className }: props) => {
                     <Box p={3}>
                         <Grid container spacing={2}>
                             <Grid size={12}>
-                                <Typography component="h2" variant='h4' align='center'>Log In</Typography>
+                                <Typography variant="h2"  align='center'>Log In</Typography>
                             </Grid>
                             <Grid size={12}>
                                 <TextField fullWidth variant="outlined" />
@@ -35,12 +36,22 @@ const LoginComp = ({ className }: props) => {
                                 <TextField fullWidth variant="outlined" />
                             </Grid>
                             <Grid size={12}>
-                                <Button variant="contained">Submit</Button>
-                                <Button 
-                                    variant="contained" 
-                                    component={Link} 
-                                    to={signUp.path}
-                                >Sign up</Button>
+                                <ActionContainer
+                                    pt="16px"
+                                    leftAction={                                      
+                                        <Button
+                                            variant="text"
+                                            component={Link}
+                                            to={signUp.path}
+                                            size='small'
+                                        >Go to Sign Up page</Button>
+                                    }
+                                    rightAction={
+                                        <Button                                            
+                                            variant='contained'
+                                        >Login</Button>
+                                    }
+                                />
                             </Grid>
                         </Grid>
                     </Box>

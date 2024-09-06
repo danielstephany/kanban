@@ -9,6 +9,7 @@ import {
     TextField,
     Button
 } from '@mui/material'
+import ActionContainer from "@src/components/modules/ActionContainer.tsx"
 
 interface props {
     className?: string
@@ -24,7 +25,7 @@ const SignUpComp = ({ className }: props) => {
                     <Box p={3}>
                         <Grid container spacing={2}>
                             <Grid size={12}>
-                                <Typography>Sign up</Typography>
+                                <Typography align='center' variant='h2' gutterBottom>Sign up</Typography>
                             </Grid>
                             <Grid size={12}>
                                 <TextField fullWidth variant="outlined" />
@@ -33,7 +34,15 @@ const SignUpComp = ({ className }: props) => {
                                 <TextField fullWidth variant="outlined" />
                             </Grid>
                             <Grid size={12}>
-                                <Button variant="contained">Submit</Button>
+                                <ActionContainer
+                                    pt="16px"
+                                    rightAction={
+                                        <Button
+                                            variant='contained'
+                                            type="submit"
+                                        >Submit</Button>
+                                    }
+                                />
                             </Grid>
                         </Grid>
                     </Box>
@@ -49,7 +58,9 @@ const SignUp = styled(SignUpComp)`
     justify-content: center;
     flex-direction: column;
     flex-grow: 1;
+    max-width: 500px;
     padding: 24px;
+    margin: 0 auto;
 `
 
 export default SignUp

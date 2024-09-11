@@ -10,12 +10,41 @@ import {
     Button
 } from '@mui/material'
 import ActionContainer from "@src/components/modules/ActionContainer.tsx"
+import useFormCtrl from '@src/hooks/useFormCtrl.tsx'
+import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 
 interface props {
     className?: string
 }
 
+const validate = (values: tFormCtrlValues) => {
+    const errors: tValidationObj = {}
+
+    Object.entries(values).forEach(([key, value]) => {
+        if(!value) errors[key] = true
+    })
+
+    return errors
+}
+
 const SignUpComp = ({ className }: props) => {
+
+    const formCtrl = useFormCtrl({
+        initialValues: {
+            email: "",
+            password: "",
+            password2: ""
+        },
+        validate
+    })
+
+    const handleSubmit = (e: React.SyntheticEvent) => {
+        e.preventDefault()
+
+        if(formCtrl.isValidatedForm()){
+            alert("valid")
+        }
+    }
 
     return (
         <>
@@ -23,28 +52,58 @@ const SignUpComp = ({ className }: props) => {
             <div className={className}>
                 <Paper elevation={3}>
                     <Box p={3}>
-                        <Grid container spacing={2}>
-                            <Grid size={12}>
-                                <Typography align='center' variant='h2' gutterBottom>Sign up</Typography>
+                        <form onSubmit={handleSubmit}>
+                            <Grid container spacing={2}>
+                                <Grid size={12}>
+                                    <Typography align='center' variant='h2' gutterBottom>Sign up</Typography>
+                                </Grid>
+                                <Grid size={12}>
+                                    <TextField 
+                                        fullWidth 
+                                        variant="outlined"
+                                        name="email" 
+                                        label="Email"
+                                        multiline
+                                        onChange={formCtrl.handleChange}
+                                        onBlur={formCtrl.handleBlure}
+                                        error={formCtrl.errors["email"]}
+                                    />
+                                </Grid>
+                                <Grid size={12}>
+                                    <TextField
+                                        fullWidth
+                                        variant="outlined"
+                                        name="password"
+                                        label="Password"
+                                        onChange={formCtrl.handleChange}
+                                        onBlur={formCtrl.handleBlure}
+                                        error={formCtrl.errors["password"]}
+                                    />
+                                </Grid>
+                                <Grid size={12}>
+                                    <TextField
+                                        fullWidth
+                                        variant="outlined"
+                                        name="password2"
+                                        label="Re-enter Password"
+                                        onChange={formCtrl.handleChange}
+                                        onBlur={formCtrl.handleBlure}
+                                        error={formCtrl.errors["password2"]}
+                                    />
+                                </Grid>
+                                <Grid size={12}>
+                                    <ActionContainer
+                                        pt="16px"
+                                        rightAction={
+                                            <Button
+                                                variant='contained'
+                                                type="submit"
+                                            >Submit</Button>
+                                        }
+                                    />
+                                </Grid>
                             </Grid>
-                            <Grid size={12}>
-                                <TextField fullWidth variant="outlined" />
-                            </Grid>
-                            <Grid size={12}>
-                                <TextField fullWidth variant="outlined" />
-                            </Grid>
-                            <Grid size={12}>
-                                <ActionContainer
-                                    pt="16px"
-                                    rightAction={
-                                        <Button
-                                            variant='contained'
-                                            type="submit"
-                                        >Submit</Button>
-                                    }
-                                />
-                            </Grid>
-                        </Grid>
+                        </form>
                     </Box>
                 </Paper>
             </div>

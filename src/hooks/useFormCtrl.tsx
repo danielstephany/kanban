@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 
 type htmlFormElements = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
 
-export type tValidationObj = { [key: string]: boolean | undefined }
+export type tValidationObj = { [key: string]: boolean | string | undefined }
 export type tFormCtrlValues = { [key: string]:  any}
 
 interface iUseFormCtrl {
@@ -37,7 +37,7 @@ const useFormCtrl = ({ initialValues, validate}: iUseFormCtrl) => {
 
     const isValidatedForm = () => {
         const isValid = true
-        const validationErrors = validate(values)
+        const validationErrors = validate(values, values)
         if(Object.keys(validationErrors).length) {
             setErrors(validationErrors)
             const errorEl: HTMLInputElement | HTMLAreaElement | null = document.querySelector(".Mui-error input, .Mui-error textarea")

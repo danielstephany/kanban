@@ -7,21 +7,48 @@ import {
     Grid2 as Grid,
     Typography,
     TextField,
-    Button
+    Button,
+    FormHelperText
 } from '@mui/material'
 import ActionContainer from "@src/components/modules/ActionContainer.tsx"
 import useFormCtrl from '@src/hooks/useFormCtrl.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
+import validator from 'validator'
 
 interface props {
     className?: string
 }
 
-const validate = (values: tFormCtrlValues) => {
+const validate = (values: tFormCtrlValues, storedValues: tFormCtrlValues) => {
     const errors: tValidationObj = {}
 
-    Object.entries(values).forEach(([key, value]) => {
-        if(!value) errors[key] = true
+    Object.entries(values).forEach(([key, value]) => {        
+        if(!value){
+            errors[key] = true
+        } else {
+            // debugger
+            const isInvalidEmail = key === "email" && !validator.isEmail(value)
+            const validationOptions = { minLength: 8, minUppercase: 1, minNumbers: 1, minSymbols: 1 }
+            const noPasswordMatch = "Passwords do not match."
+            const passwordNotValid = "Must be 8 characters long with an uppercase letter, a number and a special character."
+            if (key === "password"){
+                if (!validator.isStrongPassword(value, validationOptions)){
+                    errors[key] = passwordNotValid
+                } else if (storedValues.password2 && value !== storedValues.password2){
+                    errors[key] = noPasswordMatch
+                }
+            }
+            if (key === "password2"){
+                if (!validator.isStrongPassword(value, validationOptions)) {
+                    errors[key] = passwordNotValid
+                } else if (storedValues.password && value !== storedValues.password) {
+                    errors[key] = noPasswordMatch
+                }
+            }
+            if (isInvalidEmail) {
+                errors[key] = true
+            }
+        }
     })
 
     return errors
@@ -66,8 +93,9 @@ const SignUpComp = ({ className }: props) => {
                                         multiline
                                         onChange={formCtrl.handleChange}
                                         onBlur={formCtrl.handleBlure}
-                                        error={formCtrl.errors["email"]}
-                                    />
+                                        error={!!formCtrl.errors["email"]}
+                                        />
+                                    {formCtrl.errors["email"] ? <FormHelperText>A valid email is required.</FormHelperText> : null}
                                 </Grid>
                                 <Grid size={12}>
                                     <TextField
@@ -77,8 +105,10 @@ const SignUpComp = ({ className }: props) => {
                                         label="Password"
                                         onChange={formCtrl.handleChange}
                                         onBlur={formCtrl.handleBlure}
-                                        error={formCtrl.errors["password"]}
+                                        error={!!formCtrl.errors["password"]}
+                                        type="password"
                                     />
+                                    {typeof formCtrl.errors["password"] === "string" ? <FormHelperText>{formCtrl.errors["password"]}</FormHelperText> : null}
                                 </Grid>
                                 <Grid size={12}>
                                     <TextField
@@ -88,8 +118,10 @@ const SignUpComp = ({ className }: props) => {
                                         label="Re-enter Password"
                                         onChange={formCtrl.handleChange}
                                         onBlur={formCtrl.handleBlure}
-                                        error={formCtrl.errors["password2"]}
+                                        error={!!formCtrl.errors["password2"]}
+                                        type="password"
                                     />
+                                    {typeof formCtrl.errors["password2"] === "string" ? <FormHelperText>{formCtrl.errors["password2"]}</FormHelperText> : null}
                                 </Grid>
                                 <Grid size={12}>
                                     <ActionContainer

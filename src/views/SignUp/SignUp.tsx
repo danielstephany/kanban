@@ -11,6 +11,7 @@ import {
     FormHelperText
 } from '@mui/material'
 import ActionContainer from "@src/components/modules/ActionContainer.tsx"
+import TextFieldFormCtrl from "@src/components/controls/TextFieldFormCtrl.tsx"
 import useFormCtrl from '@src/hooks/useFormCtrl.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 import validator from 'validator'
@@ -26,7 +27,6 @@ const validate = (values: tFormCtrlValues, storedValues: tFormCtrlValues) => {
         if(!value){
             errors[key] = true
         } else {
-            // debugger
             const isInvalidEmail = key === "email" && !validator.isEmail(value)
             const validationOptions = { minLength: 8, minUppercase: 1, minNumbers: 1, minSymbols: 1 }
             const noPasswordMatch = "Passwords do not match."
@@ -46,7 +46,7 @@ const validate = (values: tFormCtrlValues, storedValues: tFormCtrlValues) => {
                 }
             }
             if (isInvalidEmail) {
-                errors[key] = true
+                errors[key] = "A valid email is required."
             }
         }
     })
@@ -85,43 +85,33 @@ const SignUpComp = ({ className }: props) => {
                                     <Typography align='center' variant='h2' gutterBottom>Sign up</Typography>
                                 </Grid>
                                 <Grid size={12}>
-                                    <TextField 
+                                    <TextFieldFormCtrl 
                                         fullWidth 
                                         variant="outlined"
                                         name="email" 
                                         label="Email"
-                                        multiline
-                                        onChange={formCtrl.handleChange}
-                                        onBlur={formCtrl.handleBlure}
-                                        error={!!formCtrl.errors["email"]}
-                                        />
-                                    {formCtrl.errors["email"] ? <FormHelperText>A valid email is required.</FormHelperText> : null}
+                                        formCtrl={formCtrl}
+                                    />                                    
                                 </Grid>
                                 <Grid size={12}>
-                                    <TextField
+                                    <TextFieldFormCtrl
                                         fullWidth
                                         variant="outlined"
                                         name="password"
                                         label="Password"
-                                        onChange={formCtrl.handleChange}
-                                        onBlur={formCtrl.handleBlure}
-                                        error={!!formCtrl.errors["password"]}
+                                        formCtrl={formCtrl}
                                         type="password"
                                     />
-                                    {typeof formCtrl.errors["password"] === "string" ? <FormHelperText>{formCtrl.errors["password"]}</FormHelperText> : null}
                                 </Grid>
                                 <Grid size={12}>
-                                    <TextField
+                                    <TextFieldFormCtrl
                                         fullWidth
                                         variant="outlined"
                                         name="password2"
                                         label="Re-enter Password"
-                                        onChange={formCtrl.handleChange}
-                                        onBlur={formCtrl.handleBlure}
-                                        error={!!formCtrl.errors["password2"]}
+                                        formCtrl={formCtrl}
                                         type="password"
-                                    />
-                                    {typeof formCtrl.errors["password2"] === "string" ? <FormHelperText>{formCtrl.errors["password2"]}</FormHelperText> : null}
+                                    />                                    
                                 </Grid>
                                 <Grid size={12}>
                                     <ActionContainer

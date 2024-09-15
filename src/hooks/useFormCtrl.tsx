@@ -7,7 +7,7 @@ export type tFormCtrlValues = { [key: string]:  any}
 
 interface iUseFormCtrl {
     initialValues: {[name: string]: string | number}
-    validate: (values: tFormCtrlValues, storedValues?: tFormCtrlValues) => tValidationObj
+    validate: (values: tFormCtrlValues, storedValues: tFormCtrlValues) => tValidationObj
 }
 
 const useFormCtrl = ({ initialValues, validate}: iUseFormCtrl) => {
@@ -57,8 +57,11 @@ const useFormCtrl = ({ initialValues, validate}: iUseFormCtrl) => {
         setErrors,
         handleChange,
         handleBlure,
+        validate,
         isValidatedForm
     }
 }
+
+export type tUseFormCtrl = ReturnType<typeof useFormCtrl>
 
 export default useFormCtrl

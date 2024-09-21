@@ -6,15 +6,15 @@ import {
     Paper,
     Grid2 as Grid,
     Typography,
-    TextField,
     Button,
-    FormHelperText
 } from '@mui/material'
 import ActionContainer from "@src/components/modules/ActionContainer.tsx"
 import TextFieldFormCtrl from "@src/components/controls/TextFieldFormCtrl.tsx"
 import useFormCtrl from '@src/hooks/useFormCtrl.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 import validator from 'validator'
+import { signup } from "@src/endpoints/auth/index.ts"
+import { signupPayloadInterface } from '@src/endpoints/auth/types'
 
 interface props {
     className?: string
@@ -58,6 +58,8 @@ const SignUpComp = ({ className }: props) => {
 
     const formCtrl = useFormCtrl({
         initialValues: {
+            firstName: "",
+            lastName: "",
             email: "",
             password: "",
             password2: ""
@@ -69,7 +71,13 @@ const SignUpComp = ({ className }: props) => {
         e.preventDefault()
 
         if(formCtrl.isValidatedForm()){
-            alert("valid")
+            signup(formCtrl.values)
+            .then((json) => {
+                alert(json)
+            })
+            .catch(error => {
+                alert(error)
+            })
         }
     }
 
@@ -83,6 +91,24 @@ const SignUpComp = ({ className }: props) => {
                             <Grid container spacing={2}>
                                 <Grid size={12}>
                                     <Typography align='center' variant='h2' gutterBottom>Sign up</Typography>
+                                </Grid>
+                                <Grid size={12}>
+                                    <TextFieldFormCtrl 
+                                        fullWidth 
+                                        variant="outlined"
+                                        name="firstName" 
+                                        label="First Name"
+                                        formCtrl={formCtrl}
+                                    />                                    
+                                </Grid>
+                                <Grid size={12}>
+                                    <TextFieldFormCtrl
+                                        fullWidth
+                                        variant="outlined"
+                                        name="lastName"
+                                        label="Last Name"
+                                        formCtrl={formCtrl}
+                                    />
                                 </Grid>
                                 <Grid size={12}>
                                     <TextFieldFormCtrl 

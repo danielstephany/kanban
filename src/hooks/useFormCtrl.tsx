@@ -1,17 +1,29 @@
 import React, {useState} from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 
 type htmlFormElements = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
 
 export type tValidationObj = { [key: string]: boolean | string | undefined }
-export type tFormCtrlValues = { [key: string]:  any}
+export type tFormCtrlValues = {[key: string]: any}
 
-interface iUseFormCtrl {
-    initialValues: {[name: string]: string | number}
+interface iUseFormCtrl<v> {
+    initialValues: v
     validate: (values: tFormCtrlValues, storedValues: tFormCtrlValues) => tValidationObj
 }
 
-const useFormCtrl = ({ initialValues, validate}: iUseFormCtrl) => {
-    const [values, setValues] = useState(initialValues || {})
+export interface iUseFormCtrlRes {
+    values: tFormCtrlValues,
+    errors: tValidationObj,
+    setValues: (value: any)=> void,
+    setErrors: (value: any)=> void,
+    handleChange: (e: { target: htmlFormElements }) => void,
+    handleBlure: (e: { target: htmlFormElements }) => void,
+    validate: (values: tFormCtrlValues, storedValues:tFormCtrlValues) => void,
+    isValidatedForm: () => boolean
+}
+
+function useFormCtrl <v = {},>({ initialValues, validate }: iUseFormCtrl<v>) {
+    const [values, setValues] = useState<iUseFormCtrl<v>['initialValues']>(initialValues)
     const [errors, setErrors] = useState<tValidationObj>({})
 
     const handleChange = (e: { target: htmlFormElements }) => {
@@ -24,7 +36,7 @@ const useFormCtrl = ({ initialValues, validate}: iUseFormCtrl) => {
         const value = e.target.value
         const name = e.target.name
         const updatedValue = { [name]: value}
-        const validationErrors = validate(updatedValue, values)
+        const validationErrors = validate(updatedValue, values as tFormCtrlValues)
 
         if (validationErrors[name]){
             setErrors({ ...errors, ...validationErrors })
@@ -37,7 +49,7 @@ const useFormCtrl = ({ initialValues, validate}: iUseFormCtrl) => {
 
     const isValidatedForm = () => {
         const isValid = true
-        const validationErrors = validate(values, values)
+        const validationErrors = validate(values as tFormCtrlValues, values as tFormCtrlValues)
         if(Object.keys(validationErrors).length) {
             setErrors(validationErrors)
             const errorEl: HTMLInputElement | HTMLAreaElement | null = document.querySelector(".Mui-error input, .Mui-error textarea")
@@ -61,7 +73,5 @@ const useFormCtrl = ({ initialValues, validate}: iUseFormCtrl) => {
         isValidatedForm
     }
 }
-
-export type tUseFormCtrl = ReturnType<typeof useFormCtrl>
 
 export default useFormCtrl

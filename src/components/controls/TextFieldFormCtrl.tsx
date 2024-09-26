@@ -6,10 +6,10 @@ import {
 import type {
     TextFieldProps
 } from "@mui/material"
-import type {tUseFormCtrl} from "@src/hooks/useFormCtrl"
+import type { iUseFormCtrlRes } from "@src/hooks/useFormCtrl"
 
 type TextFieldFormCtrlProps = TextFieldProps & {
-    formCtrl: tUseFormCtrl,
+    formCtrl: iUseFormCtrlRes,
     helperText?: string
     name: string,
 }

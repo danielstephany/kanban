@@ -11,7 +11,7 @@ export const signup = (data: signupPayloadInterface) => new Promise<signupRespon
     fetch(`${process.env.KANBAN_API}/auth/signup`, {
         method: "POST",
         headers: {
-            ContentType: "application/json"
+            "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
     })

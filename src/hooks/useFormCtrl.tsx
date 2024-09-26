@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 
 type htmlFormElements = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
 
@@ -10,7 +11,18 @@ interface iUseFormCtrl<v> {
     validate: (values: tFormCtrlValues, storedValues: tFormCtrlValues) => tValidationObj
 }
 
-const useFormCtrl = <v={},>({ initialValues, validate }: iUseFormCtrl<v>) => {
+export interface iUseFormCtrlRes {
+    values: tFormCtrlValues,
+    errors: tValidationObj,
+    setValues: (value: any)=> void,
+    setErrors: (value: any)=> void,
+    handleChange: (e: { target: htmlFormElements }) => void,
+    handleBlure: (e: { target: htmlFormElements }) => void,
+    validate: (values: tFormCtrlValues, storedValues:tFormCtrlValues) => void,
+    isValidatedForm: () => boolean
+}
+
+function useFormCtrl <v = {},>({ initialValues, validate }: iUseFormCtrl<v>) {
     const [values, setValues] = useState<iUseFormCtrl<v>['initialValues']>(initialValues)
     const [errors, setErrors] = useState<tValidationObj>({})
 
@@ -61,7 +73,5 @@ const useFormCtrl = <v={},>({ initialValues, validate }: iUseFormCtrl<v>) => {
         isValidatedForm
     }
 }
-
-export type tUseFormCtrl = ReturnType<typeof useFormCtrl>
 
 export default useFormCtrl

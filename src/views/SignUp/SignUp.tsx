@@ -1,5 +1,7 @@
 import React from 'react'
 import { Helmet } from "react-helmet"
+import { useNavigate } from "react-router-dom"
+import { useSnackbar } from 'notistack'
 import styled from 'styled-components'
 import {
     Box,
@@ -14,7 +16,7 @@ import useFormCtrl from '@src/hooks/useFormCtrl.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 import validator from 'validator'
 import { signup } from "@src/endpoints/auth/index.ts"
-import { signupPayloadInterface } from '@src/endpoints/auth/types'
+import {errorMessage} from '@src/constants/intex.ts'
 
 interface props {
     className?: string
@@ -55,6 +57,8 @@ const validate = (values: tFormCtrlValues, storedValues: tFormCtrlValues) => {
 }
 
 const SignUpComp = ({ className }: props) => {
+    const { enqueueSnackbar } = useSnackbar()
+    const navigate = useNavigate()
 
     const formCtrl = useFormCtrl({
         initialValues: {
@@ -73,10 +77,10 @@ const SignUpComp = ({ className }: props) => {
         if(formCtrl.isValidatedForm()){
             signup(formCtrl.values)
             .then((json) => {
-                alert(json)
+                navigate("/dashboard/")
             })
             .catch(error => {
-                alert(error)
+                enqueueSnackbar(errorMessage, {variant: "error"})
             })
         }
     }

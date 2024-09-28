@@ -1,0 +1,1 @@
+export const errorMessage = "An unknown error occored, please try again."

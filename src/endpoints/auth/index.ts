@@ -15,7 +15,12 @@ export const signup = (data: signupPayloadInterface) => new Promise<signupRespon
         },
         body: JSON.stringify(data)
     })
-    .then(res => res.json())
+    .then(res => {
+        if(res.status !== 200){
+            return reject(res.json())
+        }
+        return res.json()
+    })
     .then(json => {
         resolve(json)
     }).catch(e => {

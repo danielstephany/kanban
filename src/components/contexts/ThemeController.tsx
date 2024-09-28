@@ -44,7 +44,7 @@ const Theme: React.ElementType = ({ children }) => {
     return (
         <ThemeContext.Provider value={value}>
             <ThemeProvider theme={theme}>
-                <GlobalStyles />
+                <GlobalStyles theme={theme} />
                 <CssBaseline />
                 {children}
             </ThemeProvider>

@@ -2,6 +2,7 @@
 interface iTheme {
     palette: {
         mode: "dark" | "light"
+        background: {default: string}
     },
     typography: {[key: string]: any}
 }
@@ -9,6 +10,9 @@ interface iTheme {
 const mainTheme = (isDark: boolean): iTheme => ({
     palette: {
         mode: isDark ? 'dark' : 'light',
+        background: {
+            default: isDark ? '#121212' : '#f4f4f4'
+        }
     },
     typography: {
         h2: {

@@ -14,7 +14,7 @@ type TextFieldFormCtrlProps = TextFieldProps & {
     name: string,
 }
 
-const TextFieldFormCtrl = ({ formCtrl, helperText, name, ...others }: TextFieldFormCtrlProps) => {
+const TextFieldFormCtrl = ({ formCtrl, helperText, name, fullWidth=true, ...others }: TextFieldFormCtrlProps) => {
 
     return (
         <>
@@ -23,6 +23,7 @@ const TextFieldFormCtrl = ({ formCtrl, helperText, name, ...others }: TextFieldF
                 onChange={formCtrl.handleChange}
                 onBlur={formCtrl.handleBlure}
                 error={!!formCtrl.errors[name]}
+                fullWidth={fullWidth}
                 {...others}
             />
             {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}

@@ -98,7 +98,6 @@ const SignUpComp = ({ className }: props) => {
                                 </Grid>
                                 <Grid size={12}>
                                     <TextFieldFormCtrl 
-                                        fullWidth 
                                         variant="outlined"
                                         name="firstName" 
                                         label="First Name"
@@ -116,7 +115,6 @@ const SignUpComp = ({ className }: props) => {
                                 </Grid>
                                 <Grid size={12}>
                                     <TextFieldFormCtrl 
-                                        fullWidth 
                                         variant="outlined"
                                         name="email" 
                                         label="Email"

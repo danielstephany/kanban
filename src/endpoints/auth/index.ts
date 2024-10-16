@@ -2,11 +2,11 @@ import type {
     signupPayloadInterface,
     signupResponseInterface,
     loginPayloadInterface,
-    errorMessageInterface
+    loginResult
 } from './types.ts'
 
 
-export const signup = (data: signupPayloadInterface) => new Promise<signupResponseInterface | errorMessageInterface>((resolve, reject) => {
+export const signup = (data: signupPayloadInterface) => new Promise<signupResponseInterface>((resolve, reject) => {
     
     fetch(`${process.env.KANBAN_API}/auth/signup`, {
         method: "POST",
@@ -28,7 +28,7 @@ export const signup = (data: signupPayloadInterface) => new Promise<signupRespon
     })
 })
 
-export const login = (data: loginPayloadInterface) => new Promise<{[key: string]: string} | errorMessageInterface>((resolve, reject) => {
+export const login = (data: loginPayloadInterface) => new Promise<loginResult>((resolve, reject) => {
     
     fetch(`${process.env.KANBAN_API}/auth/login`, {
         method: "POST",
@@ -50,7 +50,7 @@ export const login = (data: loginPayloadInterface) => new Promise<{[key: string]
     })
 })
 
-export const verifyToken = () => new Promise<{[key: string]: string} | errorMessageInterface>((resolve, reject) => {
+export const verifyToken = () => new Promise<{[key: string]: string}>((resolve, reject) => {
     const token = window.localStorage.getItem("token")
     fetch(`${process.env.KANBAN_API}/auth/varify-token`, {
         method: "GET",

@@ -9,11 +9,19 @@ export interface signupPayloadInterface {
 
 export interface signupResponseInterface extends Omit<signupPayloadInterface, "password" | "password2"> { }
 
-export interface errorMessageInterface {
-    message: string
-}
-
 export interface loginPayloadInterface {
     email: string,
     password: string,
+}
+
+export interface loginResult {
+    token: string,
+    user: {
+        createdAt: string,
+        email: string,
+        firstName: string,
+        lastName: string,
+        updatedAt: string,
+        _id: string,
+    }
 }

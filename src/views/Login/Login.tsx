@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from "react-helmet"
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
     Paper,
     Grid2 as Grid,
@@ -14,6 +14,8 @@ import { signUp } from '@src/routes.ts'
 import ActionContainer from '@src/components/modules/ActionContainer.tsx'
 import useFormControl from '@src/hooks/useFormCtrl.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
+import { login } from '@src/endpoints/auth/index.ts'
+import { kanban } from '@src/routes.ts'
 
 interface props {
     className?: string
@@ -32,6 +34,7 @@ const validate = (values: tFormCtrlValues, _: tFormCtrlValues) => {
 }
 
 const LoginComp = ({ className }: props) => {
+    const Navigate = useNavigate()
     const formCtrl = useFormControl({
         initialValues: {
             email: "",
@@ -42,9 +45,18 @@ const LoginComp = ({ className }: props) => {
 
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault()
-        formCtrl.isValidatedForm()
-        console.log(formCtrl.values)
-        console.log(formCtrl.errors)
+
+        if (formCtrl.isValidatedForm()){
+            login(formCtrl.values)
+            .then(json => {
+                console.log(json)
+                window.localStorage.setItem("token", json?.token)
+                Navigate(kanban.path)
+            })
+            .catch((e) => {
+                console.log(e.message)
+            })
+        }
     }
 
     return (
@@ -69,6 +81,7 @@ const LoginComp = ({ className }: props) => {
                                     <TextFieldFormCtrl
                                         name="password"
                                         label="Password"
+                                        type="password"
                                         formCtrl={formCtrl}
                                     />
                                 </Grid>

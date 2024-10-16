@@ -44,7 +44,12 @@ export const router = createBrowserRouter([
                         element: <Login />
                     },
                 ]
-            }
+            },
+            {
+                path: "/",
+                element: <Navigate to="/dashboard" />,
+                errorElement: <UnknownError />,
+            },
         ]
     },
     {
@@ -73,11 +78,6 @@ export const router = createBrowserRouter([
             },
         ]
     },
-    // {
-    //     path: "/",
-    //     element: <Navigate to="/dashboard" />,
-    //     errorElement: <UnknownError />,
-    // },
     {
         path: "*",
         element: <NotFound404 />,

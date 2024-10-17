@@ -16,6 +16,7 @@ import useFormControl from '@src/hooks/useFormCtrl.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 import { login } from '@src/endpoints/auth/index.ts'
 import { kanban } from '@src/routes.ts'
+import LoadStateButton from '@src/components/controls/LoadStateButton.tsx'
 
 interface props {
     className?: string
@@ -97,10 +98,17 @@ const LoginComp = ({ className }: props) => {
                                             >Go to Sign Up page</Button>
                                         }
                                         rightAction={
-                                            <Button                                            
+                                            // <Button                                            
+                                            //     variant='contained'
+                                            //     type="submit"
+                                            // >Login</Button>
+                                            <LoadStateButton                                            
                                                 variant='contained'
                                                 type="submit"
-                                            >Login</Button>
+                                                loading
+                                                disabled
+                                                iconColor={{light: "pink", dark:"green"}}
+                                            >Login</LoadStateButton>
                                         }
                                     />
                                 </Grid>

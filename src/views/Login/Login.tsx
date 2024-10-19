@@ -13,8 +13,10 @@ import TextFieldFormCtrl from '@src/components/controls/TextFieldFormCtrl.tsx'
 import { signUp } from '@src/routes.ts'
 import ActionContainer from '@src/components/modules/ActionContainer.tsx'
 import useFormControl from '@src/hooks/useFormCtrl.tsx'
+import useQuery from '@src/hooks/useQuery.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 import { login } from '@src/endpoints/auth/index.ts'
+import type { loginResult } from '@src/endpoints/auth/types.ts'
 import { kanban } from '@src/routes.ts'
 import LoadStateButton from '@src/components/controls/LoadStateButton.tsx'
 
@@ -36,6 +38,7 @@ const validate = (values: tFormCtrlValues, _: tFormCtrlValues) => {
 
 const LoginComp = ({ className }: props) => {
     const Navigate = useNavigate()
+    const { loading, call: loadingCall } = useQuery<loginResult>({fetchFunc: login})
     const formCtrl = useFormControl({
         initialValues: {
             email: "",
@@ -48,7 +51,7 @@ const LoginComp = ({ className }: props) => {
         e.preventDefault()
 
         if (formCtrl.isValidatedForm()){
-            login(formCtrl.values)
+            loadingCall(formCtrl.values)
             .then(json => {
                 console.log(json)
                 window.localStorage.setItem("token", json?.token)
@@ -105,9 +108,8 @@ const LoginComp = ({ className }: props) => {
                                             <LoadStateButton                                            
                                                 variant='contained'
                                                 type="submit"
-                                                loading
-                                                disabled
-                                                iconColor={{light: "pink", dark:"green"}}
+                                                loading={loading}
+                                                disabled={loading}
                                             >Login</LoadStateButton>
                                         }
                                     />

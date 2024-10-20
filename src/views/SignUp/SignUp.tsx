@@ -7,16 +7,18 @@ import {
     Box,
     Paper,
     Grid2 as Grid,
-    Typography,
-    Button,
+    Typography
 } from '@mui/material'
+import LoadStateButton from '@src/components/controls/LoadStateButton.tsx'
 import ActionContainer from "@src/components/modules/ActionContainer.tsx"
 import TextFieldFormCtrl from "@src/components/controls/TextFieldFormCtrl.tsx"
 import useFormCtrl from '@src/hooks/useFormCtrl.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 import validator from 'validator'
 import { signup } from "@src/endpoints/auth/index.ts"
-import {errorMessage} from '@src/constants/intex.ts'
+import { signupResponseInterface } from "@src/endpoints/auth/types.ts"
+import {errorMessage} from '@src/constants/index.ts'
+import useQuery from '@src/hooks/useQuery.tsx'
 
 interface props {
     className?: string
@@ -59,6 +61,7 @@ const validate = (values: tFormCtrlValues, storedValues: tFormCtrlValues) => {
 const SignUpComp = ({ className }: props) => {
     const { enqueueSnackbar } = useSnackbar()
     const navigate = useNavigate()
+    const { loading, call: signUpCall } = useQuery<signupResponseInterface>({ fetchFunc: signup })
 
     const formCtrl = useFormCtrl({
         initialValues: {
@@ -75,12 +78,12 @@ const SignUpComp = ({ className }: props) => {
         e.preventDefault()
 
         if(formCtrl.isValidatedForm()){
-            signup(formCtrl.values)
+            signUpCall(formCtrl.values)
             .then((json) => {
                 navigate("/dashboard/")
             })
             .catch(error => {
-                enqueueSnackbar(errorMessage, {variant: "error"})
+                enqueueSnackbar(error.message || errorMessage, {variant: "error"})
             })
         }
     }
@@ -145,10 +148,12 @@ const SignUpComp = ({ className }: props) => {
                                     <ActionContainer
                                         pt="16px"
                                         rightAction={
-                                            <Button
+                                            <LoadStateButton
                                                 variant='contained'
                                                 type="submit"
-                                            >Submit</Button>
+                                                loading={loading}
+                                                disabled={loading}
+                                            >Submit</LoadStateButton>
                                         }
                                     />
                                 </Grid>

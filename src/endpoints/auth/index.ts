@@ -7,7 +7,7 @@ import type {
 
 
 export const signup = (data: signupPayloadInterface) => new Promise<signupResponseInterface>((resolve, reject) => {
-    
+    let forceReject = false;
     fetch(`${process.env.KANBAN_API}/auth/signup`, {
         method: "POST",
         headers: {
@@ -17,19 +17,23 @@ export const signup = (data: signupPayloadInterface) => new Promise<signupRespon
     })
     .then(res => {
         if(res.status !== 200){
-            return reject(res.json())
+            forceReject = true
         }
         return res.json()
     })
     .then(json => {
-        resolve(json)
+        if(forceReject){
+            reject(json)
+        } else {
+            resolve(json)
+        }
     }).catch(e => {
         reject(e)
     })
 })
 
 export const login = (data: loginPayloadInterface) => new Promise<loginResult>((resolve, reject) => {
-    
+    let forceReject = false;
     fetch(`${process.env.KANBAN_API}/auth/login`, {
         method: "POST",
         headers: {
@@ -39,12 +43,16 @@ export const login = (data: loginPayloadInterface) => new Promise<loginResult>((
     })
     .then(res => {
         if (res.status !== 200) {
-            return reject(res.json())
+            forceReject = true
         }
         return res.json()
     })
     .then(json => {
-        resolve(json)
+        if (forceReject) {
+            reject(json)
+        } else {
+            resolve(json)
+        }
     }).catch(e => {
         reject(e)
     })

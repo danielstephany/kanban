@@ -1,5 +1,6 @@
 import React from 'react'
 import { Helmet } from "react-helmet"
+import { useSnackbar } from 'notistack'
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -19,6 +20,7 @@ import { login } from '@src/endpoints/auth/index.ts'
 import type { loginResult } from '@src/endpoints/auth/types.ts'
 import { kanban } from '@src/routes.ts'
 import LoadStateButton from '@src/components/controls/LoadStateButton.tsx'
+import { errorMessage } from '@src/constants/index.ts'
 
 interface props {
     className?: string
@@ -37,6 +39,7 @@ const validate = (values: tFormCtrlValues, _: tFormCtrlValues) => {
 }
 
 const LoginComp = ({ className }: props) => {
+    const { enqueueSnackbar } = useSnackbar()
     const Navigate = useNavigate()
     const { loading, call: loadingCall } = useQuery<loginResult>({fetchFunc: login})
     const formCtrl = useFormControl({
@@ -58,7 +61,7 @@ const LoginComp = ({ className }: props) => {
                 Navigate(kanban.path)
             })
             .catch((e) => {
-                console.log(e.message)
+                enqueueSnackbar(e.message || errorMessage, { variant: "error" })
             })
         }
     }
@@ -101,10 +104,6 @@ const LoginComp = ({ className }: props) => {
                                             >Go to Sign Up page</Button>
                                         }
                                         rightAction={
-                                            // <Button                                            
-                                            //     variant='contained'
-                                            //     type="submit"
-                                            // >Login</Button>
                                             <LoadStateButton                                            
                                                 variant='contained'
                                                 type="submit"

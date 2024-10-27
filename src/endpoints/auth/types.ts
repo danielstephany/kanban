@@ -7,21 +7,25 @@ export interface signupPayloadInterface {
     password2: string
 }
 
-export interface signupResponseInterface extends Omit<signupPayloadInterface, "password" | "password2"> { }
+export interface user {
+    createdAt: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+    updatedAt: string,
+    _id: string,
+}
+
+export interface loginResult {
+    token: string,
+    user: user
+}
+
+export interface signupResponseInterface extends loginResult { }
 
 export interface loginPayloadInterface {
     email: string,
     password: string,
 }
 
-export interface loginResult {
-    token: string,
-    user: {
-        createdAt: string,
-        email: string,
-        firstName: string,
-        lastName: string,
-        updatedAt: string,
-        _id: string,
-    }
-}
+export interface verifyTokenResult { user: user}

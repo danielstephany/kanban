@@ -2,7 +2,8 @@ import type {
     signupPayloadInterface,
     signupResponseInterface,
     loginPayloadInterface,
-    loginResult
+    loginResult,
+    verifyTokenResult
 } from './types.ts'
 
 
@@ -58,7 +59,7 @@ export const login = (data: loginPayloadInterface) => new Promise<loginResult>((
     })
 })
 
-export const verifyToken = () => new Promise<{[key: string]: string}>((resolve, reject) => {
+export const verifyToken = () => new Promise<verifyTokenResult>((resolve, reject) => {
     const token = window.localStorage.getItem("token")
     fetch(`${process.env.KANBAN_API}/auth/varify-token`, {
         method: "GET",

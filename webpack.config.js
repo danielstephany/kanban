@@ -42,7 +42,7 @@ module.exports = (env) => {
                     test: /\.(png|svg|jpg|jpeg|gif)$/i,
                     type: 'asset/imgs',
                 },
-            ],
+            ], 
         },
         plugins: [
             new HtmlWebpackPlugin({
@@ -67,7 +67,9 @@ module.exports = (env) => {
             alias: {
                 "@src": path.resolve(__dirname, './src'),
                 '@mui/styled-engine': '@mui/styled-engine-sc'
-            }
+            },
+            // allows leaving the extention out of the path.
+            extensions: ['.tsx', '.ts', '.js'],
         },
         devServer: {
             //historyApiFallback allows the react router to work properly

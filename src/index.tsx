@@ -7,6 +7,8 @@ import { router } from '@src/Router.tsx'
 import LoaderView from '@src/components/modules/LoaderView.tsx'
 import ThemeController from "@src/components/contexts/ThemeController.tsx"
 import SnackbarProvider from '@src/components/providers/SnackbarProvider.tsx'
+import store from '@src/store'
+import { Provider as ReduxProvider } from 'react-redux'
 
 
 
@@ -15,11 +17,13 @@ const rootEl: HTMLElement | null = document.getElementById("root") as HTMLElemen
 const appRoot = createRoot(rootEl)
 
 appRoot.render(
-    <ThemeController>
-        <SnackbarProvider>
-            <Suspense fallback={<LoaderView />}>
-                <RouterProvider router={router} />
-            </Suspense>
-        </SnackbarProvider>
-    </ThemeController>
+    <ReduxProvider store={store}>
+        <ThemeController>
+                <SnackbarProvider>
+                    <Suspense fallback={<LoaderView />}>
+                        <RouterProvider router={router} />
+                    </Suspense>
+                </SnackbarProvider>
+        </ThemeController>
+    </ReduxProvider>
 )

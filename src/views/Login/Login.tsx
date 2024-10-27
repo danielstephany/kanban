@@ -3,6 +3,8 @@ import { Helmet } from "react-helmet"
 import { useSnackbar } from 'notistack'
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAppDispatch } from '@src/store/hooks'
+import { logInUser } from '@src/store/slices/user'
 import {
     Paper,
     Grid2 as Grid,
@@ -39,6 +41,7 @@ const validate = (values: tFormCtrlValues, _: tFormCtrlValues) => {
 }
 
 const LoginComp = ({ className }: props) => {
+    const dispatch = useAppDispatch()
     const { enqueueSnackbar } = useSnackbar()
     const Navigate = useNavigate()
     const { loading, call: loadingCall } = useQuery<loginResult>({fetchFunc: login})
@@ -58,6 +61,13 @@ const LoginComp = ({ className }: props) => {
             .then(json => {
                 console.log(json)
                 window.localStorage.setItem("token", json?.token)
+                dispatch(logInUser({
+                    token: json.token,
+                    firstName: json.user.firstName,
+                    lastName: json.user.lastName,
+                    email: json.user.email,
+                    id: json.user._id
+                }))
                 Navigate(kanban.path)
             })
             .catch((e) => {

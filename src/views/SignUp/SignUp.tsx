@@ -2,6 +2,8 @@ import React from 'react'
 import { Helmet } from "react-helmet"
 import { useNavigate } from "react-router-dom"
 import { useSnackbar } from 'notistack'
+import { useAppDispatch } from '@src/store/hooks'
+import { logInUser } from '@src/store/slices/user'
 import styled from 'styled-components'
 import {
     Box,
@@ -59,6 +61,7 @@ const validate = (values: tFormCtrlValues, storedValues: tFormCtrlValues) => {
 }
 
 const SignUpComp = ({ className }: props) => {
+    const dispatch = useAppDispatch()
     const { enqueueSnackbar } = useSnackbar()
     const navigate = useNavigate()
     const { loading, call: signUpCall } = useQuery<signupResponseInterface>({ fetchFunc: signup })
@@ -80,6 +83,13 @@ const SignUpComp = ({ className }: props) => {
         if(formCtrl.isValidatedForm()){
             signUpCall(formCtrl.values)
             .then((json) => {
+                dispatch(logInUser({
+                    token: json.token,
+                    firstName: json.user.firstName,
+                    lastName: json.user.lastName,
+                    email: json.user.email,
+                    id: json.user._id
+                }))
                 navigate("/dashboard/")
             })
             .catch(error => {

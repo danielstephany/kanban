@@ -27,11 +27,9 @@ const userSlice = createSlice({
             loggedIn: true,
             ...action.payload
         }),
-        logOut: (state, action) => {
-            state = { ...initialState, loggedIn: true }
-        },
+        logOutUser: (state) => ({ ...initialState, loggedIn: false }),
     },
 })
 
-export const { logInUser, logOut } = userSlice.actions
+export const { logInUser, logOutUser } = userSlice.actions
 export default userSlice.reducer

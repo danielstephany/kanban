@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import {Link} from 'react-router-dom'
+import { useAppDispatch } from '@src/store/hooks'
+import { logOutUser } from '@src/store/slices/user'
 import {
     Button,
     Typography
@@ -17,6 +19,12 @@ const ButtonTextLeft = styled(Button)`
 ` as typeof Button;
 
 const MainSidebarComp: React.ElementType = ({className}) => {
+    const dispatch = useAppDispatch()
+
+    const handleLogOutUser = () => {
+        dispatch(logOutUser())
+    }
+
     return (
         <div className={className}>
             <nav className='main-sidebar__top-nav'>
@@ -46,6 +54,7 @@ const MainSidebarComp: React.ElementType = ({className}) => {
                     variant="contained" 
                     to="/auth/login"
                     fullWidth
+                    onClick={handleLogOutUser}
                 >Log out</Button>
             </nav>
         </div>

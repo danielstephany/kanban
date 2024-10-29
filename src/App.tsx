@@ -4,7 +4,7 @@ import {
     Outlet
 } from "react-router-dom"
 import {verifyToken} from "@src/endpoints/auth/index.ts"
-import { login } from '@src/routes.ts'
+import { login } from '@src/Router/routes.ts'
 import { useAppDispatch } from '@src/store/hooks'
 import { logInUser } from '@src/store/slices/user'
 

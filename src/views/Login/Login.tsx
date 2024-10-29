@@ -13,14 +13,14 @@ import {
     Box
 } from '@mui/material'
 import TextFieldFormCtrl from '@src/components/controls/TextFieldFormCtrl.tsx'
-import { signUp } from '@src/routes.ts'
+import { signUp } from '@src/Router/routes.ts'
 import ActionContainer from '@src/components/modules/ActionContainer.tsx'
 import useFormControl from '@src/hooks/useFormCtrl.tsx'
 import useQuery from '@src/hooks/useQuery.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 import { login } from '@src/endpoints/auth/index.ts'
 import type { loginResult } from '@src/endpoints/auth/types.ts'
-import { kanban } from '@src/routes.ts'
+import { kanban } from '@src/Router/routes.ts'
 import LoadStateButton from '@src/components/controls/LoadStateButton.tsx'
 import { errorMessage } from '@src/constants/index.ts'
 

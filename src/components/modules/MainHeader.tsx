@@ -1,5 +1,6 @@
 import React, {useContext} from 'react'
 import styled from 'styled-components'
+import {Link} from 'react-router-dom'
 import {
     Typography,
     Switch,
@@ -29,7 +30,9 @@ const MainHeaderComp: React.ElementType = ({className}) => {
         <div className={className}>
             <div className="main-header__content">
                 <div className="main-header__items">
-                    <Typography variant="h1">Kanban</Typography>
+                    
+                    <Typography variant="h1"><Link to="/">Kanban</Link></Typography>
+                    
                 </div>
                 <div className="main-header__items">
                     <FormControlLabelCentered
@@ -69,6 +72,10 @@ const MainHeader = styled(MainHeaderComp)`
     h1 {
         font-size: 24px;
         font-weight: 600;
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
     }
 `
 

@@ -1,11 +1,12 @@
 import React, {useState} from 'react'
 
 interface useQueryTypes {
-    fetchFunc(...args: any): Promise<any>
+    fetchFunc(...args: any): Promise<any>,
+    loading?: boolean
 }
 
-const useQuery = <t,>({ fetchFunc }: useQueryTypes) => {
-    const [loading, setLoading] = useState(false)
+const useQuery = <t,>({ fetchFunc, loading: initialLoading }: useQueryTypes) => {
+    const [loading, setLoading] = useState(initialLoading || false)
 
     const call = (...args: any) => new Promise<t>((resolve, reject) => {
         setLoading(true)

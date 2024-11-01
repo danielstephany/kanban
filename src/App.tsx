@@ -4,18 +4,25 @@ import {
     Outlet
 } from "react-router-dom"
 import {verifyToken} from "@src/endpoints/auth/index.ts"
+import type { verifyTokenResult } from "@src/endpoints/auth/types.ts"
 import { login } from '@src/Router/routes.ts'
 import { useAppDispatch } from '@src/store/hooks'
 import { logInUser } from '@src/store/slices/user'
+import useQuery from './hooks/useQuery'
+import LoaderView from '@src/components/modules/LoaderView.tsx'
 
 const App = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
+    const {loading, call: callVerifyToken} = useQuery<verifyTokenResult>({ 
+        fetchFunc: verifyToken,
+        loading: true
+    })
 
     useEffect(() => {
         const token = window.localStorage.getItem("token")
         if(token){
-            verifyToken()
+            callVerifyToken()
             .then((json) => {
                 console.log(json)
                 dispatch(logInUser({
@@ -27,7 +34,6 @@ const App = () => {
                 }))
             })
             .catch(e => {
-                console.log(e)
                 navigate(login.path)
             })
         } else {
@@ -35,9 +41,11 @@ const App = () => {
         }
     }, [])
 
-    return (
-        <Outlet />
-    )
+    if(loading){
+        return <LoaderView />
+    } else {
+        return <Outlet />
+    }
 }
 
 export default App

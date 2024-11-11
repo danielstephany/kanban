@@ -43,7 +43,7 @@ const MainHeaderComp: React.ElementType = ({className}) => {
                                 inputProps={{ 'aria-label': 'Toggle Dark Mode' }}
                             />
                         }
-                        label={isDarkMode ? <Sun /> : <Moon />}
+                        label={isDarkMode ? <Moon /> : <Sun />}
                         labelPlacement="end"
                     />
                 </div>

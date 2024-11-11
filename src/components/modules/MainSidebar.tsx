@@ -5,7 +5,8 @@ import { useAppDispatch } from '@src/store/hooks'
 import { logOutUser } from '@src/store/slices/user'
 import {
     Button,
-    Typography
+    Typography,
+    Paper
 } from '@mui/material'
 
 const ButtonTextLeft = styled(Button)`
@@ -26,7 +27,7 @@ const MainSidebarComp: React.ElementType = ({className}) => {
     }
 
     return (
-        <div className={className}>
+        <Paper className={className}>
             <nav className='main-sidebar__top-nav'>
                 <Typography variant='h3' className='main-sidebar__title'>Projects</Typography>
                 <ul className='main-sidebar__list'>
@@ -57,14 +58,15 @@ const MainSidebarComp: React.ElementType = ({className}) => {
                     onClick={handleLogOutUser}
                 >Log out</Button>
             </nav>
-        </div>
+        </Paper>
     )
 }
 
 const MainSidebar = styled(MainSidebarComp)`
     display: flex;
     flex-direction: column;
-    border-right: 1px solid ${({ theme }) => theme.palette.mode === "dark" ? "#fff" : "#000"};
+    border-radius: 0;
+    border-right: 1px solid ${({ theme }) => theme.palette.mode === "dark" ? "#fff" : "transparent"};
     min-height: 100%;
     .main-sidebar {
         &__top-nav {

@@ -23,11 +23,17 @@ const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        logInUser: (state, action) => ({
+        logInUser: (state, action) => {
+            window.localStorage.setItem("token", action.payload.token)
+            return {
             loggedIn: true,
             ...action.payload
-        }),
-        logOutUser: (state) => ({ ...initialState, loggedIn: false }),
+            }
+        },
+        logOutUser: (state) => {
+            window.localStorage.removeItem("token")
+            return { ...initialState, loggedIn: false }
+        },
     },
 })
 

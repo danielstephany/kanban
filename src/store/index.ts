@@ -5,6 +5,9 @@ import userReducer from "./slices/user.ts"
 const store = configureStore({
     reducer: {
         user: userReducer,
+    },
+    devTools: {
+        name: "kanban"
     }
 })
 

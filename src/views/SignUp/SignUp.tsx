@@ -89,7 +89,7 @@ const SignUpComp = ({ className }: props) => {
                     lastName: json.user.lastName,
                     email: json.user.email,
                     id: json.user._id
-                }))
+                }))            
                 navigate("/dashboard/")
             })
             .catch(error => {

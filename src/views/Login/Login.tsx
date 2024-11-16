@@ -59,7 +59,6 @@ const LoginComp = ({ className }: props) => {
         if (formCtrl.isValidatedForm()){
             loadingCall(formCtrl.values)
             .then(json => {
-                window.localStorage.setItem("token", json?.token)
                 dispatch(logInUser({
                     token: json.token,
                     firstName: json.user.firstName,

@@ -23,6 +23,7 @@ const useQuery = <t,>({ fetchFunc, loading: initialLoading }: useQueryTypes) => 
 
     return {
         call,
+        setLoading,
         loading,
     }
 }

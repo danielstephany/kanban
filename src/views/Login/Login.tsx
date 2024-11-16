@@ -13,6 +13,7 @@ import {
     Box
 } from '@mui/material'
 import TextFieldFormCtrl from '@src/components/controls/TextFieldFormCtrl.tsx'
+import PasswordFieldFormCtrl from '@src/components/controls/PasswordFieldFormCtrl.tsx'
 import { signUp } from '@src/Router/routes.ts'
 import ActionContainer from '@src/components/modules/ActionContainer.tsx'
 import useFormControl from '@src/hooks/useFormCtrl.tsx'
@@ -93,11 +94,12 @@ const LoginComp = ({ className }: props) => {
                                     />
                                 </Grid>
                                 <Grid size={12}>
-                                    <TextFieldFormCtrl
+                                    <PasswordFieldFormCtrl
                                         name="password"
                                         label="Password"
                                         type="password"
                                         formCtrl={formCtrl}
+                                        fullWidth
                                     />
                                 </Grid>
                                 <Grid size={12}>

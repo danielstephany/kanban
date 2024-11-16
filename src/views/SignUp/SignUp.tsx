@@ -14,6 +14,7 @@ import {
 import LoadStateButton from '@src/components/controls/LoadStateButton.tsx'
 import ActionContainer from "@src/components/modules/ActionContainer.tsx"
 import TextFieldFormCtrl from "@src/components/controls/TextFieldFormCtrl.tsx"
+import PasswordFieldFormCtrl from '@src/components/controls/PasswordFieldFormCtrl.tsx'
 import useFormCtrl from '@src/hooks/useFormCtrl.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 import validator from 'validator'
@@ -135,8 +136,7 @@ const SignUpComp = ({ className }: props) => {
                                     />                                    
                                 </Grid>
                                 <Grid size={12}>
-                                    <TextFieldFormCtrl
-                                        fullWidth
+                                    <PasswordFieldFormCtrl
                                         variant="outlined"
                                         name="password"
                                         label="Password"
@@ -145,8 +145,7 @@ const SignUpComp = ({ className }: props) => {
                                     />
                                 </Grid>
                                 <Grid size={12}>
-                                    <TextFieldFormCtrl
-                                        fullWidth
+                                    <PasswordFieldFormCtrl
                                         variant="outlined"
                                         name="password2"
                                         label="Re-enter Password"

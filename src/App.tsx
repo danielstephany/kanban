@@ -14,9 +14,9 @@ import LoaderView from '@src/components/modules/LoaderView.tsx'
 const App = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
-    const {loading, call: callVerifyToken} = useQuery<verifyTokenResult>({ 
+    const {loading, call: callVerifyToken, setLoading} = useQuery<verifyTokenResult>({ 
         fetchFunc: verifyToken,
-        loading: true
+        loading: true,
     })
 
     useEffect(() => {
@@ -37,6 +37,7 @@ const App = () => {
                 navigate(login.path)
             })
         } else {
+            setLoading(false)
             navigate(login.path)
         }
     }, [])

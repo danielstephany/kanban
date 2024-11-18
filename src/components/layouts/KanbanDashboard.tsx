@@ -1,13 +1,34 @@
-import React, {Suspense} from 'react'
+import React, {Suspense, useEffect} from 'react'
+import { useSnackbar } from 'notistack'
 import styled from 'styled-components'
 import MainHeader from '@src/components/modules/MainHeader.tsx'
 import MainSidebar from '@src/components/modules/MainSidebar.tsx'
 import { Outlet } from "react-router-dom"
-import CenteredLoader from '@src/components/modules/CenteredLoader.tsx';
+import CenteredLoader from '@src/components/modules/CenteredLoader.tsx'
+import useQuery from '@src/hooks/useQuery'
+
+import { boardNavList } from '@src/endpoints/board'
 
 const KanbanDashboardComp: React.ElementType = ({
     className,
 }) => {
+    const {enqueueSnackbar} = useSnackbar()
+    const getBoardNavList = useQuery({
+        fetchFunc: boardNavList
+    })
+
+    useEffect(() => {
+        getBoardNavList.call()
+        .then(json => {
+            
+        }).catch(e => {
+            enqueueSnackbar(e.message, {variant: "error"})
+        })
+
+    }, [])
+
+    if (getBoardNavList.result) console.log(getBoardNavList.result)
+
     return (
         <div className={className}>
             <div className='kbd__header-slot'><MainHeader /></div>

@@ -7,6 +7,7 @@ interface useQueryTypes {
 
 const useQuery = <t,>({ fetchFunc, loading: initialLoading }: useQueryTypes) => {
     const [loading, setLoading] = useState(initialLoading || false)
+    const [result, setResult] = useState(null)
 
     const call = (...args: any) => new Promise<t>((resolve, reject) => {
         setLoading(true)
@@ -14,6 +15,7 @@ const useQuery = <t,>({ fetchFunc, loading: initialLoading }: useQueryTypes) => 
         fetchFunc(...args)
         .then(json => {
             setLoading(false)
+            setResult(json)
             resolve(json)
         }).catch(e => {
             setLoading(false)
@@ -23,8 +25,9 @@ const useQuery = <t,>({ fetchFunc, loading: initialLoading }: useQueryTypes) => 
 
     return {
         call,
-        setLoading,
         loading,
+        result,
+        setLoading,
     }
 }
 

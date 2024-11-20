@@ -5,7 +5,7 @@ import {
 } from "react-router-dom"
 import {verifyToken} from "@src/endpoints/auth/index.ts"
 import type { verifyTokenResult } from "@src/endpoints/auth/types.ts"
-import { login } from '@src/Router/routes.ts'
+import { LOGIN } from '@src/Router/routes.ts'
 import { useAppDispatch } from '@src/store/hooks'
 import { logInUser } from '@src/store/slices/user'
 import useQuery from './hooks/useQuery'
@@ -34,11 +34,11 @@ const App = () => {
                 }))
             })
             .catch(e => {
-                navigate(login.path)
+                navigate(LOGIN.path)
             })
         } else {
             setLoading(false)
-            navigate(login.path)
+            navigate(LOGIN.path)
         }
     }, [])
 

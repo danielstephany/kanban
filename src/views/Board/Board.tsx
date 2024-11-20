@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import Helmet from 'react-helmet'
 import initialData from './data.ts'
 import type { iData } from "./data.ts"
 import Column from "./Column.tsx"
@@ -10,7 +11,7 @@ import { DragDropContext } from 'react-beautiful-dnd'
 import type { OnDragEndResponder, DropResult } from 'react-beautiful-dnd'
 
 
-const Board: React.ElementType = ({}) => {
+const Board = ({}) => {
     const [data, setData] = useState(initialData)
 
     const getColumns = () => (
@@ -65,11 +66,14 @@ const Board: React.ElementType = ({}) => {
     console.log(data)
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <Box p={4}>
-                <Grid container spacing={2}>{getColumns()}</Grid>
-            </Box>
-        </DragDropContext>
+        <>
+            <Helmet title="Board"/>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <Box p={4}>
+                    <Grid container spacing={2}>{getColumns()}</Grid>
+                </Box>
+            </DragDropContext>
+        </>
     )
 }
 

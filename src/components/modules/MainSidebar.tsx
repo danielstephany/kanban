@@ -8,6 +8,7 @@ import {
     Typography,
     Paper
 } from '@mui/material'
+import { PROJECT_LIST } from '@src/Router/routes.ts'
 
 const ButtonTextLeft = styled(Button)`
     display: flex;
@@ -19,34 +20,46 @@ const ButtonTextLeft = styled(Button)`
     margin-bottom: 
 ` as typeof Button;
 
-const MainSidebarComp: React.ElementType = ({className}) => {
+interface MainSidebarCompIterface { 
+    className?: string,
+    boardNavItems: {_id: string, title: string}[]
+}
+
+const MainSidebarComp: React.ElementType = ({ className, boardNavItems }: MainSidebarCompIterface) => {
     const dispatch = useAppDispatch()
 
     const handleLogOutUser = () => {
         dispatch(logOutUser())
     }
 
+    const buildBoardLinks = () => {
+        if (boardNavItems){
+            return boardNavItems.map((board) => (
+                < li key={board._id} className='main-sidebar__list-item' >
+                    <ButtonTextLeft
+                        component={Link}
+                        variant="text"
+                        to={`/dashboard/board/${board._id}`}
+                        fullWidth
+                    >{board.title}</ButtonTextLeft>
+                </li >
+            ))                
+        }
+        return null
+    }
+
     return (
         <Paper className={className}>
-            <nav className='main-sidebar__top-nav'>
+            <nav className='main-sidebar__top-nav'>            
                 <Typography variant='h3' className='main-sidebar__title'>Projects</Typography>
                 <ul className='main-sidebar__list'>
-                    <li className='main-sidebar__list-item'>
-                        <ButtonTextLeft
-                            component={Link}
-                            variant="text"
-                            to="auth/login"
-                            fullWidth
-                        >Project 1</ButtonTextLeft>
-                    </li>
-                    <li className='main-sidebar__list-item'>
-                        <ButtonTextLeft
-                            component={Link}
-                            variant="text"
-                            to="auth/login"
-                            fullWidth
-                        >Project 2</ButtonTextLeft>
-                    </li>
+                    <ButtonTextLeft
+                        component={Link}
+                        variant="text"
+                        to={PROJECT_LIST.path}
+                        fullWidth
+                    >All Boards</ButtonTextLeft>
+                    {buildBoardLinks()}
                 </ul>
             </nav>
             <nav className='main-sidebar__bottom-nav'>
@@ -90,6 +103,6 @@ const MainSidebar = styled(MainSidebarComp)`
             font-weight: 500;
         }
     }
-`
+` as typeof MainSidebarComp
 
 export default MainSidebar

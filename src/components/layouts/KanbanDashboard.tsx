@@ -19,9 +19,7 @@ const KanbanDashboardComp: React.ElementType = ({
 
     useEffect(() => {
         getBoardNavList.call()
-        .then(json => {
-            
-        }).catch(e => {
+        .catch(e => {
             enqueueSnackbar(e.message, {variant: "error"})
         })
 
@@ -32,7 +30,9 @@ const KanbanDashboardComp: React.ElementType = ({
     return (
         <div className={className}>
             <div className='kbd__header-slot'><MainHeader /></div>
-            <div className='kbd__sidbar-slot'><MainSidebar /></div>
+            <div className='kbd__sidbar-slot'>
+                <MainSidebar boardNavItems={getBoardNavList.result} />
+            </div>
             <div className='kbd__main-slot'>
                 <Suspense fallback={<CenteredLoader />}>
                     <Outlet />

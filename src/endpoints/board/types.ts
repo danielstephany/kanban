@@ -21,5 +21,6 @@ export interface boardsOwnedByUserResponseInterface {
 
 
 export interface boardNavListResponseInterface {
-
-}
+    _id: string,
+    title: string
+}[]

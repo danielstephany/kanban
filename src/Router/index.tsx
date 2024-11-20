@@ -8,7 +8,8 @@ import KanbanDashboard from '@src/components/layouts/KanbanDashboard.tsx'
 import AuthLayout from '@src/components/layouts/AuthLayout.tsx'
 import App from "@src/App.tsx"
 import LoginGard from '@src/components/LoginGuard.tsx'
-const Kanban = lazy(() => import('@src/views/Kanban/index.tsx')); 
+const Board = lazy(() => import('@src/views/Board'));
+const ProjectList = lazy(() => import('@src/views/ProjectList'));
 const SignUp = lazy(() => import('@src/views/SignUp/index.tsx')); 
 const Login = lazy(() => import('@src/views/Login/index.tsx')); 
 const UnknownError = lazy(() => import('@src/views/UnknownError/UnknownError.tsx')); 
@@ -21,14 +22,18 @@ const routesObj = [
         errorElement: <UnknownError />,
         children: [
             {
-                path: routeData.kanban.path,
+                path: routeData.KANBAN.path,
                 element: <LoginGard component={KanbanDashboard} />,
                 errorElement: <UnknownError />,
                 children: [
                     {
-                        path: routeData.kanban.path,
-                        element: <Kanban />,
-                    }
+                        path: routeData.BOARD.path,
+                        element: <Board />
+                    },
+                    {
+                        path: routeData.PROJECT_LIST.path,
+                        element: <ProjectList />
+                    },
                 ]
             },
             {
@@ -37,45 +42,19 @@ const routesObj = [
                 errorElement: <UnknownError />,
                 children: [
                     {
-                        path: routeData.signUp.path,
+                        path: routeData.SIGN_UP.path,
                         element: <SignUp />
                     },
                     {
-                        path: routeData.login.path,
+                        path: routeData.LOGIN.path,
                         element: <Login />
                     },
                 ]
             },
             {
                 path: "/",
-                element: <Navigate to="/dashboard" />,
+                element: <Navigate to={routeData.PROJECT_LIST.path} />,
                 errorElement: <UnknownError />,
-            },
-        ]
-    },
-    {
-        path: routeData.kanban.path,
-        element: <KanbanDashboard />,
-        errorElement: <UnknownError />,
-        children: [
-            {
-                path: routeData.kanban.path,
-                element: <Kanban />,
-            }
-        ]
-    },
-    {
-        path: "/auth/",
-        element: <AuthLayout />,
-        errorElement: <UnknownError />,
-        children: [
-            {
-                path: routeData.signUp.path,
-                element: <SignUp />
-            },
-            {
-                path: routeData.login.path,
-                element: <Login />
             },
         ]
     },

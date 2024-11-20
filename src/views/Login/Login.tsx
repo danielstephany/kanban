@@ -14,14 +14,14 @@ import {
 } from '@mui/material'
 import TextFieldFormCtrl from '@src/components/controls/TextFieldFormCtrl.tsx'
 import PasswordFieldFormCtrl from '@src/components/controls/PasswordFieldFormCtrl.tsx'
-import { signUp } from '@src/Router/routes.ts'
+import { SIGN_UP } from '@src/Router/routes.ts'
 import ActionContainer from '@src/components/modules/ActionContainer.tsx'
 import useFormControl from '@src/hooks/useFormCtrl.tsx'
 import useQuery from '@src/hooks/useQuery.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 import { login } from '@src/endpoints/auth/index.ts'
 import type { loginResult } from '@src/endpoints/auth/types.ts'
-import { kanban } from '@src/Router/routes.ts'
+import { KANBAN } from '@src/Router/routes.ts'
 import LoadStateButton from '@src/components/controls/LoadStateButton.tsx'
 import { errorMessage } from '@src/constants/index.ts'
 
@@ -67,7 +67,7 @@ const LoginComp = ({ className }: props) => {
                     email: json.user.email,
                     id: json.user._id
                 }))
-                Navigate(kanban.path)
+                Navigate(KANBAN.path)
             })
             .catch((e) => {
                 enqueueSnackbar(e.message || errorMessage, { variant: "error" })
@@ -109,7 +109,7 @@ const LoginComp = ({ className }: props) => {
                                             <Button
                                                 variant="text"
                                                 component={Link}
-                                                to={signUp.path}
+                                                to={SIGN_UP.path}
                                                 size='small'
                                             >Go to Sign Up page</Button>
                                         }

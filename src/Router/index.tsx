@@ -4,7 +4,7 @@ import {
     Navigate
 } from "react-router-dom"
 import * as routeData from "./routes.ts"
-import KanbanDashboard from '@src/components/layouts/KanbanDashboard.tsx'
+import KanbanDashboard from '@src/components/layouts/KanbanDashboard'
 import AuthLayout from '@src/components/layouts/AuthLayout.tsx'
 import App from "@src/App.tsx"
 import LoginGard from '@src/components/LoginGuard.tsx'
@@ -12,6 +12,7 @@ const Board = lazy(() => import('@src/views/Board'));
 const ProjectList = lazy(() => import('@src/views/ProjectList'));
 const SignUp = lazy(() => import('@src/views/SignUp/index.tsx')); 
 const Login = lazy(() => import('@src/views/Login/index.tsx')); 
+const CreateProject = lazy(() => import('@src/views/CreateProject'));
 const UnknownError = lazy(() => import('@src/views/UnknownError/UnknownError.tsx')); 
 const NotFound404 = lazy(() => import('@src/views/NotFound404/NotFound404.tsx')); 
 
@@ -33,6 +34,10 @@ const routesObj = [
                     {
                         path: routeData.PROJECT_LIST.path,
                         element: <ProjectList />
+                    },
+                    {
+                        path: routeData.CREATE_PROJECT.path,
+                        element: <CreateProject />
                     },
                 ]
             },

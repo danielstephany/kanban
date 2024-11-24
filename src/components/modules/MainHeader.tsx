@@ -41,6 +41,7 @@ const MainHeaderComp: React.ElementType = ({className}) => {
                                 checked={isDarkMode}
                                 onChange={handleChangeDarkmode}
                                 inputProps={{ 'aria-label': 'Toggle Dark Mode' }}
+                                color="secondary"
                             />
                         }
                         label={isDarkMode ? <Moon /> : <Sun />}
@@ -53,7 +54,7 @@ const MainHeaderComp: React.ElementType = ({className}) => {
 }
 
 const MainHeader = styled(MainHeaderComp)`
-    background-color: #1d448e;
+    background-color: ${({theme}) => theme.palette.primary.main};
     color: #fff;
     .main-header {
         &__content {

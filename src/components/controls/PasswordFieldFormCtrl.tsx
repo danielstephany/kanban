@@ -42,10 +42,14 @@ const PasswordFieldFormCtrl = ({ formCtrl, helperText, name, label, fullWidth = 
                 error={!!formCtrl.errors[name]}
                 fullWidth={fullWidth}
             >
-                <InputLabel htmlFor="outlined-adornment-password">{label}</InputLabel>
+                <InputLabel htmlFor={name}>{label}</InputLabel>
                 <OutlinedInput
-                    id="outlined-adornment-password"
+                    id={name}
                     type={showPassword ? 'text' : 'password'}
+                    label={label}
+                    name={name}
+                    onChange={formCtrl.handleChange}
+                    onBlur={formCtrl.handleBlure}
                     endAdornment={
                         <InputAdornment position="end">
                             <IconButton
@@ -61,10 +65,6 @@ const PasswordFieldFormCtrl = ({ formCtrl, helperText, name, label, fullWidth = 
                             </IconButton>
                         </InputAdornment>
                     }
-                    label={label}
-                    name={name}
-                    onChange={formCtrl.handleChange}
-                    onBlur={formCtrl.handleBlure}
                 />
             </FormControl>
             {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}

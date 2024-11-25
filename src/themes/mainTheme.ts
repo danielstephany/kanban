@@ -14,7 +14,8 @@ interface iTheme {
             light?: string,
             dark?: string,
             contrastText?: string,
-        }
+        },
+        primaryBackground: string
     },
     typography: {[key: string]: any}
 }
@@ -26,12 +27,15 @@ const mainTheme = (isDark: boolean): iTheme => ({
             default: isDark ? '#121212' : '#f4f4f4'
         },
         primary: {
-            main: "#1d7cc8",
+            main: isDark ? "#1d7cc8" : "#145182",
+            // main: "#238fe5",
         },
         secondary: {
-            main: "#c31b4d",
-            contrastText: "#fff"
-        }
+            main: isDark ? "#029920" : "#258037",
+            // main: "#c31b4d",
+            // contrastText: "#fff"
+        },
+        primaryBackground: "#145182"
     },
     typography: {
         h2: {

@@ -18,7 +18,7 @@ const SectionHeaderComp = ({ title, className}: SectionHeaderProps) => {
 
 const SectionHeader = styled(SectionHeaderComp)`
     display: flex;
-    background-color: ${({theme}) => theme.palette.primary.main};
+    background-color: ${({ theme }) => theme.palette.primaryBackground};
     padding: 16px 24px;
     h2 {
         font-size: 24px;

@@ -1,6 +1,7 @@
-import React from 'react'
+import React, {useRef} from 'react'
 import Helmet from 'react-helmet'
 import {
+    Typography,
     Box,
     Card,
     Grid2 as Grid,
@@ -12,45 +13,111 @@ import useFormControl from '@src/hooks/useFormCtrl'
 import type { tFormCtrlValues } from '@src/hooks/useFormCtrl'
 import LoadStateButton from '@src/components/controls/LoadStateButton'
 import SectionActions from '@src/components/modules/SectionActions'
+import {Plus} from 'react-feather'
 
 const validate = (values: tFormCtrlValues, _: tFormCtrlValues) => values.title ? {} : { title: true }
 
 const CreateProject = () => {
+    const columnsKey = useRef(4)
 
     const formCtrl = useFormControl({
-        initialValues: {title: ""},
+        initialValues: {
+            title: "test",
+        },
         validate
     })
+
+    const columnsFormCtrl = useFormControl({
+        initialValues: {
+            columnTitle_1: "Ready",
+            columnTitle_2: "In Progress",
+            columnTitle_3: "Complete",
+        },
+        validate
+    })
+
+    console.log(columnsFormCtrl.values)
+
+    const buildcolumns = (): React.ReactNode => {
+        if(columnsFormCtrl?.values){
+            return Object.keys(columnsFormCtrl.values).map(col => {
+                return (
+                    <Grid size={12} key={col}>
+                        <TextFieldFormCtrl
+                            formCtrl={columnsFormCtrl}
+                            name={col}
+                            label="Column Title"
+                        />
+                    </Grid>
+                )
+            })
+        }
+        return null
+    }
+
+    const addColumn = () => {
+        if(Object.keys(columnsFormCtrl.values).length < 5){
+            columnsFormCtrl.setValues({
+                ...columnsFormCtrl.values,
+                ["columnTitle_" + columnsKey.current]: ""
+            })
+            columnsKey.current++
+        }
+    }
+
+    const hasMaxColumns = Object.keys(columnsFormCtrl.values).length >= 5
 
     return (
         <>
             <Helmet title="Create Project"/>
-            <Box p={4} sx={{height: "100%", alignItems: "center", justifyContent: "center"}}>
+            <Box 
+                p={4} 
+                sx={{
+                    height: "100%", 
+                    alignItems: "center", 
+                    justifyContent: "center",
+                    width: "100%",
+                    maxWidth: "600px",
+                    margin: "0 auto"
+                }}
+            >
                 <Card>
                     <SectionHeader title="Create a new project" />
                     <Box p={4}>
                         <Grid container spacing={2}>
-                            <Grid size={{sm: 12, md: 6}}>
+                            <Grid size={12}>
                                 <TextFieldFormCtrl 
                                     formCtrl={formCtrl}
                                     name="title"
                                     label="Title"
                                 />
                             </Grid>
+                            <Grid size={12}>
+                                <Box py={1}>
+                                    <Typography variant='h3' gutterBottom>Create board columns</Typography>
+                                    <Typography>Add up to 5 columns to your to you Projects Board.</Typography>
+                                </Box>
+                            </Grid>
+                            {buildcolumns()}
+                            {
+                                !hasMaxColumns ?
+                                <Grid size={12}>
+                                    <Button 
+                                        startIcon={<Plus/>}
+                                        fullWidth
+                                        onClick={addColumn}
+                                        variant='outlined'
+                                        color="secondary"
+                                    >Add Column</Button>
+                                </Grid>
+                                : null
+                            }
                         </Grid>
                     </Box>
                     <SectionActions 
-                        leftActions={
-                            <>
-                                <LoadStateButton variant='contained'>test</LoadStateButton>
-                                <Button variant='contained'>test</Button>
-                                <Button variant='contained'>test</Button>
-                            </>
-                        }
                         rightActions={
                             <>
-                                <LoadStateButton variant='contained'>test</LoadStateButton>
-                                <LoadStateButton variant='contained'>Submit</LoadStateButton>
+                                <LoadStateButton variant='contained'>Create Project</LoadStateButton>
                             </>
                         }
                     />

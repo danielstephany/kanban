@@ -24,6 +24,7 @@ const TextFieldFormCtrl = ({ formCtrl, helperText, name, fullWidth=true, ...othe
                 onBlur={formCtrl.handleBlure}
                 error={!!formCtrl.errors[name]}
                 fullWidth={fullWidth}
+                value={formCtrl.values[name]}
                 {...others}
             />
             {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}

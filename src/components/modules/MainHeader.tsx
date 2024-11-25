@@ -54,7 +54,7 @@ const MainHeaderComp: React.ElementType = ({className}) => {
 }
 
 const MainHeader = styled(MainHeaderComp)`
-    background-color: ${({theme}) => theme.palette.primary.main};
+    background-color: ${({ theme }) => theme.palette.primaryBackground};
     color: #fff;
     .main-header {
         &__content {

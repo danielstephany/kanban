@@ -27,7 +27,7 @@ const mainTheme = (isDark: boolean): iTheme => ({
             default: isDark ? '#121212' : '#f4f4f4'
         },
         primary: {
-            main: isDark ? "#1d7cc8" : "#145182",
+            main: isDark ? "#3695e2" : "#145182",
             // main: "#238fe5",
         },
         secondary: {

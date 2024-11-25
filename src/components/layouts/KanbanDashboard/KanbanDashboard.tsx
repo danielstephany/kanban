@@ -50,6 +50,7 @@ const KanbanDashboard = styled(KanbanDashboardComp)`
     "kbdHeader kbdHeader"
     "kbdSidbar kbdMain";
     min-height: 100dvh;
+    max-height: 100dvh;
     .kbd__header-slot {
         grid-area: kbdHeader;
     }
@@ -61,6 +62,7 @@ const KanbanDashboard = styled(KanbanDashboardComp)`
         display: flex;
         flex-direction: column;
         grid-area: kbdMain;
+        overflow: auto;
     }
 `
 

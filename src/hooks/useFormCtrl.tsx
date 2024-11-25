@@ -8,7 +8,8 @@ export type tFormCtrlValues = {[key: string]: any}
 
 interface iUseFormCtrl<v> {
     initialValues: v
-    validate: (values: tFormCtrlValues, storedValues: tFormCtrlValues) => tValidationObj
+    noValidate?: boolean,
+    validate?: (values: tFormCtrlValues, storedValues: tFormCtrlValues) => tValidationObj
 }
 
 export interface iUseFormCtrlRes {
@@ -22,7 +23,17 @@ export interface iUseFormCtrlRes {
     isValidatedForm: () => boolean
 }
 
-function useFormCtrl <v = {},>({ initialValues, validate }: iUseFormCtrl<v>) {
+const defaultValidate = (values: tFormCtrlValues, _: tFormCtrlValues) => {
+    const errors: tValidationObj = {}
+
+    Object.entries(values).forEach(([key, value]) => {
+        if (!value) errors[key] = true
+    })
+
+    return errors
+}
+
+function useFormCtrl<v = {},>({ initialValues, validate=defaultValidate, noValidate=false }: iUseFormCtrl<v>) {
     const [values, setValues] = useState<iUseFormCtrl<v>['initialValues']>(initialValues)
     const [errors, setErrors] = useState<tValidationObj>({})
 
@@ -33,21 +44,25 @@ function useFormCtrl <v = {},>({ initialValues, validate }: iUseFormCtrl<v>) {
     }
 
     const handleBlure = (e: { target: htmlFormElements }) => {
-        const value = e.target.value
-        const name = e.target.name
-        const updatedValue = { [name]: value}
-        const validationErrors = validate(updatedValue, values as tFormCtrlValues)
-
-        if (validationErrors[name]){
-            setErrors({ ...errors, ...validationErrors })
-        } else {
-            const updatedErrors = {...errors}
-            delete updatedErrors[name]
-            setErrors(updatedErrors)
+        if (!noValidate) {
+            const value = e.target.value
+            const name = e.target.name
+            const updatedValue = { [name]: value}
+            const validationErrors = validate(updatedValue, values as tFormCtrlValues)
+    
+            if (validationErrors[name]){
+                setErrors({ ...errors, ...validationErrors })
+            } else {
+                const updatedErrors = {...errors}
+                delete updatedErrors[name]
+                setErrors(updatedErrors)
+            }
         }
     }
 
     const isValidatedForm = () => {
+        if (noValidate) return true
+        
         const isValid = true
         const validationErrors = validate(values as tFormCtrlValues, values as tFormCtrlValues)
         if(Object.keys(validationErrors).length) {

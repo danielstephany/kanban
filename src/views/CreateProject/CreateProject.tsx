@@ -10,12 +10,9 @@ import {
 import SectionHeader from '@src/components/modules/SectionHeader'
 import TextFieldFormCtrl from '@src/components/controls/TextFieldFormCtrl'
 import useFormControl from '@src/hooks/useFormCtrl'
-import type { tFormCtrlValues } from '@src/hooks/useFormCtrl'
 import LoadStateButton from '@src/components/controls/LoadStateButton'
 import SectionActions from '@src/components/modules/SectionActions'
 import {Plus} from 'react-feather'
-
-const validate = (values: tFormCtrlValues, _: tFormCtrlValues) => values.title ? {} : { title: true }
 
 const CreateProject = () => {
     const columnsKey = useRef(4)
@@ -23,8 +20,7 @@ const CreateProject = () => {
     const formCtrl = useFormControl({
         initialValues: {
             title: "test",
-        },
-        validate
+        }
     })
 
     const columnsFormCtrl = useFormControl({
@@ -32,8 +28,7 @@ const CreateProject = () => {
             columnTitle_1: "Ready",
             columnTitle_2: "In Progress",
             columnTitle_3: "Complete",
-        },
-        validate
+        }
     })
 
     console.log(columnsFormCtrl.values)
@@ -73,7 +68,6 @@ const CreateProject = () => {
             <Box 
                 p={4} 
                 sx={{
-                    height: "100%", 
                     alignItems: "center", 
                     justifyContent: "center",
                     width: "100%",

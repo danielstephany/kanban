@@ -24,3 +24,29 @@ export interface boardNavListResponseInterface {
     _id: string,
     title: string
 }[]
+
+export interface createBoardDataInterface {
+    title: string,
+    columns: string[],
+    usersWithAccess?: string[]
+}
+
+export interface createBoardResponseInterface {
+    title: string,
+    owner: string,
+    columns: {
+        [key: string]: {
+            title: string,
+            columnId: string,
+            taskIds: string[],
+            _id: string,
+            createdAt: string,
+            updatedAt: string
+        },
+    },
+    columnOrder: string[],
+    usersWithAccess: string[],
+    _id: string,
+    createdAt: string,
+    updatedAt: string,
+}

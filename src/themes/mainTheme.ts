@@ -33,7 +33,6 @@ const mainTheme = (isDark: boolean): iTheme => ({
         secondary: {
             main: isDark ? "#029920" : "#258037",
             // main: "#c31b4d",
-            // contrastText: "#fff"
         },
         primaryBackground: "#145182"
     },

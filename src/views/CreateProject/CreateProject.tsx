@@ -1,5 +1,6 @@
 import React, {useRef} from 'react'
 import Helmet from 'react-helmet'
+import { useNavigate } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import {
     Typography,
@@ -16,10 +17,16 @@ import useFormControl from '@src/hooks/useFormCtrl'
 import LoadStateButton from '@src/components/controls/LoadStateButton'
 import SectionActions from '@src/components/modules/SectionActions'
 import {Plus, Trash} from 'react-feather'
+import { createBoard } from "@src/endpoints/board"
+import type { createBoardResponseInterface } from '@src/endpoints/board/types'
+import useQuery from "@src/hooks/useQuery"
+import * as routes from '@src/Router/routes'
 
 const CreateProject = () => {
     const {enqueueSnackbar} = useSnackbar()
+    const navigate = useNavigate()
     const columnsKey = useRef(4)
+    const { loading, call:createBoardCall } = useQuery<createBoardResponseInterface>({ fetchFunc: createBoard })
 
     const formCtrl = useFormControl({
         initialValues: {
@@ -97,6 +104,19 @@ const CreateProject = () => {
 
         if (columnsFormCtrl.isValidatedForm() && formCtrl.isValidatedForm() && validateNumberOfColumns()){
             console.log(formCtrl.values, columnsFormCtrl.values)
+
+            const data = {
+                ...formCtrl.values,
+                columns: [...Object.values(columnsFormCtrl.values)]
+            }
+
+            createBoardCall(data)
+            .then(json => {
+                navigate(routes.BOARD.base + json._id)
+            }).catch(e => {
+                enqueueSnackbar(e, {variant: "error"})
+            })
+
         }
     }
 
@@ -155,6 +175,7 @@ const CreateProject = () => {
                                     <LoadStateButton
                                         type="submit"
                                         variant='contained'
+                                        loading={loading}
                                     >Create Project</LoadStateButton>
                                 </>
                             }

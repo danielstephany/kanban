@@ -1,5 +1,6 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Helmet from 'react-helmet'
+import { useLocation, useParams } from 'react-router-dom'
 import initialData from './data.ts'
 import type { iData } from "./data.ts"
 import Column from "./Column.tsx"
@@ -13,6 +14,14 @@ import type { OnDragEndResponder, DropResult } from 'react-beautiful-dnd'
 
 const Board = ({}) => {
     const [data, setData] = useState(initialData)
+    const location = useLocation()
+    const params = useParams()
+
+    useEffect(() => {
+        console.log(location)
+        console.log(params.id)
+        
+    }, [])
 
     const getColumns = () => (
         data.columnOrder.map((columnId) => {

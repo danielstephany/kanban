@@ -50,3 +50,5 @@ export interface createBoardResponseInterface {
     createdAt: string,
     updatedAt: string,
 }
+
+export interface boardResponseInterface extends createBoardResponseInterface {}

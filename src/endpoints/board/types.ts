@@ -44,6 +44,12 @@ export interface createBoardResponseInterface {
             updatedAt: string
         },
     },
+    tasks: {
+        [key: string]: {
+            _id: string,
+            title: string
+        }
+    }
     columnOrder: string[],
     usersWithAccess: string[],
     _id: string,

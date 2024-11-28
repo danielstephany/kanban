@@ -7,14 +7,14 @@ import {
 import { Draggable } from 'react-beautiful-dnd'
 
 interface iProps {
-    task: { id: string, content: string }
+    task: { _id: string, title: string }
     index: number
 }
 
 const Task: React.ElementType = ({ task, index }: iProps) => {
 
     return (
-        <Draggable draggableId={task.id} index={index}>
+        <Draggable draggableId={task._id} index={index}>
             {
                 (provided, snapshot) => (
                     <Box 
@@ -29,7 +29,7 @@ const Task: React.ElementType = ({ task, index }: iProps) => {
                             variant="outlined"        
                             sx={snapshot.isDragging ? { "background": "blue", "padding": "16px" } : { "padding": "16px" }}
                         >
-                            <Typography variant='body1'>{task?.content}</Typography>
+                            <Typography variant='body1'>{task?.title}</Typography>
                         </Paper>
                     </Box>
                 )

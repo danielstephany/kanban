@@ -10,7 +10,7 @@ import type {
 
 
 export const getBoard = (boardId: string) => createFetchCall<boardResponseInterface>({
-    url: `${process.env.KANBAN_API}/board/${boardId}`
+    url: `${process.env.KANBAN_API}/board/get/${boardId}`
 })
 
 export const boardsOwnedByUser = () => createFetchCall<boardsOwnedByUserResponseInterface>({

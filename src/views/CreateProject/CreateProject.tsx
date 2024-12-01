@@ -18,7 +18,7 @@ import LoadStateButton from '@src/components/controls/LoadStateButton'
 import SectionActions from '@src/components/modules/SectionActions'
 import {Plus, Trash} from 'react-feather'
 import { createBoard } from "@src/endpoints/board"
-import type { createBoardResponseInterface } from '@src/endpoints/board/types'
+import type { boardDataInterface } from '@src/endpoints/board/types'
 import useQuery from "@src/hooks/useQuery"
 import * as routes from '@src/Router/routes'
 
@@ -26,7 +26,7 @@ const CreateProject = () => {
     const {enqueueSnackbar} = useSnackbar()
     const navigate = useNavigate()
     const columnsKey = useRef(4)
-    const { loading, call:createBoardCall } = useQuery<createBoardResponseInterface>({ fetchFunc: createBoard })
+    const { loading, call:createBoardCall } = useQuery<boardDataInterface>({ fetchFunc: createBoard })
 
     const formCtrl = useFormControl({
         initialValues: {

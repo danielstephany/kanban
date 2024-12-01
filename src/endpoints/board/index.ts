@@ -4,12 +4,12 @@ import type {
     boardsOwnedByUserResponseInterface,
     boardNavListResponseInterface,
     createBoardDataInterface,
-    createBoardResponseInterface,
-    boardResponseInterface
+    boardDataInterface,
+    moveTaskDataInterface
 } from './types.ts'
 
 
-export const getBoard = (boardId: string) => createFetchCall<boardResponseInterface>({
+export const getBoard = (boardId: string) => createFetchCall<boardDataInterface>({
     url: `${process.env.KANBAN_API}/board/get/${boardId}`
 })
 
@@ -21,8 +21,16 @@ export const boardNavList = () => createFetchCall<boardNavListResponseInterface>
     url: `${process.env.KANBAN_API}/board/nav-list`
 })
 
-export const createBoard = (data: createBoardDataInterface) => createFetchCall<createBoardResponseInterface>({
+export const createBoard = (data: createBoardDataInterface) => createFetchCall<boardDataInterface>({
     url: `${process.env.KANBAN_API}/board`,
+    fetchOptions: {
+        method: "Post",
+        body: JSON.stringify(data)
+    }
+})
+
+export const moveTask = (data: moveTaskDataInterface) => createFetchCall<boardDataInterface>({
+    url: `${process.env.KANBAN_API}/board/move-task`,
     fetchOptions: {
         method: "Post",
         body: JSON.stringify(data)

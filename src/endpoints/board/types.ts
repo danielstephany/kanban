@@ -31,18 +31,20 @@ export interface createBoardDataInterface {
     usersWithAccess?: string[]
 }
 
-export interface createBoardResponseInterface {
+export interface boardColumnInterface {
+    title: string,
+    columnId: string,
+    taskIds: string[],
+    _id: string,
+    createdAt: string,
+    updatedAt: string
+}
+
+export interface boardDataInterface {
     title: string,
     owner: string,
     columns: {
-        [key: string]: {
-            title: string,
-            columnId: string,
-            taskIds: string[],
-            _id: string,
-            createdAt: string,
-            updatedAt: string
-        },
+        [key: string]: boardColumnInterface,
     },
     tasks: {
         [key: string]: {
@@ -57,4 +59,16 @@ export interface createBoardResponseInterface {
     updatedAt: string,
 }
 
-export interface boardResponseInterface extends createBoardResponseInterface {}
+export interface moveTaskDataInterface {
+    boardId: string,
+    sourceColumn: {
+        columnId: string,
+        taskIds: string[]
+    },
+    destColumn: {
+        columnId: string,
+        taskIds: string[]
+    },
+    taskId: string,
+    taskStatus: string
+}

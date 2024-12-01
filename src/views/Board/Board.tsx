@@ -7,6 +7,7 @@ import {
     Grid,
     Box
 } from "@mui/material"
+import LoadingWrapper from '@src/components/modules/LoadingWrapper.tsx'
 import { DragDropContext } from 'react-beautiful-dnd'
 import type { OnDragEndResponder, DropResult } from 'react-beautiful-dnd'
 import { 
@@ -27,7 +28,7 @@ const Board = () => {
     const [boardData, setBoardData] = useState<boardDataInterface | null>(null)
     const {enqueueSnackbar} = useSnackbar()
     const params = useParams()
-    const { loading, call: getBoardCall } = useQuery<string | undefined ,boardDataInterface>({fetchFunc: getBoard})
+    const { loading: boardLoading, call: getBoardCall } = useQuery<string | undefined ,boardDataInterface>({fetchFunc: getBoard})
     const { loading: loadingBoardUpdate, call: moveTaskCall } = useQuery<moveTaskDataInterface ,boardDataInterface>({ fetchFunc: moveTask })
 
     
@@ -139,11 +140,13 @@ const Board = () => {
     return (
         <>
             <Helmet title="Board"/>
-            <DragDropContext onDragEnd={onDragEnd}>
-                <Box p={4}>
-                    <Grid container spacing={2}>{getColumns()}</Grid>
-                </Box>
-            </DragDropContext>
+            <LoadingWrapper loading={boardLoading}>
+                <DragDropContext onDragEnd={onDragEnd}>
+                    <Box p={4}>
+                        <Grid container spacing={2}>{getColumns()}</Grid>
+                    </Box>
+                </DragDropContext>
+            </LoadingWrapper>
         </>
     )
 }

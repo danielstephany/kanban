@@ -9,9 +9,11 @@ interface props {
 
 const LoaderViewComp = ({ className }: props) => {
     return (
-        <Paper className={className} elevation={0}>
-            <CenteredLoader />
-        </Paper>
+        <>
+            <Paper className={className} elevation={0}>
+                <CenteredLoader />
+            </Paper>
+        </>
     )
 }
 

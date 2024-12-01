@@ -34,7 +34,7 @@ const KanbanDashboardComp: React.ElementType = ({
                 <MainSidebar boardNavItems={getBoardNavList.result} />
             </div>
             <div className='kbd__main-slot'>
-                <Suspense fallback={<CenteredLoader />}>
+                <Suspense fallback={<CenteredLoader minHeight='100%' />}>
                     <Outlet />
                 </Suspense>
             </div>

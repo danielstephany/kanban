@@ -4,13 +4,20 @@ import {
     Box,
     Typography,
 } from "@mui/material"
-import { Draggable } from 'react-beautiful-dnd'
+import { Draggable } from '@hello-pangea/dnd'
 import { useTheme } from '@mui/material/styles'
+import styled from 'styled-components'
 
 interface iProps {
     task: { _id: string, title: string }
     index: number
 }
+
+const TaskItem = styled(Paper) <{ $isDragging?: boolean}>`
+    ${({ theme, $isDragging }) => $isDragging ? "background: " + theme.palette.primary.light : ""};
+    ${({ theme, $isDragging }) => $isDragging ? "color: " + theme.palette.primary.contrastText : ""};
+    padding: 16px;
+`
 
 const Task: React.ElementType = ({ task, index }: iProps) => {
     const theme = useTheme()
@@ -27,12 +34,12 @@ const Task: React.ElementType = ({ task, index }: iProps) => {
                         ref={provided.innerRef}
                         
                     >
-                        <Paper 
+                        <TaskItem 
                             variant="outlined"        
-                            sx={snapshot.isDragging ? { "background": theme.palette.primary.light, color: theme.palette.primary.contrastText, "padding": "16px" } : { "padding": "16px" }}
+                            $isDragging={snapshot.isDragging}
                         >
                             <Typography variant='body1'>{task?.title}</Typography>
-                        </Paper>
+                        </TaskItem>
                     </Box>
                 )
             }

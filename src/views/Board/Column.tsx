@@ -6,8 +6,16 @@ import {
     Box 
 } from "@mui/material"
 import Task from './Task.tsx'
-import { Droppable } from 'react-beautiful-dnd'
+import { Droppable } from '@hello-pangea/dnd'
 import type { themeInterface } from "@src/themes/mainTheme.ts"
+import styled from 'styled-components'
+
+const DropContainer = styled.div<{$isDraggingOver?: boolean}>`
+    flex-grow: 1;
+    minHeight: 200px;
+    transition: background-color 0.2s ease;
+    background-color: ${({ theme, $isDraggingOver }) => $isDraggingOver ? (theme.palette.mode === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)") : "transparent" };
+`
 
 interface iProps {
     column: {
@@ -20,24 +28,24 @@ interface iProps {
     theme: themeInterface
 }
 
-const Column: React.ElementType = ({ column, tasks, theme }: iProps) => {
+const Column: React.ElementType = ({ column, tasks }: iProps) => {
     return (
-        <Grid sx={{flex: "1 1 0px"}}>
-            <Paper variant="outlined">
+        <Grid sx={{display: "flex", flexDirection: "column", flex: "1 1 0px", maxWidth: "350px", minWidth: "200px"}}>
+            <Paper variant="outlined" sx={{ display: "flex", flexDirection: "column", flexGrow: 1}}>
                 <Box p={2}>
                         <Typography variant='h3'>{column?.title}</Typography>
                 </Box>
                 <Droppable droppableId={column.columnId} >
                     {
                         (provided, snapshot) => (
-                            <Box
+                            <DropContainer
                                 ref={provided.innerRef} 
                                 {...provided.droppableProps}
-                                sx={snapshot.isDraggingOver ? { "background-color": "rgba(255,255,255,0.2)", minHeight: "200px" } : { minHeight: "200px" }}
+                                $isDraggingOver={snapshot.isDraggingOver}
                             >
                                 {tasks.map((task, i) => <Task key={task._id} task={task} index={i} />)}
                                 {provided.placeholder}
-                            </Box>
+                            </DropContainer>
                         )
                     }
                 </Droppable>

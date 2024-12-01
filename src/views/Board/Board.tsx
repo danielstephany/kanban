@@ -8,8 +8,8 @@ import {
     Box
 } from "@mui/material"
 import LoadingWrapper from '@src/components/modules/LoadingWrapper.tsx'
-import { DragDropContext } from 'react-beautiful-dnd'
-import type { OnDragEndResponder, DropResult } from 'react-beautiful-dnd'
+import { DragDropContext } from '@hello-pangea/dnd'
+import type { OnDragEndResponder, DropResult } from '@hello-pangea/dnd'
 import { 
     getBoard,
     moveTask
@@ -142,8 +142,8 @@ const Board = () => {
             <Helmet title="Board"/>
             <LoadingWrapper loading={boardLoading}>
                 <DragDropContext onDragEnd={onDragEnd}>
-                    <Box p={4}>
-                        <Grid container spacing={2}>{getColumns()}</Grid>
+                    <Box p={4} sx={{display: "flex", flexDirection: "column", flexGrow: 1}}>
+                        <Grid container spacing={2} sx={{flexGrow: 1, flexWrap: "nowrap"}}>{getColumns()}</Grid>
                     </Box>
                 </DragDropContext>
             </LoadingWrapper>

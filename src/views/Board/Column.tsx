@@ -1,12 +1,13 @@
 import React from 'react'
 import {
     Paper,
-    Grid,
+    Grid2 as Grid,
     Typography,   
     Box 
 } from "@mui/material"
 import Task from './Task.tsx'
 import { Droppable } from 'react-beautiful-dnd'
+import type { themeInterface } from "@src/themes/mainTheme.ts"
 
 interface iProps {
     column: {
@@ -15,12 +16,13 @@ interface iProps {
         title: string,
         taskIds: string[],
     },
-    tasks: { _id: string, content: string }[]
+    tasks: { _id: string, content: string }[],
+    theme: themeInterface
 }
 
-const Column: React.ElementType = ({ column, tasks }: iProps) => {
+const Column: React.ElementType = ({ column, tasks, theme }: iProps) => {
     return (
-        <Grid item xs={4} sx={{flexGrow: 1}}>
+        <Grid sx={{flex: "1 1 0px"}}>
             <Paper variant="outlined">
                 <Box p={2}>
                         <Typography variant='h3'>{column?.title}</Typography>

@@ -5,6 +5,7 @@ import {
     Typography,
 } from "@mui/material"
 import { Draggable } from 'react-beautiful-dnd'
+import { useTheme } from '@mui/material/styles'
 
 interface iProps {
     task: { _id: string, title: string }
@@ -12,6 +13,7 @@ interface iProps {
 }
 
 const Task: React.ElementType = ({ task, index }: iProps) => {
+    const theme = useTheme()
 
     return (
         <Draggable draggableId={task._id} index={index}>
@@ -27,7 +29,7 @@ const Task: React.ElementType = ({ task, index }: iProps) => {
                     >
                         <Paper 
                             variant="outlined"        
-                            sx={snapshot.isDragging ? { "background": "blue", "padding": "16px" } : { "padding": "16px" }}
+                            sx={snapshot.isDragging ? { "background": theme.palette.primary.light, color: theme.palette.primary.contrastText, "padding": "16px" } : { "padding": "16px" }}
                         >
                             <Typography variant='body1'>{task?.title}</Typography>
                         </Paper>

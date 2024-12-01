@@ -1,5 +1,5 @@
 
-interface iTheme {
+export interface themeInterface {
     palette: {
         mode: "dark" | "light"
         background: {default: string}
@@ -20,7 +20,7 @@ interface iTheme {
     typography: {[key: string]: any}
 }
 
-const mainTheme = (isDark: boolean): iTheme => ({
+const mainTheme = (isDark: boolean): themeInterface => ({
     palette: {
         mode: isDark ? 'dark' : 'light',
         background: {

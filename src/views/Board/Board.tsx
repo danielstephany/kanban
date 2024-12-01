@@ -4,7 +4,7 @@ import { useSnackbar } from 'notistack'
 import { useParams } from 'react-router-dom'
 import Column from "./Column.tsx"
 import {
-    Grid,
+    Grid2 as Grid,
     Box
 } from "@mui/material"
 import LoadingWrapper from '@src/components/modules/LoadingWrapper.tsx'

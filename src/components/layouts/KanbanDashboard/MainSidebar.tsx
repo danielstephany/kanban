@@ -53,17 +53,8 @@ const MainSidebarComp: React.ElementType = ({ className, boardNavItems }: MainSi
     return (
         <Paper className={className}>
             <nav className='main-sidebar__top-nav'>                
-                <Box mb={3}>
-                    <Button
-                        component={Link}
-                        variant="contained"
-                        fullWidth
-                        startIcon={<Plus />}
-                        to={routes.CREATE_PROJECT.path}
-                        color="secondary"
-                    >New Project</Button>            
-                </Box>
                 <Typography variant='h3' className='main-sidebar__title'>Projects</Typography>
+                
                 <ul className='main-sidebar__list'>
                     <ButtonTextLeft
                         component={Link}
@@ -73,6 +64,16 @@ const MainSidebarComp: React.ElementType = ({ className, boardNavItems }: MainSi
                     >All Boards</ButtonTextLeft>
                     {buildBoardLinks()}
                 </ul>
+                <Box mb={3} mt={2}>
+                    <Button
+                        component={Link}
+                        variant="contained"
+                        fullWidth
+                        startIcon={<Plus />}
+                        to={routes.CREATE_PROJECT.path}
+                        color="secondary"
+                    >New Project</Button>
+                </Box>
             </nav>
             <nav className='main-sidebar__bottom-nav'>
                 <Button 

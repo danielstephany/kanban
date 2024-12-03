@@ -17,6 +17,7 @@ const TaskItem = styled(Paper) <{ $isDragging?: boolean}>`
     ${({ theme, $isDragging }) => $isDragging ? "background: " + theme.palette.primary.light : ""};
     ${({ theme, $isDragging }) => $isDragging ? "color: " + theme.palette.primary.contrastText : ""};
     padding: 16px;
+    transition: background 0.2s ease;
 `
 
 const Task: React.ElementType = ({ task, index }: iProps) => {

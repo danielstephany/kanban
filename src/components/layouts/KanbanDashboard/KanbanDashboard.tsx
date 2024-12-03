@@ -57,6 +57,7 @@ const KanbanDashboard = styled(KanbanDashboardComp)`
     .kbd__sidbar-slot {
         grid-area: kbdSidbar;
         min-width: 250px;
+        z-index: 1;
     }
     .kbd__main-slot {
         display: flex;

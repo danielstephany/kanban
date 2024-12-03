@@ -8,6 +8,7 @@ import {
     Box
 } from "@mui/material"
 import LoadingWrapper from '@src/components/modules/LoadingWrapper.tsx'
+import BoardHeader from './BoardHeader.tsx'
 import { DragDropContext } from '@hello-pangea/dnd'
 import type { OnDragEndResponder, DropResult } from '@hello-pangea/dnd'
 import { 
@@ -30,8 +31,6 @@ const Board = () => {
     const params = useParams()
     const { loading: boardLoading, call: getBoardCall } = useQuery<string | undefined ,boardDataInterface>({fetchFunc: getBoard})
     const { loading: loadingBoardUpdate, call: moveTaskCall } = useQuery<moveTaskDataInterface ,boardDataInterface>({ fetchFunc: moveTask })
-
-    
 
     useEffect(() => {
         getBoardCall(params.id)
@@ -116,7 +115,8 @@ const Board = () => {
             ...sourceColumn,
             taskIds: newTaskIds,
         }
-
+        
+        //create data for updateBoard
         const updateBody = {
             boardId: boardData._id,
             sourceColumn: {
@@ -142,6 +142,7 @@ const Board = () => {
             <Helmet title="Board"/>
             <LoadingWrapper loading={boardLoading}>
                 <DragDropContext onDragEnd={onDragEnd}>
+                    <BoardHeader />
                     <Box p={4} sx={{display: "flex", flexDirection: "column", flexGrow: 1}}>
                         <Grid container spacing={2} sx={{flexGrow: 1, flexWrap: "nowrap"}}>{getColumns()}</Grid>
                     </Box>

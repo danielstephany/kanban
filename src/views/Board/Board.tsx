@@ -21,6 +21,7 @@ import type {
 } from '@src/endpoints/board/types.ts'
 import useQuery from '@src/hooks/useQuery.tsx'
 import { errorMessage } from "@src/constants"
+import TaskDialog from './TaskDialog'
 
 
 const Board = () => {
@@ -31,6 +32,7 @@ const Board = () => {
     const params = useParams()
     const { loading: boardLoading, call: getBoardCall } = useQuery<string | undefined ,boardDataInterface>({fetchFunc: getBoard})
     const { loading: loadingBoardUpdate, call: moveTaskCall } = useQuery<moveTaskDataInterface ,boardDataInterface>({ fetchFunc: moveTask })
+    const [taskModalOpen, setTaskModalOpen] = useState(true)
 
     useEffect(() => {
         getBoardCall(params.id)
@@ -137,17 +139,26 @@ const Board = () => {
         setBoardData(newState);
     }
 
+    const handleOpenTaskModal = () => {
+        setTaskModalOpen(true)
+    }
+
+    const handleCloseTaskModal = () => {
+        setTaskModalOpen(false)
+    }
+
     return (
         <>
             <Helmet title="Board"/>
             <LoadingWrapper loading={boardLoading}>
                 <DragDropContext onDragEnd={onDragEnd}>
-                    <BoardHeader />
+                    <BoardHeader handleOpenTaskModal={handleOpenTaskModal}/>
                     <Box p={4} sx={{display: "flex", flexDirection: "column", flexGrow: 1}}>
                         <Grid container spacing={2} sx={{flexGrow: 1, flexWrap: "nowrap"}}>{getColumns()}</Grid>
                     </Box>
                 </DragDropContext>
             </LoadingWrapper>
+            <TaskDialog open={taskModalOpen} handleClose={handleCloseTaskModal} />
         </>
     )
 }

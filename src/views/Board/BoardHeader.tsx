@@ -7,14 +7,19 @@ import {
 
 
 interface boardHeaderInterface {
-    className?: string
+    className?: string,
+    handleOpenTaskModal: () => void
 }
 
-const BoardHeaderComp = ({ className }: boardHeaderInterface) => {
+const BoardHeaderComp = ({ className, handleOpenTaskModal }: boardHeaderInterface) => {
 
     return (
         <Paper className={className} variant="outlined">
-            <Button variant='contained' size="small">New Task</Button>
+            <Button 
+                variant='contained' 
+                size="small"
+                onClick={handleOpenTaskModal}
+            >New Task</Button>
         </Paper>
     )
 }

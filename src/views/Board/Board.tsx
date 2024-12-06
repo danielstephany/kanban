@@ -32,7 +32,7 @@ const Board = () => {
     const params = useParams()
     const { loading: boardLoading, call: getBoardCall } = useQuery<string | undefined ,boardDataInterface>({fetchFunc: getBoard})
     const { loading: loadingBoardUpdate, call: moveTaskCall } = useQuery<moveTaskDataInterface ,boardDataInterface>({ fetchFunc: moveTask })
-    const [taskModalOpen, setTaskModalOpen] = useState(true)
+    const [taskModalOpen, setTaskModalOpen] = useState(false)
 
     useEffect(() => {
         getBoardCall(params.id)

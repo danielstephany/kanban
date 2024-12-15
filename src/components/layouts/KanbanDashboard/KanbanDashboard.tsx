@@ -6,6 +6,7 @@ import MainSidebar from './MainSidebar.tsx'
 import { Outlet } from "react-router-dom"
 import CenteredLoader from '@src/components/modules/CenteredLoader.tsx'
 import useQuery from '@src/hooks/useQuery'
+import type { boardNavListResponseInterface } from '@src/endpoints/board/types.ts'
 
 import { boardNavList } from '@src/endpoints/board'
 
@@ -13,12 +14,15 @@ const KanbanDashboardComp: React.ElementType = ({
     className,
 }) => {
     const {enqueueSnackbar} = useSnackbar()
-    const getBoardNavList = useQuery({
+    const getBoardNavList = useQuery<boardNavListResponseInterface>({
         fetchFunc: boardNavList
     })
 
     useEffect(() => {
         getBoardNavList.call()
+        .then(json => {
+            console.log(json)
+        })
         .catch(e => {
             enqueueSnackbar(e.message, {variant: "error"})
         })

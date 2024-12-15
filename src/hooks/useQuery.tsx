@@ -5,7 +5,7 @@ interface useQueryTypes {
     loading?: boolean
 }
 
-const useQuery = <fetchArguments, returnType,>({ fetchFunc, loading: initialLoading }: useQueryTypes) => {
+const useQuery = <returnType, fetchArguments=null>({ fetchFunc, loading: initialLoading }: useQueryTypes) => {
     const [loading, setLoading] = useState(initialLoading || false)
     const [result, setResult] = useState(null)
 

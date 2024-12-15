@@ -18,9 +18,8 @@ import { SIGN_UP } from '@src/Router/routes.ts'
 import ActionContainer from '@src/components/modules/ActionContainer.tsx'
 import useFormControl from '@src/hooks/useFormCtrl.tsx'
 import useQuery from '@src/hooks/useQuery.tsx'
-import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 import { login } from '@src/endpoints/auth/index.ts'
-import type { loginResult } from '@src/endpoints/auth/types.ts'
+import type { loginResult, loginPayloadInterface } from '@src/endpoints/auth/types.ts'
 import { KANBAN } from '@src/Router/routes.ts'
 import LoadStateButton from '@src/components/controls/LoadStateButton.tsx'
 import { errorMessage } from '@src/constants/index.ts'
@@ -29,29 +28,16 @@ interface props {
     className?: string
 }
 
-const validate = (values: tFormCtrlValues, _: tFormCtrlValues) => {
-    const errors: tValidationObj = {}
-
-    Object.entries(values).forEach(([key, value]) => {
-        if(!value){
-            errors[key] = true
-        }
-    })
-
-    return errors
-}
-
 const LoginComp = ({ className }: props) => {
     const dispatch = useAppDispatch()
     const { enqueueSnackbar } = useSnackbar()
     const Navigate = useNavigate()
-    const { loading, call: loadingCall } = useQuery<loginResult>({fetchFunc: login})
+    const { loading, call: loadingCall } = useQuery<loginResult, loginPayloadInterface>({fetchFunc: login})
     const formCtrl = useFormControl({
         initialValues: {
             email: "",
             password: ""
-        },
-        validate
+        }
     })
 
     const handleSubmit = (e: React.SyntheticEvent) => {

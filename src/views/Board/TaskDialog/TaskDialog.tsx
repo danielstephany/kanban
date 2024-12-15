@@ -6,10 +6,13 @@ import TaskDialogBody from './TaskDialogBody'
 
 interface TaskDialogProps {
     open: boolean,
-    handleClose: () => void
+    handleClose: () => void,
+    statusList?: { displayName: string, value: string }[],
+    boardId?: string,
+    refresh: () => void
 }
 
-const TaskDialog = ({ open, handleClose }: TaskDialogProps) => {
+const TaskDialog = ({ open, handleClose, statusList, boardId, refresh }: TaskDialogProps) => {
 
     return (
         <Dialog 
@@ -18,7 +21,12 @@ const TaskDialog = ({ open, handleClose }: TaskDialogProps) => {
             fullWidth
             maxWidth="md"
         >
-            <TaskDialogBody handleClose={handleClose}/>
+            <TaskDialogBody 
+                handleClose={handleClose}
+                statusList={statusList}
+                boardId={boardId}
+                refresh={refresh}
+            />
         </Dialog>
     )
 }

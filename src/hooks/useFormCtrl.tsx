@@ -17,8 +17,8 @@ export interface iUseFormCtrlRes {
     errors: tValidationObj,
     setValues: (value: any)=> void,
     setErrors: (value: any)=> void,
-    handleChange: (e: { target: htmlFormElements }) => void,
-    handleBlure: (e: { target: htmlFormElements }) => void,
+    handleChange: (e: { target: { name: string, value: string } }) => void,
+    handleBlure: (e: { target: { name: string, value: string } }) => void,
     validate: (values: tFormCtrlValues, storedValues:tFormCtrlValues) => void,
     isValidatedForm: () => boolean
 }
@@ -37,13 +37,15 @@ function useFormCtrl<v = {},>({ initialValues, validate=defaultValidate, noValid
     const [values, setValues] = useState<iUseFormCtrl<v>['initialValues']>(initialValues)
     const [errors, setErrors] = useState<tValidationObj>({})
 
-    const handleChange = (e: { target: htmlFormElements }) => {
+    // const handleChange = (e: { target: htmlFormElements }) => {
+    const handleChange = (e: { target: { name: string, value: string } }) => {
         const name = e.target.name
         const value = e.target.value
         setValues({ ...values, [name]: value})
     }
 
-    const handleBlure = (e: { target: htmlFormElements }) => {
+    // const handleBlure = (e: { target: htmlFormElements }) => {
+    const handleBlure = (e: { target: {name: string, value: string} }) => {
         if (!noValidate) {
             const value = e.target.value
             const name = e.target.name

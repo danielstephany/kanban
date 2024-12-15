@@ -30,18 +30,22 @@ const Board = () => {
     const [boardData, setBoardData] = useState<boardDataInterface | null>(null)
     const {enqueueSnackbar} = useSnackbar()
     const params = useParams()
-    const { loading: boardLoading, call: getBoardCall } = useQuery<string | undefined ,boardDataInterface>({fetchFunc: getBoard})
-    const { loading: loadingBoardUpdate, call: moveTaskCall } = useQuery<moveTaskDataInterface ,boardDataInterface>({ fetchFunc: moveTask })
+    const { loading: boardLoading, call: getBoardCall } = useQuery<boardDataInterface, string | undefined>({fetchFunc: getBoard})
+    const { loading: loadingBoardUpdate, call: moveTaskCall } = useQuery<boardDataInterface, moveTaskDataInterface>({ fetchFunc: moveTask })
     const [taskModalOpen, setTaskModalOpen] = useState(false)
 
-    useEffect(() => {
+    const getBoardData = () => {
         getBoardCall(params.id)
-            .then(json => {
-                setBoardData(json)
-                cachedBoardData.current = json
-            }).catch(e => {
-                enqueueSnackbar(errorMessage, {variant: "error"})
-            })
+        .then(json => {
+            setBoardData(json)
+            cachedBoardData.current = json
+        }).catch(e => {
+            enqueueSnackbar(errorMessage, { variant: "error" })
+        })
+    }
+
+    useEffect(() => {
+        getBoardData()
 
     }, [params.id])
 
@@ -147,18 +151,30 @@ const Board = () => {
         setTaskModalOpen(false)
     }
 
+    const buildStatusList = () => {
+        if (!boardData) return []
+
+        return Object.entries(boardData?.columns).map(([key, value]) => ({displayName: value.title, value: key}))
+    }
+    console.log(boardData)
     return (
         <>
             <Helmet title="Board"/>
-            <LoadingWrapper loading={boardLoading}>
+            <LoadingWrapper loading={boardLoading && !Boolean(boardData)}>
                 <DragDropContext onDragEnd={onDragEnd}>
                     <BoardHeader handleOpenTaskModal={handleOpenTaskModal}/>
                     <Box p={4} sx={{display: "flex", flexDirection: "column", flexGrow: 1}}>
                         <Grid container spacing={2} sx={{flexGrow: 1, flexWrap: "nowrap"}}>{getColumns()}</Grid>
                     </Box>
                 </DragDropContext>
+                <TaskDialog 
+                    open={taskModalOpen} 
+                    handleClose={handleCloseTaskModal} 
+                    statusList={buildStatusList()} 
+                    boardId={boardData?._id}
+                    refresh={getBoardData}
+                />
             </LoadingWrapper>
-            <TaskDialog open={taskModalOpen} handleClose={handleCloseTaskModal} />
         </>
     )
 }

@@ -163,8 +163,10 @@ const Board = () => {
             <LoadingWrapper loading={boardLoading && !Boolean(boardData)}>
                 <DragDropContext onDragEnd={onDragEnd}>
                     <BoardHeader handleOpenTaskModal={handleOpenTaskModal}/>
-                    <Box p={4} sx={{display: "flex", flexDirection: "column", flexGrow: 1}}>
-                        <Grid container spacing={2} sx={{flexGrow: 1, flexWrap: "nowrap"}}>{getColumns()}</Grid>
+                    <Box sx={{display: "flex", flexGrow: 1, overflow: "auto"}}>
+                        <Box p={4} sx={{ display: "flex", flexGrow: 1}}>
+                            <Grid container spacing={2} sx={{flexGrow: 1, flexWrap: "nowrap"}}>{getColumns()}</Grid>
+                        </Box>
                     </Box>
                 </DragDropContext>
                 <TaskDialog 

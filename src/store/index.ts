@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from "./slices/user.ts"
-// ...
+import boardReducer from "./slices/board.ts"
 
 const store = configureStore({
     reducer: {
         user: userReducer,
+        boardData: boardReducer
     },
     devTools: {
         name: "kanban"

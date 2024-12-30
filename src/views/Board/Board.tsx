@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react'
 import Helmet from 'react-helmet'
+import { useAppDispatch, useAppSelector } from "@src/store/hooks.ts"
 import { useSnackbar } from 'notistack'
 import { useParams } from 'react-router-dom'
 import Column from "./Column.tsx"
@@ -22,12 +23,15 @@ import type {
 import useQuery from '@src/hooks/useQuery.tsx'
 import { errorMessage } from "@src/constants"
 import TaskDialog from './TaskDialog'
+import { setBoard } from '@src/store/slices/board.ts'
+import {getBoardState} from '@src/store/selectors/boardSelector.ts'
 
 
 const Board = () => {
+    const dispatch = useAppDispatch()
+    const boardData = useAppSelector(getBoardState)
     const cachedBoardData = useRef <boardDataInterface | null>(null)
     const updateQue = useRef<moveTaskDataInterface[]>([])
-    const [boardData, setBoardData] = useState<boardDataInterface | null>(null)
     const {enqueueSnackbar} = useSnackbar()
     const params = useParams()
     const { loading: boardLoading, call: getBoardCall } = useQuery<boardDataInterface, string | undefined>({fetchFunc: getBoard})
@@ -37,7 +41,7 @@ const Board = () => {
     const getBoardData = () => {
         getBoardCall(params.id)
         .then(json => {
-            setBoardData(json)
+            dispatch(setBoard(json))
             cachedBoardData.current = json
         }).catch(e => {
             enqueueSnackbar(errorMessage, { variant: "error" })
@@ -55,7 +59,7 @@ const Board = () => {
             moveTaskCall(body)
                 .then(json => {
                     console.log(json)
-                    setBoardData(json)
+                    dispatch(setBoard(json))
                     cachedBoardData.current = json
                     //check que and call if que is not empty
                     if (updateQue.current[0]){
@@ -65,7 +69,7 @@ const Board = () => {
                 }).catch(e => {
                     enqueueSnackbar(errorMessage, { variant: "error" })
                     // reset updates
-                    setBoardData(cachedBoardData.current)
+                    dispatch(setBoard(cachedBoardData.current))
                 })
         } else {
             //if update in progress, add body to update que
@@ -140,7 +144,7 @@ const Board = () => {
         console.log(newState)
         console.log(updateBody)
         updateBoard(updateBody)
-        setBoardData(newState);
+        dispatch(setBoard(newState));
     }
 
     const handleOpenTaskModal = () => {

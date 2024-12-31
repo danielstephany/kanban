@@ -25,10 +25,11 @@ interface iProps {
         taskIds: string[],
     },
     tasks: { _id: string, content: string }[],
-    theme: themeInterface
+    theme: themeInterface,
+    handleOpenTaskModal: (id?: string) => React.MouseEventHandler<HTMLButtonElement>
 }
 
-const Column: React.ElementType = ({ column, tasks }: iProps) => {
+const Column: React.ElementType = ({ column, tasks, handleOpenTaskModal }: iProps) => {
     return (
         <Grid sx={{display: "flex", flexDirection: "column", flex: "1 1 0px", maxWidth: "350px", minWidth: "200px"}}>
             <Paper variant="outlined" sx={{ display: "flex", flexDirection: "column", flexGrow: 1}}>
@@ -43,7 +44,7 @@ const Column: React.ElementType = ({ column, tasks }: iProps) => {
                                 {...provided.droppableProps}
                                 $isDraggingOver={snapshot.isDraggingOver}
                             >
-                                {tasks.map((task, i) => <Task key={task._id} task={task} index={i} />)}
+                                {tasks.map((task, i) => <Task key={task._id} task={task} index={i} textOnClick={handleOpenTaskModal(task._id)}/>)}
                                 {provided.placeholder}
                             </DropContainer>
                         )

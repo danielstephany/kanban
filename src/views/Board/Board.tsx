@@ -22,9 +22,9 @@ import type {
 } from '@src/endpoints/board/types.ts'
 import useQuery from '@src/hooks/useQuery.tsx'
 import { errorMessage } from "@src/constants"
-import TaskDialog from './TaskDialog'
+import TaskDialog from '@src/containers/TaskDialog'
 import { setBoard } from '@src/store/slices/board.ts'
-import {getBoardState} from '@src/store/selectors/boardSelector.ts'
+import {getBoardState} from '@src/store/selectors/boardSelectors.ts'
 
 
 const Board = () => {
@@ -36,7 +36,10 @@ const Board = () => {
     const params = useParams()
     const { loading: boardLoading, call: getBoardCall } = useQuery<boardDataInterface, string | undefined>({fetchFunc: getBoard})
     const { loading: loadingBoardUpdate, call: moveTaskCall } = useQuery<boardDataInterface, moveTaskDataInterface>({ fetchFunc: moveTask })
-    const [taskModalOpen, setTaskModalOpen] = useState(false)
+    const [taskModalOpen, setTaskModalOpen] = useState({
+        open: false,
+        id: ""
+    })
 
     const getBoardData = () => {
         getBoardCall(params.id)
@@ -84,7 +87,7 @@ const Board = () => {
             const column = boardData.columns[columnId]
             const tasks = column.taskIds.map((taskId: taskKeyTypes) => boardData.tasks[taskId])
 
-            return <Column key={columnId} column={column} tasks={tasks}/>
+            return <Column key={columnId} column={column} tasks={tasks} handleOpenTaskModal={handleOpenTaskModal}/>
         })
     )
 
@@ -141,32 +144,26 @@ const Board = () => {
             taskStatus: sourceColumn.title
         }
 
-        console.log(newState)
-        console.log(updateBody)
         updateBoard(updateBody)
         dispatch(setBoard(newState));
     }
 
-    const handleOpenTaskModal = () => {
-        setTaskModalOpen(true)
+    const handleOpenTaskModal = (id: string = "") => (e: React.SyntheticEvent) => {
+        e.preventDefault()
+
+        setTaskModalOpen({open: true, id })
     }
 
     const handleCloseTaskModal = () => {
-        setTaskModalOpen(false)
+        setTaskModalOpen({ open: true, id: "" })
     }
 
-    const buildStatusList = () => {
-        if (!boardData) return []
-
-        return Object.entries(boardData?.columns).map(([key, value]) => ({displayName: value.title, value: key}))
-    }
-    console.log(boardData)
     return (
         <>
             <Helmet title="Board"/>
             <LoadingWrapper loading={boardLoading && !Boolean(boardData)}>
                 <DragDropContext onDragEnd={onDragEnd}>
-                    <BoardHeader handleOpenTaskModal={handleOpenTaskModal}/>
+                    <BoardHeader handleOpenTaskModal={handleOpenTaskModal()}/>
                     <Box sx={{display: "flex", flexGrow: 1, overflow: "auto"}}>
                         <Box p={4} sx={{ display: "flex", flexGrow: 1}}>
                             <Grid container spacing={2} sx={{flexGrow: 1, flexWrap: "nowrap"}}>{getColumns()}</Grid>
@@ -174,11 +171,10 @@ const Board = () => {
                     </Box>
                 </DragDropContext>
                 <TaskDialog 
-                    open={taskModalOpen} 
+                    open={taskModalOpen.open} 
                     handleClose={handleCloseTaskModal} 
-                    statusList={buildStatusList()} 
-                    boardId={boardData?._id}
                     refresh={getBoardData}
+                    taskId={taskModalOpen.id}
                 />
             </LoadingWrapper>
         </>

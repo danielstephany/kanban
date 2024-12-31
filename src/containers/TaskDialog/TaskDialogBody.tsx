@@ -1,4 +1,5 @@
-import React from 'react'
+import React, {useMemo} from 'react'
+import { useAppSelector } from '@src/store/hooks'
 import {    
     Box,
     Grid2 as Grid,
@@ -20,12 +21,15 @@ import type {
 import useQuery from '@src/hooks/useQuery'
 import { errorMessage } from '@src/constants'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
+import { 
+    getBoardState,
+    getBoardStatusList 
+} from "@src/store/selectors/boardSelectors"
 
 interface TaskDialogBodyProps {
     handleClose: () => void,
-    statusList?: { displayName: string, value: string }[],
-    boardId?: string,
-    refresh: () => void
+    refresh: () => void,
+    taskId?: string
 }
 
 const validate = (values: tFormCtrlValues, _: tFormCtrlValues) => {
@@ -40,7 +44,9 @@ const validate = (values: tFormCtrlValues, _: tFormCtrlValues) => {
     return errors
 }
 
-const TaskDialogBody = ({ handleClose, statusList, boardId, refresh }: TaskDialogBodyProps) => {
+const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) => {
+    const boardData = useAppSelector(getBoardState)
+    const statusList = useAppSelector(state => getBoardStatusList(state))
     const { loading, call: createTaskCall } = useQuery<taskInterface, createTaskDataInterface>({fetchFunc: createTask})
     const {enqueueSnackbar} = useSnackbar()
 
@@ -49,7 +55,7 @@ const TaskDialogBody = ({ handleClose, statusList, boardId, refresh }: TaskDialo
             title: "",
             description: "",
             status: statusList ? statusList[0].value : "",
-            boardId: boardId || ""
+            boardId: boardData?._id || ""
         },
         validate
     })
@@ -69,7 +75,7 @@ const TaskDialogBody = ({ handleClose, statusList, boardId, refresh }: TaskDialo
         }
     }
 
-    const buildOptions = () => {
+    const buildOptions = (statusList?: { displayName: string, value: string }[]) => {
         if (!statusList) return null
         return statusList.map(item => (<MenuItem key={item.value} value={item.value}>{item.displayName}</MenuItem>))
     }
@@ -103,7 +109,7 @@ const TaskDialogBody = ({ handleClose, statusList, boardId, refresh }: TaskDialo
                             label="Status"
                             name="status"                            
                         >
-                            {buildOptions()}
+                            {buildOptions(statusList)}
                         </SelectFormCtrl>
                     </Grid>
                 </Grid>

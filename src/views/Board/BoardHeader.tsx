@@ -8,7 +8,7 @@ import {
 
 interface boardHeaderInterface {
     className?: string,
-    handleOpenTaskModal: () => void
+    handleOpenTaskModal: React.MouseEventHandler<HTMLButtonElement>
 }
 
 const BoardHeaderComp = ({ className, handleOpenTaskModal }: boardHeaderInterface) => {

@@ -93,7 +93,7 @@ const Board = () => {
 
     const onDragEnd: OnDragEndResponder = (result: DropResult) => {
         const { destination, source, draggableId } = result;
-
+        
         if (!destination || !boardData) return
 
         if (
@@ -141,7 +141,7 @@ const Board = () => {
                 taskIds: newState.columns[destColumn.columnId].taskIds,
             },
             taskId: draggableId,
-            taskStatus: sourceColumn.title
+            taskStatus: sourceColumn.columnId
         }
 
         updateBoard(updateBody)
@@ -155,7 +155,7 @@ const Board = () => {
     }
 
     const handleCloseTaskModal = () => {
-        setTaskModalOpen({ open: true, id: "" })
+        setTaskModalOpen({ open: false, id: "" })
     }
 
     return (

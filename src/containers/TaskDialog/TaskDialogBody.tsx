@@ -16,12 +16,14 @@ import SelectFormCtrl from '@src/components/controls/SelectFormCtrl'
 import CenteredLoader from '@src/components/modules/CenteredLoader'
 import { 
     createTask,
-    getTask
+    getTask,
+    updateTask
 } from '@src/endpoints/task'
 import type {
     taskInterface,
     createTaskDataInterface,
-    getTaskArgsInterface
+    getTaskArgsInterface,
+    updateTaskInterface
 } from '@src/endpoints/task/types.ts'
 import useQuery from '@src/hooks/useQuery'
 import { errorMessage } from '@src/constants'
@@ -50,11 +52,13 @@ const validate = (values: tFormCtrlValues, _: tFormCtrlValues) => {
 }
 
 const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) => {
+    const {enqueueSnackbar} = useSnackbar()
     const boardData = useAppSelector(getBoardState)
     const statusList = useAppSelector(state => getBoardStatusList(state))
     const { loading, call: createTaskCall } = useQuery<taskInterface, createTaskDataInterface>({fetchFunc: createTask})
+    const { loading: loadingUpdate, call: updateTaskCall } = useQuery<null, updateTaskInterface>({ fetchFunc: updateTask })
     const { loading: loadingTask, call: getTaskCall, result: taskData } = useQuery<taskInterface, getTaskArgsInterface>({ fetchFunc: getTask, loading: !!taskId  })
-    const {enqueueSnackbar} = useSnackbar()
+    const loadingData = loadingUpdate || loading
 
     const formCtrl = useFormCtrl({
         initialValues: {
@@ -83,19 +87,41 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
         }
     }, [taskId])
 
+    const handleCreateTask = () => {
+        if (!loading && formCtrl.isValidatedForm()) {
+            createTaskCall(formCtrl.values)
+                .then(() => {
+                    handleClose()
+                    refresh()
+                })
+                .catch(e => {
+                    enqueueSnackbar(errorMessage, { variant: "error" })
+                })
+        }
+    }
+
+    const handleUpdateTask = () => {
+        if (!loadingUpdate && formCtrl.isValidatedForm() && taskId) {
+            updateTaskCall({...formCtrl.values, _id: taskId})
+                .then(() => {
+                    handleClose()
+                    refresh()
+                })
+                .catch(e => {
+                    enqueueSnackbar(errorMessage, { variant: "error" })
+                })
+        }
+    }
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
 
         // if task exists update task and board
-        if (!loading && formCtrl.isValidatedForm()){
-            createTaskCall(formCtrl.values)
-            .then(() => {
-                handleClose()
-                refresh()
-            })
-            .catch(e => {
-                enqueueSnackbar(errorMessage, {variant: "error"})
-            })
+        // else create task
+        if (taskId){
+            handleUpdateTask()
+        } else {
+            handleCreateTask()
         }
     }
 
@@ -148,15 +174,15 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
                             <Button 
                                 variant='outlined' 
                                 onClick={handleClose}
-                                disabled={loading}
+                                disabled={loadingData}
                             >Cancel</Button>
                         }
                         rightActions={
                             <LoadStateButton
-                                loading={loading}
+                                loading={loadingData}
                                 variant='contained'
                                 type="submit"
-                                disabled={loading}
+                                disabled={loadingData}
                             >Save</LoadStateButton>
                         }
                     />

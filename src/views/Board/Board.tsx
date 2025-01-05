@@ -93,7 +93,7 @@ const Board = () => {
 
     const onDragEnd: OnDragEndResponder = (result: DropResult) => {
         const { destination, source, draggableId } = result;
-        
+
         if (!destination || !boardData) return
 
         if (
@@ -141,7 +141,7 @@ const Board = () => {
                 taskIds: newState.columns[destColumn.columnId].taskIds,
             },
             taskId: draggableId,
-            taskStatus: sourceColumn.columnId
+            taskStatus: destColumn.columnId
         }
 
         updateBoard(updateBody)

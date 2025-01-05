@@ -25,8 +25,11 @@ export const createFetchCall = <returnType>(options: createFetchCallInterface) =
             .then(res => {
                 if (res.status !== expectedStatus) {
                     forceReject = true
+                } else if (res.status !== 204 ){
+                    return res.json()
+                } else {
+                    return
                 }
-                return res.json()
             })
             .then(json => {
                 if (forceReject) {

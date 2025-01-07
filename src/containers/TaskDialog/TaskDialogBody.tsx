@@ -59,6 +59,7 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
     const { loading: loadingUpdate, call: updateTaskCall } = useQuery<null, updateTaskInterface>({ fetchFunc: updateTask })
     const { loading: loadingTask, call: getTaskCall, result: taskData } = useQuery<taskInterface, getTaskArgsInterface>({ fetchFunc: getTask, loading: !!taskId  })
     const loadingData = loadingUpdate || loading
+    const isExistingTask = !!taskId
 
     const formCtrl = useFormCtrl({
         initialValues: {
@@ -139,9 +140,13 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
                 <form noValidate onSubmit={handleSubmit}>
                     <Box p={4}>
                         <Grid container spacing={4}>
-                            <Grid size={12}>
-                                <Typography variant='h3'>Create Task</Typography>
-                            </Grid>
+                            {
+                                    !isExistingTask ? 
+                                    <Grid size={12}>
+                                        <Typography variant='h3'>Create Task</Typography>
+                                    </Grid>
+                                    : null
+                            }
                             <Grid size={12}>
                                 <TextFieldFormCtrl 
                                     formCtrl={formCtrl}
@@ -183,7 +188,7 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
                                 variant='contained'
                                 type="submit"
                                 disabled={loadingData}
-                            >Save</LoadStateButton>
+                            >{isExistingTask ? "Save" : "Create Task"}</LoadStateButton>
                         }
                     />
                 </form>

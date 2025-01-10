@@ -163,9 +163,12 @@ const Board = () => {
             <Helmet title="Board"/>
             <LoadingWrapper loading={boardLoading && !Boolean(boardData)}>
                 <DragDropContext onDragEnd={onDragEnd}>
-                    <BoardHeader handleOpenTaskModal={handleOpenTaskModal()}/>
+                    <BoardHeader 
+                        handleOpenTaskModal={handleOpenTaskModal()}
+                        title={boardData?.title}
+                    />
                     <Box sx={{display: "flex", flexGrow: 1, overflow: "auto"}}>
-                        <Box p={4} sx={{ display: "flex", flexGrow: 1}}>
+                        <Box p={3} sx={{ display: "flex", flexGrow: 1}}>
                             <Grid container spacing={2} sx={{flexGrow: 1, flexWrap: "nowrap"}}>{getColumns()}</Grid>
                         </Box>
                     </Box>

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '@src/store/hooks'
 import {    
     Box,
@@ -32,6 +32,7 @@ import {
     getBoardState,
     getBoardStatusList 
 } from "@src/store/selectors/boardSelectors"
+import ConfirmationDialog from '@src/containers/ConfirmationDialog'
 
 interface TaskDialogBodyProps {
     handleClose: () => void,
@@ -58,6 +59,7 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
     const { loading, call: createTaskCall } = useQuery<taskInterface, createTaskDataInterface>({fetchFunc: createTask})
     const { loading: loadingUpdate, call: updateTaskCall } = useQuery<null, updateTaskInterface>({ fetchFunc: updateTask })
     const { loading: loadingTask, call: getTaskCall, result: taskData } = useQuery<taskInterface, getTaskArgsInterface>({ fetchFunc: getTask, loading: !!taskId  })
+    const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
     const loadingData = loadingUpdate || loading
     const isExistingTask = !!taskId
 
@@ -131,6 +133,23 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
         return statusList.map(item => (<MenuItem key={item.value} value={item.value}>{item.displayName}</MenuItem>))
     }    
 
+    const handleDelete = () => new Promise<boolean>((resolve, reject) => {
+        setTimeout(() => {
+            // handleClose()
+            // refresh()
+            // resolve(false)
+            reject("error deleting item")
+        }, 1000)
+    })
+
+    const handleOpenConfirmDeleteModal = () => {
+        setConfirmDialogOpen(true)
+    }
+
+    const handleCloseConfirmDeleteModal = () => {
+        setConfirmDialogOpen(false)
+    }
+
     return (
         <>
             {
@@ -183,16 +202,27 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
                             >Cancel</Button>
                         }
                         rightActions={
-                            <LoadStateButton
-                                loading={loadingData}
-                                variant='contained'
-                                type="submit"
-                                disabled={loadingData}
-                            >{isExistingTask ? "Save" : "Create Task"}</LoadStateButton>
+                            <>
+                                <Button 
+                                    variant="outlined" 
+                                    onClick={handleOpenConfirmDeleteModal}
+                                >Delete Task</Button>
+                                <LoadStateButton
+                                    loading={loadingData}
+                                    variant='contained'
+                                    type="submit"
+                                    disabled={loadingData}
+                                >{isExistingTask ? "Save" : "Create Task"}</LoadStateButton>
+                            </>
                         }
                     />
                 </form>
             }
+            <ConfirmationDialog
+                open={confirmDialogOpen}
+                handleClose={handleCloseConfirmDeleteModal}
+                action={handleDelete}
+            />
         </>
     )
 }

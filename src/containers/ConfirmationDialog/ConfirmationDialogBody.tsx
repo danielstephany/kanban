@@ -16,13 +16,12 @@ interface ConfirmationDialogBodyPropTypes {
 }
 
 
-const TaskDialogBody = ({ handleClose, action }: ConfirmationDialogBodyPropTypes) => {
+const ConfirmationDialogBody = ({ handleClose, action }: ConfirmationDialogBodyPropTypes) => {
     const {enqueueSnackbar} = useSnackbar()
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        console.log("delete item")
         setLoading(true)
         action()
         .then((res) => {
@@ -67,4 +66,4 @@ const TaskDialogBody = ({ handleClose, action }: ConfirmationDialogBodyPropTypes
     )
 }
 
-export default TaskDialogBody
+export default ConfirmationDialogBody

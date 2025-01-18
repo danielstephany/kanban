@@ -8,3 +8,13 @@ export interface taskInterface {
 }
 
 export type createTaskDataInterface = Omit<taskInterface, 'createdBy' | "updatedBy">
+
+export type getTaskArgsInterface = string;
+
+export interface updateTaskInterface {
+    _id: string,
+    title: string,
+    description: string,
+    status: string,
+    boardId: string,
+}

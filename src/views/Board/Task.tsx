@@ -3,14 +3,17 @@ import {
     Paper,
     Box,
     Typography,
+    Button
 } from "@mui/material"
 import { Draggable } from '@hello-pangea/dnd'
 import { useTheme } from '@mui/material/styles'
 import styled from 'styled-components'
+import SimpleTextButton from '@src/components/controls/SimpleTextButton'
 
 interface iProps {
     task: { _id: string, title: string }
-    index: number
+    index: number,
+    textOnClick: React.MouseEventHandler<HTMLButtonElement>
 }
 
 const TaskItem = styled(Paper) <{ $isDragging?: boolean}>`
@@ -20,7 +23,7 @@ const TaskItem = styled(Paper) <{ $isDragging?: boolean}>`
     transition: background 0.2s ease;
 `
 
-const Task: React.ElementType = ({ task, index }: iProps) => {
+const Task: React.ElementType = ({ task, index, textOnClick}: iProps) => {
     const theme = useTheme()
 
     return (
@@ -39,7 +42,8 @@ const Task: React.ElementType = ({ task, index }: iProps) => {
                             variant="outlined"        
                             $isDragging={snapshot.isDragging}
                         >
-                            <Typography variant='body1'>{task?.title}</Typography>
+                            {/* <Typography variant='body1'>{task?.title}</Typography> */}
+                            <SimpleTextButton onClick={textOnClick} >{task?.title}</SimpleTextButton>
                         </TaskItem>
                     </Box>
                 )

@@ -7,12 +7,11 @@ import TaskDialogBody from './TaskDialogBody'
 interface TaskDialogProps {
     open: boolean,
     handleClose: () => void,
-    statusList?: { displayName: string, value: string }[],
-    boardId?: string,
-    refresh: () => void
+    refresh: () => void,
+    taskId?: string
 }
 
-const TaskDialog = ({ open, handleClose, statusList, boardId, refresh }: TaskDialogProps) => {
+const TaskDialog = ({ open, handleClose, refresh, taskId }: TaskDialogProps) => {
 
     return (
         <Dialog 
@@ -23,9 +22,8 @@ const TaskDialog = ({ open, handleClose, statusList, boardId, refresh }: TaskDia
         >
             <TaskDialogBody 
                 handleClose={handleClose}
-                statusList={statusList}
-                boardId={boardId}
                 refresh={refresh}
+                taskId={taskId}
             />
         </Dialog>
     )

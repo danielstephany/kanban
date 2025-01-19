@@ -3,11 +3,10 @@ import {
     Dialog
 } from '@mui/material'
 import ConfirmationDialogBody from './ConfirmationDialogBody'
+import type { ConfirmationDialogBodyPropTypes } from './ConfirmationDialogBody'
 
-interface ConfirmationDialogPropTypes {
+interface ConfirmationDialogPropTypes extends ConfirmationDialogBodyPropTypes {
     open: boolean,
-    handleClose: () => void,
-    action: () => Promise<boolean | void | undefined>,
 }
 
 const ConfirmationDialog = ({ open, handleClose, action }: ConfirmationDialogPropTypes) => {

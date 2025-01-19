@@ -11,6 +11,8 @@ export type createTaskDataInterface = Omit<taskInterface, 'createdBy' | "updated
 
 export type getTaskArgsInterface = string;
 
+export type deleteTaskAndRemoveFromBoardArgsInterface = string;
+
 export interface updateTaskInterface {
     _id: string,
     title: string,

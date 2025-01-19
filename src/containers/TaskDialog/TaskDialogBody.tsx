@@ -17,13 +17,15 @@ import CenteredLoader from '@src/components/modules/CenteredLoader'
 import { 
     createTask,
     getTask,
-    updateTask
+    updateTask,
+    deleteTaskAndRemoveFromBoard
 } from '@src/endpoints/task'
 import type {
     taskInterface,
     createTaskDataInterface,
     getTaskArgsInterface,
-    updateTaskInterface
+    updateTaskInterface,
+    deleteTaskAndRemoveFromBoardArgsInterface,
 } from '@src/endpoints/task/types.ts'
 import useQuery from '@src/hooks/useQuery'
 import { errorMessage } from '@src/constants'
@@ -58,6 +60,7 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
     const statusList = useAppSelector(state => getBoardStatusList(state))
     const { loading, call: createTaskCall } = useQuery<taskInterface, createTaskDataInterface>({fetchFunc: createTask})
     const { loading: loadingUpdate, call: updateTaskCall } = useQuery<null, updateTaskInterface>({ fetchFunc: updateTask })
+    const { loading: loadingdelete, call: deletTaskCall } = useQuery<null, deleteTaskAndRemoveFromBoardArgsInterface>({ fetchFunc: deleteTaskAndRemoveFromBoard })
     const { loading: loadingTask, call: getTaskCall, result: taskData } = useQuery<taskInterface, getTaskArgsInterface>({ fetchFunc: getTask, loading: !!taskId  })
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
     const loadingData = loadingUpdate || loading
@@ -133,13 +136,16 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
         return statusList.map(item => (<MenuItem key={item.value} value={item.value}>{item.displayName}</MenuItem>))
     }    
 
-    const handleDelete = () => new Promise<boolean>((resolve, reject) => {
-        setTimeout(() => {
-            // handleClose()
-            // refresh()
-            // resolve(false)
-            reject("error deleting item")
-        }, 1000)
+    const handleDelete = () => new Promise<{message: string }>((resolve, reject) => {
+        if(taskId){
+            deletTaskCall(taskId)
+            .then(() => {
+                handleClose()
+                refresh()
+                resolve({message: "Task deleted successfully"})
+            })
+            .catch(() => { reject({ message: "error deleting item"})})
+        }
     })
 
     const handleOpenConfirmDeleteModal = () => {

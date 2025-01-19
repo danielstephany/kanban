@@ -161,7 +161,7 @@ const Board = () => {
     return (
         <>
             <Helmet title="Board"/>
-            <LoadingWrapper loading={boardLoading && !Boolean(boardData)}>
+            <LoadingWrapper loading={!Boolean(boardData) || boardLoading}>
                 <DragDropContext onDragEnd={onDragEnd}>
                     <BoardHeader 
                         handleOpenTaskModal={handleOpenTaskModal()}

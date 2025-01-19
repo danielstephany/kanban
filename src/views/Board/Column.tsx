@@ -44,7 +44,7 @@ const Column: React.ElementType = ({ column, tasks, handleOpenTaskModal }: iProp
                                 {...provided.droppableProps}
                                 $isDraggingOver={snapshot.isDraggingOver}
                             >
-                                {tasks.map((task, i) => <Task key={task._id} task={task} index={i} textOnClick={handleOpenTaskModal(task._id)}/>)}
+                                {tasks.map((task, i) => <Task key={task?._id} task={task} index={i} textOnClick={handleOpenTaskModal(task?._id)}/>)}
                                 {provided.placeholder}
                             </DropContainer>
                         )

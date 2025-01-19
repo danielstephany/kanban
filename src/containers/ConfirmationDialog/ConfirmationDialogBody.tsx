@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useAppSelector } from '@src/store/hooks'
 import {
     Box,
     Typography,
@@ -10,9 +9,13 @@ import SectionActions from '@src/components/modules/SectionActions'
 import LoadStateButton from '@src/components/controls/LoadStateButton'
 import { errorMessage } from '@src/constants'
 
-interface ConfirmationDialogBodyPropTypes {
+interface successResultInterface {
+    message?: string
+}
+
+export interface ConfirmationDialogBodyPropTypes {
     handleClose: () => void,
-    action: () => Promise<boolean | void | undefined>,
+    action: () => Promise<successResultInterface>,
 }
 
 
@@ -25,14 +28,17 @@ const ConfirmationDialogBody = ({ handleClose, action }: ConfirmationDialogBodyP
         setLoading(true)
         action()
         .then((res) => {
-            if(res){
-                setLoading(false)
-            }
-        }, (errorMessage) => {
             setLoading(false)
-            enqueueSnackbar(errorMessage || errorMessage, { variant: 'error' })
+            if(res.message){
+                enqueueSnackbar(res.message, { variant: 'success'})
+            }
+        }, (res) => {
+            setLoading(false)
+            if(res.message){
+                enqueueSnackbar(res.message, { variant: 'error' })
+            }
         }).catch(e => {
-            
+            debugger
             enqueueSnackbar(e.message || errorMessage, {variant: 'error'})
         })
     }

@@ -1,41 +1,34 @@
 import React, {Suspense, useEffect} from 'react'
 import { useSnackbar } from 'notistack'
+import { useAppDispatch, useAppSelector } from '@src/store/hooks.ts'
 import styled from 'styled-components'
 import MainHeader from '@src/components/modules/MainHeader.tsx'
 import MainSidebar from './MainSidebar.tsx'
 import { Outlet } from "react-router-dom"
 import CenteredLoader from '@src/components/modules/CenteredLoader.tsx'
-import useQuery from '@src/hooks/useQuery'
-import type { boardNavListResponseInterface } from '@src/endpoints/board/types.ts'
-
-import { boardNavList } from '@src/endpoints/board'
+import { fetchBoardNavList } from "@src/store/slices/boardNav.ts"
+import { getBoardNavState } from "@src/store/selectors/boardNavSelectors.ts"
 
 const KanbanDashboardComp: React.ElementType = ({
     className,
 }) => {
+    const dispatch = useAppDispatch()
+    const boardNavList = useAppSelector(getBoardNavState)
     const {enqueueSnackbar} = useSnackbar()
-    const getBoardNavList = useQuery<boardNavListResponseInterface>({
-        fetchFunc: boardNavList
-    })
 
     useEffect(() => {
-        getBoardNavList.call()
-        .then(json => {
-            console.log(json)
+        dispatch(fetchBoardNavList()).unwrap().then((r)=>{
+            console.log(r)
+        }).catch(e => {
+            enqueueSnackbar(e.message, { variant: "error" })
         })
-        .catch(e => {
-            enqueueSnackbar(e.message, {variant: "error"})
-        })
-
     }, [])
-
-    if (getBoardNavList.result) console.log(getBoardNavList.result)
 
     return (
         <div className={className}>
             <div className='kbd__header-slot'><MainHeader /></div>
             <div className='kbd__sidbar-slot'>
-                <MainSidebar boardNavItems={getBoardNavList.result} />
+                <MainSidebar boardNavItems={boardNavList} />
             </div>
             <div className='kbd__main-slot'>
                 <Suspense fallback={<CenteredLoader minHeight='100%' />}>

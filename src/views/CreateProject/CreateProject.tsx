@@ -2,6 +2,7 @@ import React, {useRef} from 'react'
 import Helmet from 'react-helmet'
 import { useNavigate } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
+import { useAppDispatch } from '@src/store/hooks.ts'
 import {
     Typography,
     Box,
@@ -21,12 +22,14 @@ import { createBoard } from "@src/endpoints/board"
 import type { boardDataInterface, createBoardDataInterface } from '@src/endpoints/board/types'
 import useQuery from "@src/hooks/useQuery"
 import * as routes from '@src/Router/routes'
+import { fetchBoardNavList } from "@src/store/slices/boardNav.ts"
 
 const CreateProject = () => {
     const {enqueueSnackbar} = useSnackbar()
+    const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const columnsKey = useRef(4)
-    const { loading, call: createBoardCall } = useQuery<createBoardDataInterface, boardDataInterface>({ fetchFunc: createBoard })
+    const { loading, call: createBoardCall } = useQuery<boardDataInterface, createBoardDataInterface>({ fetchFunc: createBoard })
 
     const formCtrl = useFormControl({
         initialValues: {
@@ -112,11 +115,11 @@ const CreateProject = () => {
 
             createBoardCall(data)
             .then(json => {
+                dispatch(fetchBoardNavList())
                 navigate(routes.BOARD.base + json._id)
             }).catch(e => {
                 enqueueSnackbar(e, {variant: "error"})
             })
-
         }
     }
 

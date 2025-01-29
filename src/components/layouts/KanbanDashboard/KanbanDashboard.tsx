@@ -17,9 +17,7 @@ const KanbanDashboardComp: React.ElementType = ({
     const {enqueueSnackbar} = useSnackbar()
 
     useEffect(() => {
-        dispatch(fetchBoardNavList()).unwrap().then((r)=>{
-            console.log(r)
-        }).catch(e => {
+        dispatch(fetchBoardNavList()).unwrap().catch(e => {
             enqueueSnackbar(e.message, { variant: "error" })
         })
     }, [])

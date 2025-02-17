@@ -9,7 +9,7 @@ import type {
 } from './types.ts'
 
 export const createTask = (data: createTaskDataInterface) => createFetchCall<taskInterface>({
-    url: `${process.env.KANBAN_API}/task`,
+    url: `${process.env.KANBAN_API}/tasks`,
     fetchOptions: {
         method: "Post",
         body: JSON.stringify(data)
@@ -17,17 +17,18 @@ export const createTask = (data: createTaskDataInterface) => createFetchCall<tas
     expectedStatus: 201
 })
 
-export const updateTask = (data: updateTaskInterface) => createFetchCall<null>({
-    url: `${process.env.KANBAN_API}/task/update`,
+export const updateTask = (payload: updateTaskInterface) => createFetchCall<null>({
+    
+    url: `${process.env.KANBAN_API}/tasks/${payload.id}`,
     fetchOptions: {
         method: "Put",
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload.data)
     },
     expectedStatus: 204
 })
 
 export const deleteTaskAndRemoveFromBoard = (id: deleteTaskAndRemoveFromBoardArgsInterface) => createFetchCall<null>({
-    url: `${process.env.KANBAN_API}/task/delete-task-and-remove-from-board/${id}`,
+    url: `${process.env.KANBAN_API}/tasks/${id}/delete-task-and-remove-from-board`,
     fetchOptions: {
         method: "Delete"
     },
@@ -35,5 +36,5 @@ export const deleteTaskAndRemoveFromBoard = (id: deleteTaskAndRemoveFromBoardArg
 })
 
 export const getTask = (id: getTaskArgsInterface) => createFetchCall<taskInterface>({
-    url: `${process.env.KANBAN_API}/task/get/${id}`
+    url: `${process.env.KANBAN_API}/tasks/${id}`
 })

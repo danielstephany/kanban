@@ -19,7 +19,10 @@ import useFormCtrl from '@src/hooks/useFormCtrl.tsx'
 import type { tValidationObj, tFormCtrlValues } from '@src/hooks/useFormCtrl.tsx'
 import validator from 'validator'
 import { signup } from "@src/endpoints/auth/index.ts"
-import { signupResponseInterface } from "@src/endpoints/auth/types.ts"
+import { 
+    signupResponseInterface,
+    signupPayloadInterface
+ } from "@src/endpoints/auth/types.ts"
 import {errorMessage} from '@src/constants/index.ts'
 import useQuery from '@src/hooks/useQuery.tsx'
 
@@ -65,7 +68,7 @@ const SignUpComp = ({ className }: props) => {
     const dispatch = useAppDispatch()
     const { enqueueSnackbar } = useSnackbar()
     const navigate = useNavigate()
-    const { loading, call: signUpCall } = useQuery<signupResponseInterface>({ fetchFunc: signup })
+    const { loading, call: signUpCall } = useQuery<signupResponseInterface, signupPayloadInterface>({ fetchFunc: signup })
 
     const formCtrl = useFormCtrl({
         initialValues: {

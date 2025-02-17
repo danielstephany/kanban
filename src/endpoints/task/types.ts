@@ -14,9 +14,11 @@ export type getTaskArgsInterface = string;
 export type deleteTaskAndRemoveFromBoardArgsInterface = string;
 
 export interface updateTaskInterface {
-    _id: string,
-    title: string,
-    description: string,
-    status: string,
-    boardId: string,
+    id: string,
+    data: {
+        title: string,
+        description: string,
+        status: string,
+        boardId: string,
+    }
 }

@@ -108,7 +108,7 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
 
     const handleUpdateTask = () => {
         if (!loadingUpdate && formCtrl.isValidatedForm() && taskId) {
-            updateTaskCall({...formCtrl.values, _id: taskId})
+            updateTaskCall({id: taskId, data: {...formCtrl.values}})
                 .then(() => {
                     handleClose()
                     refresh()

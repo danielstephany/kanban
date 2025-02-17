@@ -72,3 +72,9 @@ export interface moveTaskDataInterface {
     taskId: string,
     taskStatus: string
 }
+
+interface query {
+    limit?: number, 
+    page: number,
+}
+

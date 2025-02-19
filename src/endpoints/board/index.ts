@@ -26,7 +26,7 @@ export const boardNavList = () => createFetchCall<boardNavListResponseInterface>
 })
 
 export const createBoard = (data: createBoardDataInterface) => createFetchCall<boardDataInterface>({
-    url: `${process.env.KANBAN_API}/board`,
+    url: `${process.env.KANBAN_API}/boards`,
     fetchOptions: {
         method: "Post",
         body: JSON.stringify(data)

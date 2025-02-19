@@ -9,12 +9,14 @@ import {
     TablePagination,
     TableRow
 } from '@mui/material'
+import CenteredLoader from '@src/components/modules/CenteredLoader'
 import type {
     boardDataInterface
 } from '@src/endpoints/board/types'
 import type {
     ApiResponse,
 } from '@src/endpoints/types.ts'
+import { displayDateAndTime } from '@src/utils/dateTime'
 
 type ProjectListTypes = {
     tableData?: ApiResponse<boardDataInterface[]> | null
@@ -24,7 +26,7 @@ type ProjectListTypes = {
 
 export default function ProjectListTable({ tableData, handleChangePage, handleChangeRowsPerPage }: ProjectListTypes){
 
-    if (!tableData) return null
+    if (!tableData) return <CenteredLoader minHeight="300px" />
 
     return (
         <Box>
@@ -43,8 +45,8 @@ export default function ProjectListTable({ tableData, handleChangePage, handleCh
                                 tableData?.data.map(row => (
                                     <TableRow key={row._id}>
                                         <TableCell>{row.title}</TableCell>
-                                        <TableCell>{row.updatedAt}</TableCell>
-                                        <TableCell>{row.createdAt}</TableCell>
+                                        <TableCell>{displayDateAndTime(row.updatedAt)}</TableCell>
+                                        <TableCell>{displayDateAndTime(row.createdAt)}</TableCell>
                                     </TableRow>
                                 ))
                             :

@@ -7,8 +7,15 @@ import {
     TableContainer,
     TableHead,
     TablePagination,
-    TableRow
+    TableRow,
+    IconButton
 } from '@mui/material'
+import {Link, useNavigate} from "react-router-dom"
+import { 
+    BOARD,
+    PROJECT_SETTINGS
+ } from '@src/Router/routes'
+import {Settings} from 'react-feather';
 import CenteredLoader from '@src/components/modules/CenteredLoader'
 import type {
     boardDataInterface
@@ -25,8 +32,16 @@ type ProjectListTypes = {
 }
 
 export default function ProjectListTable({ tableData, handleChangePage, handleChangeRowsPerPage }: ProjectListTypes){
-
     if (!tableData) return <CenteredLoader minHeight="300px" />
+    const navigate = useNavigate()
+
+    const handleRouteToPage = (id: string) => () => {
+        navigate(BOARD.base + id)
+    }
+
+    const handleCancelEvent = (e: React.SyntheticEvent) => {
+        e.stopPropagation()
+    }
 
     return (
         <Box>
@@ -37,16 +52,30 @@ export default function ProjectListTable({ tableData, handleChangePage, handleCh
                             <TableCell>Title</TableCell>
                             <TableCell>Updated At</TableCell>
                             <TableCell>Created At</TableCell>
+                            <TableCell align='center'>Project Settings</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {
                             tableData?.data?.length ? 
                                 tableData?.data.map(row => (
-                                    <TableRow key={row._id}>
+                                    <TableRow 
+                                        key={row._id}
+                                        sx={{ cursor: "pointer" }}
+                                        hover
+                                        onClick={handleRouteToPage(row._id)}
+                                    >
                                         <TableCell>{row.title}</TableCell>
                                         <TableCell>{displayDateAndTime(row.updatedAt)}</TableCell>
                                         <TableCell>{displayDateAndTime(row.createdAt)}</TableCell>
+                                        <TableCell align='center'>
+                                            <IconButton 
+                                                aria-label="Project Settings"
+                                                component={Link}
+                                                to={PROJECT_SETTINGS.base + row._id}
+                                                onClick={handleCancelEvent}
+                                            ><Settings /></IconButton>
+                                        </TableCell>
                                     </TableRow>
                                 ))
                             :

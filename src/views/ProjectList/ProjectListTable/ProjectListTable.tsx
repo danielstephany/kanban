@@ -1,15 +1,15 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
     Box,
     Table,
     TableBody,
     TableCell,
     TableContainer,
-    TableHead,
     TablePagination,
     TableRow,
     IconButton
 } from '@mui/material'
+import ProjectListTableHeader from './ProjectListTableHeader'
 import {Link, useNavigate} from "react-router-dom"
 import { 
     BOARD,
@@ -31,8 +31,29 @@ type ProjectListTypes = {
     handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
+const tableHeadData = [
+    {
+        label: "Title",
+        id: "title",
+    },
+    {
+        label: "Updated At",
+        id: "updatedAt",
+    },
+    {
+        label: "Created At",
+        id: "createdAt",
+    },
+    {
+        label: "Project Settings",        
+        align: "center" as const //narrows assertion to compiler looks for "center | left | right" instead of "string"
+    }
+]
+
 export default function ProjectListTable({ tableData, handleChangePage, handleChangeRowsPerPage }: ProjectListTypes){
-    if (!tableData) return <CenteredLoader minHeight="300px" />
+    const [orderBy, setOrderBy] = useState(tableHeadData[0].id)
+    const [isAsc, setIsAsc] = useState(true);
+    
     const navigate = useNavigate()
 
     const handleRouteToPage = (id: string) => () => {
@@ -43,18 +64,25 @@ export default function ProjectListTable({ tableData, handleChangePage, handleCh
         e.stopPropagation()
     }
 
+    const handleSort = (e: React.MouseEvent<unknown>, colId: string) => {
+        // debugger
+        const diffrentColSelected = colId !== orderBy
+        setOrderBy(colId)
+        setIsAsc(diffrentColSelected ? true : !isAsc)
+    }
+
+    if (!tableData) return <CenteredLoader minHeight="300px" />
+
     return (
         <Box>
             <TableContainer>
                 <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Title</TableCell>
-                            <TableCell>Updated At</TableCell>
-                            <TableCell>Created At</TableCell>
-                            <TableCell align='center'>Project Settings</TableCell>
-                        </TableRow>
-                    </TableHead>
+                    <ProjectListTableHeader
+                        tableHeadData={tableHeadData} 
+                        orderBy={orderBy}
+                        isAsc={isAsc}
+                        handleSort={handleSort}
+                    />
                     <TableBody>
                         {
                             tableData?.data?.length ? 

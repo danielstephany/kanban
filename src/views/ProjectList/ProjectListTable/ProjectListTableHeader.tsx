@@ -40,7 +40,7 @@ export default function ProjectListTableHeader({ tableHeadData, orderBy, isAsc, 
                         cell.id ? 
                             <TableSortLabel
                                 active={cell.id === orderBy}
-                                direction={isActiveCell ? isAsc ? "asc" : "desc" : "asc"}
+                                direction={isActiveCell ? (isAsc ? "asc" : "desc") : "asc"}
                                 onClick={handleSortUpdate(cell.id)}
                             >
                                 {cell.label}

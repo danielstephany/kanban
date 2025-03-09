@@ -29,6 +29,7 @@ type ProjectListTypes = {
     tableData?: ApiResponse<boardDataInterface[]> | null
     handleChangePage: (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => void,
     handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLInputElement>) => void
+    handleSortChange: (id: string, direction: "asc" | "desc") => void
 }
 
 const tableHeadData = [
@@ -50,7 +51,12 @@ const tableHeadData = [
     }
 ]
 
-export default function ProjectListTable({ tableData, handleChangePage, handleChangeRowsPerPage }: ProjectListTypes){
+export default function ProjectListTable({ 
+    tableData, 
+    handleChangePage, 
+    handleChangeRowsPerPage,
+    handleSortChange
+}: ProjectListTypes){
     const [orderBy, setOrderBy] = useState(tableHeadData[0].id)
     const [isAsc, setIsAsc] = useState(true);
     
@@ -65,10 +71,11 @@ export default function ProjectListTable({ tableData, handleChangePage, handleCh
     }
 
     const handleSort = (e: React.MouseEvent<unknown>, colId: string) => {
-        // debugger
         const diffrentColSelected = colId !== orderBy
+        const newIsAscVal = diffrentColSelected ? true : !isAsc
         setOrderBy(colId)
-        setIsAsc(diffrentColSelected ? true : !isAsc)
+        setIsAsc(newIsAscVal)
+        handleSortChange(colId, newIsAscVal ? "asc" : "desc")
     }
 
     if (!tableData) return <CenteredLoader minHeight="300px" />

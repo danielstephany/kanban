@@ -1,12 +1,12 @@
 
-export type SortOrder = 'asc' | 'desc';
+export type SortDirection = 'asc' | 'desc';
 
 export type Pagination = {
     total?: number;
     page: number;
     limit?: number;
-    sort?: string;
-    order?: SortOrder;
+    sortBy?: string;
+    direction?: SortDirection;
 }
 
 export type BaseResponse = {

@@ -18,10 +18,12 @@ import type {
 import { errorMessage } from '@src/constants'
 import ProjectListTable from "./ProjectListTable"
 
-const baseRequestArgs = {
+const baseRequestArgs: ApiRequest = {
     pagination: {
         page: 0,
         limit: 5,
+        sortBy: 'title',
+        direction: "asc" as const,
     }
 }
 
@@ -31,7 +33,6 @@ const ProjectList = ({}) => {
     const [requestArgs, setRequestArgs] = useState(baseRequestArgs)
 
     useEffect(() => {
-        console.log("get")
         callGetBoards(requestArgs)
         .then(json => {
             console.log(json)
@@ -43,14 +44,27 @@ const ProjectList = ({}) => {
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
         const newReq = {...requestArgs}
-        newReq.pagination.page = page
-        setRequestArgs(newReq)
+        if (newReq.pagination) {
+            newReq.pagination.page = page
+            setRequestArgs(newReq)
+        }
     }
 
     const handleChangeRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newReq = { ...requestArgs }
-        newReq.pagination.limit = parseInt(e.target.value, 10)
-        setRequestArgs(newReq)
+        if (newReq.pagination) {
+            newReq.pagination.limit = parseInt(e.target.value, 10)
+            setRequestArgs(newReq)
+        }
+    }
+
+    const handleSortChange = (id: string, direction: "asc" | "desc") => {
+        const newReq = { ...requestArgs }
+        if (newReq.pagination) {
+            newReq.pagination.sortBy = id
+            newReq.pagination.direction = direction
+            setRequestArgs(newReq)
+        }
     }
 
     return (
@@ -65,6 +79,7 @@ const ProjectList = ({}) => {
                                 tableData={tableData}
                                 handleChangePage={handleChangePage}
                                 handleChangeRowsPerPage={handleChangeRowsPerPage}
+                                handleSortChange={handleSortChange}
                             />
                         </Box>
                     </Paper>

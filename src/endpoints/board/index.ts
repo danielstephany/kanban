@@ -53,7 +53,8 @@ export const getBoards = (data: ApiRequest) => {
     }
 
     if(data?.filter){
-        if (!query) query = "?"
+        query = query? query + "&" : "?"
+
         Object.entries(data.filter).forEach(([key, value], i) => {
             if (i != 0) query += "&"
             query += `${key}=${value}`

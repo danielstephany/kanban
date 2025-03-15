@@ -14,8 +14,8 @@ export type BaseResponse = {
 };
 
 export type filter = {
-    field: string,
-    value: string
+    searchBy: string,
+    searchValue: string
 }
 
 export type ApiRequest = {

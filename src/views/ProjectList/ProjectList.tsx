@@ -4,7 +4,8 @@ import Helmet from 'react-helmet'
 import {
     Typography,
     Box,
-    Paper
+    Paper,
+    Grid2 as Grid,
 } from "@mui/material"
 import { getBoards } from '@src/endpoints/board'
 import useQuery from '@src/hooks/useQuery'
@@ -17,6 +18,8 @@ import type {
 } from '@src/endpoints/types.ts'
 import { errorMessage } from '@src/constants'
 import ProjectListTable from "./ProjectListTable"
+import useFormCtrl from '@src/hooks/useFormCtrl'
+import DebouncedTextField from '@src/components/controls/DebouncedTextField'
 
 const baseRequestArgs: ApiRequest = {
     pagination: {
@@ -31,6 +34,7 @@ const ProjectList = ({}) => {
     const {enqueueSnackbar} = useSnackbar()
     const { loading, call: callGetBoards, result: tableData } = useQuery<ApiResponse<boardDataInterface[]>, ApiRequest>({fetchFunc: getBoards});
     const [requestArgs, setRequestArgs] = useState(baseRequestArgs)
+    const [searchValue, setSearchValue] = useState("");
 
     useEffect(() => {
         callGetBoards(requestArgs)
@@ -67,6 +71,23 @@ const ProjectList = ({}) => {
         }
     }
 
+    const handleSearchChange = (name: string, value: string) => {
+        const newReq = { ...requestArgs }
+        const trimmedValue = value.trim()
+
+        // remove filter if no value is provided
+        if (!trimmedValue && newReq.filter){
+            delete newReq.filter
+        } else if (trimmedValue) { // add filter to reqest if value is provided
+            newReq.filter = {
+                searchBy: "title",
+                searchValue: trimmedValue
+            }
+        }
+        console.log("search")
+        setRequestArgs(newReq)
+    }
+
     return (
         <>
             <Helmet title="Project List"/>
@@ -75,12 +96,27 @@ const ProjectList = ({}) => {
                 <Box mt={4}>
                     <Paper elevation={3}>
                         <Box p={3}>
-                            <ProjectListTable 
-                                tableData={tableData}
-                                handleChangePage={handleChangePage}
-                                handleChangeRowsPerPage={handleChangeRowsPerPage}
-                                handleSortChange={handleSortChange}
-                            />
+                            <Grid container spacing={2}>
+                                <Grid size={{ sm: 12, lg: 6 }}>
+                                    <DebouncedTextField
+                                        name="search"
+                                        placeholder="Search By Title"
+                                        aria-label="Search By Title"
+                                        searchFn={handleSearchChange}
+                                        value={searchValue}
+                                        setValueFn={setSearchValue}
+                                        fullWidth
+                                    />
+                                </Grid>
+                                <Grid size={12}>
+                                    <ProjectListTable 
+                                        tableData={tableData}
+                                        handleChangePage={handleChangePage}
+                                        handleChangeRowsPerPage={handleChangeRowsPerPage}
+                                        handleSortChange={handleSortChange}
+                                    />
+                                </Grid>
+                            </Grid>
                         </Box>
                     </Paper>
                 </Box>

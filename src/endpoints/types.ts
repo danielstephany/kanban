@@ -18,11 +18,15 @@ export type filter = {
     searchValue: string
 }
 
-export type ApiRequest = {
-    id?: string
+export type ApiRequestParams = {
     pagination?: Pagination;
     filter?: filter
-};
+}
+
+export type ApiRequest = {
+    id?: string
+} & ApiRequestParams;
+
 
 export interface ApiResponse<T> {
     data?: T;

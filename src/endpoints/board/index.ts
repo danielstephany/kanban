@@ -41,27 +41,11 @@ export const moveTask = (data: moveTaskDataInterface) => createFetchCall<boardDa
     }
 })
 
-export const getBoards = (data: ApiRequest) => {
+export const getBoards = (queryData: ApiRequest) => {
     let query = ""
 
-    if(data?.pagination){
-        query = "?"
-        Object.entries(data.pagination).forEach(([key, value], i) => {
-            if(i != 0) query += "&"
-            query += `${key}=${value}`
-        })
-    }
-
-    if(data?.filter){
-        query = query? query + "&" : "?"
-
-        Object.entries(data.filter).forEach(([key, value], i) => {
-            if (i != 0) query += "&"
-            query += `${key}=${value}`
-        })
-    }
-
     return createFetchCall<ApiResponse<boardDataInterface[]>>({
-        url: `${process.env.KANBAN_API}/boards/${query}`
+        url: `${process.env.KANBAN_API}/boards/${query}`,
+        query: queryData
     })
 }

@@ -53,7 +53,7 @@ const MainSidebarComp: React.ElementType = ({ className, boardNavItems }: MainSi
     return (
         <Paper className={className}>
             <nav className='main-sidebar__top-nav'>                
-                <Typography variant='h3' className='main-sidebar__title'>Projects</Typography>
+                {/* <Typography variant='h3' className='main-sidebar__title'>Projects</Typography> */}
                 
                 <ul className='main-sidebar__list'>
                     <ButtonTextLeft
@@ -61,7 +61,12 @@ const MainSidebarComp: React.ElementType = ({ className, boardNavItems }: MainSi
                         variant="text"
                         to={routes.PROJECT_LIST.path}
                         fullWidth
-                    >All Boards</ButtonTextLeft>
+                    >Project List</ButtonTextLeft>
+                </ul>
+                <Box mt={2}>
+                    <Typography variant='h3' className='main-sidebar__title'>Recently viewed</Typography>
+                </Box>
+                <ul className='main-sidebar__list'>                    
                     {buildBoardLinks()}
                 </ul>
                 <Box mb={3} mt={2}>

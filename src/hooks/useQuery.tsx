@@ -7,7 +7,7 @@ interface useQueryTypes {
 
 const useQuery = <returnType, fetchArguments=null>({ fetchFunc, loading: initialLoading }: useQueryTypes) => {
     const [loading, setLoading] = useState(initialLoading || false)
-    const [result, setResult] = useState(null)
+    const [result, setResult] = useState<returnType | null>(null)
 
     const call = (...args: fetchArguments[]) => new Promise<returnType>((resolve, reject) => {
         setLoading(true)

@@ -166,6 +166,7 @@ const Board = () => {
                     <BoardHeader 
                         handleOpenTaskModal={handleOpenTaskModal()}
                         title={boardData?.title}
+                        boardId={boardData?._id}
                     />
                     <Box sx={{display: "flex", flexGrow: 1, overflow: "auto"}}>
                         <Box p={3} sx={{ display: "flex", flexGrow: 1}}>

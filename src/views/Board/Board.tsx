@@ -46,6 +46,7 @@ const Board = () => {
         .then(json => {
             dispatch(setBoard(json))
             cachedBoardData.current = json
+            console.log(json)
         }).catch(e => {
             enqueueSnackbar(errorMessage, { variant: "error" })
         })
@@ -61,7 +62,6 @@ const Board = () => {
         if (!loadingBoardUpdate){
             moveTaskCall(body)
                 .then(json => {
-                    console.log(json)
                     dispatch(setBoard(json))
                     cachedBoardData.current = json
                     //check que and call if que is not empty

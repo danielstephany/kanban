@@ -12,9 +12,11 @@ import styled from 'styled-components'
 
 const DropContainer = styled.div<{$isDraggingOver?: boolean}>`
     flex-grow: 1;
-    minHeight: 200px;
+    min-height: 200px;
     transition: background-color 0.2s ease;
     background-color: ${({ theme, $isDraggingOver }) => $isDraggingOver ? (theme.palette.mode === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)") : "transparent" };
+    max-height: 100%;
+    overflow: auto;
 `
 
 interface iProps {
@@ -31,8 +33,8 @@ interface iProps {
 
 const Column: React.ElementType = ({ column, tasks, handleOpenTaskModal }: iProps) => {
     return (
-        <Grid sx={{display: "flex", flexDirection: "column", flex: "1 1 0px", maxWidth: "350px", minWidth: "200px"}}>
-            <Paper variant="outlined" sx={{ display: "flex", flexDirection: "column", flexGrow: 1}}>
+        <Grid sx={{display: "flex", flexDirection: "column", flex: "1 1 0px", maxWidth: "350px", minWidth: "200px", maxHeight: "100%"}}>
+            <Paper variant="outlined" sx={{ display: "flex", flexDirection: "column", flexGrow: 1, maxHeight: "100%" }}>
                 <Box p={2}>
                         <Typography variant='h3'>{column?.title}</Typography>
                 </Box>

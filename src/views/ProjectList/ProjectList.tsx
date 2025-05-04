@@ -37,9 +37,7 @@ const ProjectList = ({}) => {
 
     useEffect(() => {
         callGetBoards(requestArgs)
-        .then(json => {
-            console.log(json)
-        })
+        .then(json => {})
         .catch(e => {
             enqueueSnackbar(errorMessage, {variant: "error"})
         })
@@ -83,7 +81,7 @@ const ProjectList = ({}) => {
                 searchValue: trimmedValue
             }
         }
-        console.log("search")
+
         setRequestArgs(newReq)
     }
 

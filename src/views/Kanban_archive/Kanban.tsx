@@ -5,7 +5,6 @@ import { Outlet } from "react-router-dom"
 
 const Kanban = () => {
     const user = useAppSelector(state => state.user)
-    console.log(user)
 
     return <Outlet/>
 }

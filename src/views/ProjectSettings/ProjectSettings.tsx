@@ -26,7 +26,6 @@ export default function ProjectSettings(){
     useEffect(() => {
         if(id) loadBoardData(id)
     }, [id])
-    console.log(boardData)
 
     return (
         <>

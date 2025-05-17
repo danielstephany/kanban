@@ -99,9 +99,7 @@ const Board = () => {
         if (
             destination.droppableId === source.droppableId &&
             destination.index === source.index
-        ) {
-            return
-        }
+        ) { return }
 
         const sourceColumn = boardData.columns[source.droppableId];
         const destColumn = boardData.columns[destination.droppableId];

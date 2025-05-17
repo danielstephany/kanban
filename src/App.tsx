@@ -24,7 +24,6 @@ const App = () => {
         if(token){
             callVerifyToken()
             .then((json) => {
-                console.log(json)
                 dispatch(logInUser({
                     token: token,
                     firstName: json.user.firstName,

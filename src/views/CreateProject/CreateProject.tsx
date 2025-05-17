@@ -23,6 +23,10 @@ import type { boardDataInterface, createBoardDataInterface } from '@src/endpoint
 import useQuery from "@src/hooks/useQuery"
 import * as routes from '@src/Router/routes'
 import { fetchBoardNavList } from "@src/store/slices/boardNav.ts"
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
+import type { OnDragEndResponder, DropResult } from '@hello-pangea/dnd'
+import DragItem from './DragItem'
+import DropContainer from './DragContainer'
 
 const CreateProject = () => {
     const {enqueueSnackbar} = useSnackbar()
@@ -37,7 +41,7 @@ const CreateProject = () => {
         }
     })
 
-    const columnsFormCtrl = useFormControl({
+    const columnsFormCtrl = useFormControl<{[key: string]: string}>({
         initialValues: {
             columnTitle_1: "Ready",
             columnTitle_2: "In Progress",
@@ -56,28 +60,40 @@ const CreateProject = () => {
 
     const buildcolumns = (): React.ReactNode => {
         if(columnsFormCtrl?.values){
-            return Object.keys(columnsFormCtrl.values).map((col) => {
+            return Object.keys(columnsFormCtrl.values).map((col, i) => {
                 return (
-                    <Grid size={12} key={col}>
-                        <TextFieldFormCtrl
-                            formCtrl={columnsFormCtrl}
-                            name={col}
-                            label="Column Title"
-                            slotProps={{
-                                input: {
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                onClick={handleRemoveColumn(col as columnsFormCtrlKeys)}
-                                            >
-                                                <Trash size={20}/>
-                                            </IconButton>
-                                        </InputAdornment>
-                                    )
-                                },
-                            }}
-                        />
-                    </Grid>
+                    <Draggable draggableId={col} index={i} key={col}>
+                        {
+                            (provided, snapshot) => (
+                                <DragItem
+                                    isDragging={snapshot.isDragging}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    ref={provided.innerRef}
+                                >
+                                    <TextFieldFormCtrl
+                                        variant='standard'
+                                        formCtrl={columnsFormCtrl}
+                                        name={col}
+                                        label="Column Title"
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={handleRemoveColumn(col as columnsFormCtrlKeys)}
+                                                        >
+                                                            <Trash size={20}/>
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                )
+                                            },
+                                        }}
+                                    />                                        
+                                </DragItem>
+                            )
+                        }
+                    </Draggable>
                 )
             })
         }
@@ -106,7 +122,6 @@ const CreateProject = () => {
         e.preventDefault()
 
         if (columnsFormCtrl.isValidatedForm() && formCtrl.isValidatedForm() && validateNumberOfColumns()){
-            console.log(formCtrl.values, columnsFormCtrl.values)
 
             const data = {
                 ...formCtrl.values,
@@ -122,6 +137,33 @@ const CreateProject = () => {
             })
         }
     }
+
+    const onDragEnd: OnDragEndResponder = (result: DropResult) => {
+        const { destination, source, draggableId } = result;
+
+        if (!destination) return
+
+        if (
+            !destination || (
+                destination?.droppableId === source.droppableId &&
+                destination?.index === source.index
+            )
+        ) { return }
+
+        const workingList = Object.entries(columnsFormCtrl.values)
+        const activeItem = workingList[source.index];
+
+        workingList.splice(source.index, 1)
+        workingList.splice(destination.index, 0, activeItem)
+
+        const newState: {[key: string]: string} = {}
+        workingList.forEach(([key, value]) => {
+            newState[key] = value
+        })
+
+        columnsFormCtrl.setValues(newState)
+    }
+    
 
     const hasMaxColumns = Object.keys(columnsFormCtrl.values).length >= 5
 
@@ -156,7 +198,24 @@ const CreateProject = () => {
                                         <Typography>Add up to 5 columns to your to you projects board.<br />The board should also have at least 3 columns.</Typography>
                                     </Box>
                                 </Grid>
-                                {buildcolumns()}
+                                <Grid size={12}>
+                                    <DragDropContext onDragEnd={onDragEnd}>
+                                        <Droppable droppableId="col-container">
+                                            {
+                                                (provided, snapshot) => (
+                                                    <DropContainer
+                                                        ref={provided.innerRef}
+                                                        {...provided.droppableProps}
+                                                        isDraggingOver={snapshot.isDraggingOver}
+                                                    >
+                                                        {buildcolumns()}
+                                                        {provided.placeholder}
+                                                    </DropContainer>
+                                                )
+                                            }                                                
+                                        </Droppable>
+                                    </DragDropContext>
+                                </Grid>
                                 {
                                     !hasMaxColumns ?
                                     <Grid size={12}>

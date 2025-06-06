@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
     Typography,
     Box,
@@ -14,10 +14,12 @@ import Helmet from 'react-helmet'
 import { getBoard } from '@src/endpoints/board'
 import type { boardDataInterface } from '@src/endpoints/board/types.ts'
 import useQuery from '@src/hooks/useQuery.tsx'
+import DeleteBoardModal from '@src/containers/DeleteBoardModal'
 
 export default function ProjectSettings(){
     const {id} = useParams()
     const { loading, call, result:boardData } = useQuery<boardDataInterface, string>({fetchFunc: getBoard})
+    const [deleteBoardModalOpen, setDeleteBoardModalOpen] = useState(false)
 
     const loadBoardData = (id: string) => {
         call(id)
@@ -26,6 +28,14 @@ export default function ProjectSettings(){
     useEffect(() => {
         if(id) loadBoardData(id)
     }, [id])
+
+    const handleOpenDeleteBoardModal = () => {
+        setDeleteBoardModalOpen(true)
+    }
+
+    const handleCloseDeleteBoardModal = () => {
+        setDeleteBoardModalOpen(false)
+    }
 
     return (
         <>
@@ -49,7 +59,9 @@ export default function ProjectSettings(){
                                         <Box m={-3} mt={0}>
                                             <SectionActions
                                                 leftActions={
-                                                    <Button>Delete Board</Button>
+                                                    <Button
+                                                        onClick={handleOpenDeleteBoardModal}
+                                                    >Delete Board</Button>
                                                 }
                                                 rightActions={
                                                     <Button
@@ -66,6 +78,10 @@ export default function ProjectSettings(){
                     }
                 </LoadingWrapper>
             </Box>
+            <DeleteBoardModal 
+                open={deleteBoardModalOpen}
+                handleClose={handleCloseDeleteBoardModal}
+            />
         </>
     )
 }

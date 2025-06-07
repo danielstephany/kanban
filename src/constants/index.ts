@@ -1,1 +1,1 @@
-export const errorMessage = "An unknown error occored, please try again."
+export const errorMessage = "An unknown error occored, please refresh and try again."

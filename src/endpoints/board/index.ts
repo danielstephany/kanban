@@ -41,11 +41,19 @@ export const moveTask = (data: moveTaskDataInterface) => createFetchCall<boardDa
     }
 })
 
+export const deleteBoard = (boardId: string) => createFetchCall<null>({
+    url: `${process.env.KANBAN_API}/boards/${boardId}`,
+    fetchOptions: {
+        method: "Delete",
+    },
+    expectedStatus: 204
+})
+
 export const getBoards = (queryData: ApiRequest) => {
     let query = ""
 
     return createFetchCall<ApiResponse<boardDataInterface[]>>({
         url: `${process.env.KANBAN_API}/boards/${query}`,
-        query: queryData
+        query: queryData,
     })
 }

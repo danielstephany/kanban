@@ -4,12 +4,19 @@ import {
 } from '@mui/material'
 import DeleteBoardModalBody from './DeleteBoardModalBody'
 
-interface TaskDialogProps {
+export interface DeleteBoardModalProps {
+    boardId?: string,
+    boardTitle?: string,
     open: boolean,
     handleClose: () => void
 }
 
-const DeleteBoardModal = ({ open, handleClose }: TaskDialogProps) => {
+const DeleteBoardModal = ({ 
+    boardId,
+    boardTitle,
+    open, 
+    handleClose 
+}: DeleteBoardModalProps) => {
 
     return (
         <Dialog
@@ -19,7 +26,9 @@ const DeleteBoardModal = ({ open, handleClose }: TaskDialogProps) => {
             maxWidth="sm"
         >
             <DeleteBoardModalBody
-                
+                boardId={boardId}
+                boardTitle={boardTitle}
+                handleClose={handleClose}
             />
         </Dialog>
     )

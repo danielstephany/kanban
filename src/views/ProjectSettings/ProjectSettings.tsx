@@ -15,18 +15,25 @@ import { getBoard } from '@src/endpoints/board'
 import type { boardDataInterface } from '@src/endpoints/board/types.ts'
 import useQuery from '@src/hooks/useQuery.tsx'
 import DeleteBoardModal from '@src/containers/DeleteBoardModal'
+import { errorMessage } from '@src/constants'
 
 export default function ProjectSettings(){
+    const {enqueueSnackbar} = useSnackbar()
     const {id} = useParams()
-    const { loading, call, result:boardData } = useQuery<boardDataInterface, string>({fetchFunc: getBoard})
+    const { loading, call:callGetBoard, result:boardData } = useQuery<boardDataInterface, string>({fetchFunc: getBoard})
     const [deleteBoardModalOpen, setDeleteBoardModalOpen] = useState(false)
 
-    const loadBoardData = (id: string) => {
-        call(id)
+    const loadBoardData = (id?: string) => {
+        if (id) {
+            callGetBoard(id)
+            .catch(e => {
+                enqueueSnackbar(errorMessage, {variant: "error"})
+            })
+        }
     }
 
     useEffect(() => {
-        if(id) loadBoardData(id)
+        loadBoardData(id)
     }, [id])
 
     const handleOpenDeleteBoardModal = () => {
@@ -80,6 +87,8 @@ export default function ProjectSettings(){
             </Box>
             <DeleteBoardModal 
                 open={deleteBoardModalOpen}
+                boardId={id}
+                boardTitle={boardData?.title}
                 handleClose={handleCloseDeleteBoardModal}
             />
         </>
@@ -89,4 +98,3 @@ export default function ProjectSettings(){
 // Edit project name
 // Edit project description
 // add users to project
-// delete project

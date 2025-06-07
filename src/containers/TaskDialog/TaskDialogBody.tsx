@@ -60,7 +60,7 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
     const statusList = useAppSelector(state => getBoardStatusList(state))
     const { loading, call: createTaskCall } = useQuery<taskInterface, createTaskDataInterface>({fetchFunc: createTask})
     const { loading: loadingUpdate, call: updateTaskCall } = useQuery<null, updateTaskInterface>({ fetchFunc: updateTask })
-    const { loading: loadingdelete, call: deletTaskCall } = useQuery<null, deleteTaskAndRemoveFromBoardArgsInterface>({ fetchFunc: deleteTaskAndRemoveFromBoard })
+    const { loading: loadingdelete, call: deleteTaskCall } = useQuery<null, deleteTaskAndRemoveFromBoardArgsInterface>({ fetchFunc: deleteTaskAndRemoveFromBoard })
     const { loading: loadingTask, call: getTaskCall, result: taskData } = useQuery<taskInterface, getTaskArgsInterface>({ fetchFunc: getTask, loading: !!taskId  })
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false)
     const loadingData = loadingUpdate || loading
@@ -138,7 +138,7 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
 
     const handleDelete = () => new Promise<{message: string }>((resolve, reject) => {
         if(taskId){
-            deletTaskCall(taskId)
+            deleteTaskCall(taskId)
             .then(() => {
                 handleClose()
                 refresh()

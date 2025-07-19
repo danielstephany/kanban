@@ -27,9 +27,15 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import type { OnDragEndResponder, DropResult } from '@hello-pangea/dnd'
 import ColumnOrderDragItem from '@src/components/modules/ColumnOrderDragItem'
 import ColumnOrderDropContainer from '@src/components/modules/ColumnOrderDropContainer'
+import type {ReorderColumnsModalProps} from './ReorderColumnsModal'
 
+interface ReorderColumnsModalContentProps extends Omit<ReorderColumnsModalProps, "open"> {}
 
-const CreateProject = () => {
+const ReorderColumnsModalContent = ({ 
+    boardId,
+    boardTitle,
+    handleClose
+}: ReorderColumnsModalContentProps) => {
     const {enqueueSnackbar} = useSnackbar()
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
@@ -250,4 +256,4 @@ const CreateProject = () => {
     )
 }
 
-export default CreateProject
+export default ReorderColumnsModalContent

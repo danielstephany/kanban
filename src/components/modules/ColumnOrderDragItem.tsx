@@ -37,7 +37,7 @@ interface DragItemProps extends PaperProps {
 
 export type Ref = HTMLDivElement;
 
-const DragItem = forwardRef<Ref, DragItemProps>(({ isDragging, children, ...others }, ref) => {
+const ColumnOrderDragItem = forwardRef<Ref, DragItemProps>(({ isDragging, children, ...others }, ref) => {
     return (
         <DragItemBase {...others} ref={ref}>
             <DragItemContent $isDragging={isDragging} variant='outlined'>
@@ -52,4 +52,4 @@ const DragItem = forwardRef<Ref, DragItemProps>(({ isDragging, children, ...othe
     )
 })
 
-export default DragItem
+export default ColumnOrderDragItem

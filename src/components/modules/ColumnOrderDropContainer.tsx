@@ -22,7 +22,7 @@ interface DropContainerProps {
     isDraggingOver?: boolean
 }
 
-const DropContainer = forwardRef<DivRef, DropContainerProps>(({ isDraggingOver, children, ...others}: DropContainerProps, ref) => {
+const ColumnOrderDropContainer = forwardRef<DivRef, DropContainerProps>(({ isDraggingOver, children, ...others}: DropContainerProps, ref) => {
     return (
         <DropContainerBase {...others}>
             <DropContainerContent $isDraggingOver={isDraggingOver} ref={ref}>
@@ -32,4 +32,4 @@ const DropContainer = forwardRef<DivRef, DropContainerProps>(({ isDraggingOver, 
     )
 })
 
-export default DropContainer
+export default ColumnOrderDropContainer

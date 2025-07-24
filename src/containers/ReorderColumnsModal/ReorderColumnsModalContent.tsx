@@ -178,7 +178,7 @@ const ReorderColumnsModalContent = ({
         <>
             <Helmet title="Create Project"/>
             <Box 
-                p={4} 
+                // p={4} 
                 sx={{
                     alignItems: "center", 
                     justifyContent: "center",

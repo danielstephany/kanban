@@ -19,12 +19,23 @@ import DeleteBoardModal from '@src/containers/DeleteBoardModal'
 import { errorMessage } from '@src/constants'
 import useFormCtrl from '@src/hooks/useFormCtrl'
 import { Description } from '@mui/icons-material'
+import ReorderColumnsModal from '@src/containers/ReorderColumnsModal'
+
+const DELETE_BOARD_MODAL = "deleteBoardModal",
+    REORDER_COLUMNS_MODAL = "reorderColumnsModal"
+
+const initialModalStates = {
+    [DELETE_BOARD_MODAL]: false,
+    [REORDER_COLUMNS_MODAL]: false
+} as const
+
+type modalName = keyof typeof initialModalStates;
 
 export default function ProjectSettings(){
     const {enqueueSnackbar} = useSnackbar()
     const {id} = useParams()
     const { loading, call:callGetBoard, result:boardData } = useQuery<boardDataInterface, string>({fetchFunc: getBoard})
-    const [deleteBoardModalOpen, setDeleteBoardModalOpen] = useState(false)
+    const [modalOpen, setModalOpen] = useState(initialModalStates)
 
     const formCtrl = useFormCtrl({
         initialValues: {
@@ -50,12 +61,12 @@ export default function ProjectSettings(){
         loadBoardData(id)
     }, [id])
 
-    const handleOpenDeleteBoardModal = () => {
-        setDeleteBoardModalOpen(true)
+    const handleOpenModal = (modalName: modalName) => () => {
+        setModalOpen({...initialModalStates, [modalName]: true})
     }
 
-    const handleCloseDeleteBoardModal = () => {
-        setDeleteBoardModalOpen(false)
+    const handleCloseModals = () => {
+        setModalOpen(initialModalStates)
     }
 
     return (
@@ -78,19 +89,29 @@ export default function ProjectSettings(){
                                                 />                                                
                                             </Grid>                                         
                                             <Grid size={12}>
-                                                <Typography variant='h4' component="h3" gutterBottom>Column order</Typography>                                            
-                                                <Button variant="outlined" size="small">Reorder columns</Button>
+                                                <Typography variant='h4' component="h3" gutterBottom >Modify Board Columns</Typography> 
+                                                <Typography variant='body2' gutterBottom >This action will allow you to update existing coluns and add new columns.</Typography>                                           
+                                                <Button 
+                                                    sx={{marginTop: "8px"}}
+                                                    variant="outlined" 
+                                                    size="small"
+                                                    onClick={handleOpenModal(REORDER_COLUMNS_MODAL)}
+                                                >Reorder columns</Button>
                                             </Grid>
                                             <Grid size={12}>
                                                 <Typography variant='h4' component="h3" gutterBottom>Board access</Typography>                                            
-                                                <Button variant="outlined" size="small">Manage users</Button>
+                                                <Button 
+                                                    sx={{ marginTop: "8px" }}
+                                                    variant="outlined" 
+                                                    size="small"
+                                                >Manage users</Button>
                                             </Grid>
                                         </Grid>                                      
                                     </Box>
                                     <SectionActions
                                         leftActions={
                                             <Button
-                                                onClick={handleOpenDeleteBoardModal}
+                                                onClick={handleOpenModal(DELETE_BOARD_MODAL)}
                                             >Delete Board</Button>
                                         }
                                         rightActions={
@@ -107,10 +128,16 @@ export default function ProjectSettings(){
                 </LoadingWrapper>
             </Box>
             <DeleteBoardModal 
-                open={deleteBoardModalOpen}
+                open={modalOpen[DELETE_BOARD_MODAL]}
                 boardId={id}
                 boardTitle={boardData?.title}
-                handleClose={handleCloseDeleteBoardModal}
+                handleClose={handleCloseModals}
+            />
+            <ReorderColumnsModal
+                open={modalOpen[REORDER_COLUMNS_MODAL]}
+                boardId={id}
+                boardTitle={boardData?.title}
+                handleClose={handleCloseModals}
             />
         </>
     )

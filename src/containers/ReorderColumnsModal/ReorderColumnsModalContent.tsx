@@ -1,8 +1,8 @@
-import React, {useRef} from 'react'
+import React, {useRef, useState} from 'react'
 import Helmet from 'react-helmet'
 import { useNavigate } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
-import { useAppDispatch } from '@src/store/hooks.ts'
+import { useAppDispatch, useAppSelector } from '@src/store/hooks.ts'
 import {
     Typography,
     Box,
@@ -10,7 +10,8 @@ import {
     Grid2 as Grid,
     Button,
     InputAdornment,
-    IconButton
+    IconButton,
+    TextField
 } from "@mui/material"
 import SectionHeader from '@src/components/modules/SectionHeader'
 import TextFieldFormCtrl from '@src/components/controls/TextFieldFormCtrl'
@@ -28,19 +29,43 @@ import type { OnDragEndResponder, DropResult } from '@hello-pangea/dnd'
 import ColumnOrderDragItem from '@src/components/modules/ColumnOrderDragItem'
 import ColumnOrderDropContainer from '@src/components/modules/ColumnOrderDropContainer'
 import type {ReorderColumnsModalProps} from './ReorderColumnsModal'
+import { getBoardState } from '@src/store/selectors/boardSelectors'
 
 interface ReorderColumnsModalContentProps extends Omit<ReorderColumnsModalProps, "open"> {}
 
+interface valuesTypes { 
+    [key: string]: { 
+        title: string, 
+        initialTitle?: string,
+        columnId?: string
+    }
+}
+
+
+const parseColumnValues = (boardData: boardDataInterface) => {
+    const res: valuesTypes = {}
+
+    boardData.columnOrder.forEach((item, index) => {
+        res[item + "_" + index] = {
+            title: boardData.columns[item].title,
+            initialTitle: boardData.columns[item].title,
+            columnId: item
+        }
+    })
+    
+    return res
+}
+
 const ReorderColumnsModalContent = ({ 
-    boardId,
-    boardTitle,
     handleClose
 }: ReorderColumnsModalContentProps) => {
     const {enqueueSnackbar} = useSnackbar()
-    const dispatch = useAppDispatch()
-    const navigate = useNavigate()
-    const columnsKey = useRef(4)
+    const boardData = useAppSelector(getBoardState)
+    const columnsKey = useRef(5)
+    const [values, setValues] = useState<valuesTypes>(boardData ? parseColumnValues(boardData) : {})
     const { loading, call: createBoardCall } = useQuery<boardDataInterface, createBoardDataInterface>({ fetchFunc: createBoard })
+
+    console.log(values)
 
     const formCtrl = useFormControl({
         initialValues: {
@@ -48,26 +73,22 @@ const ReorderColumnsModalContent = ({
         }
     })
 
-    const columnsFormCtrl = useFormControl<{[key: string]: string}>({
-        initialValues: {
-            columnTitle_1: "Ready",
-            columnTitle_2: "In Progress",
-            columnTitle_3: "Complete",
-        }
-    })
+    type valueKeys = keyof typeof values
 
-    type columnsFormCtrlKeys = keyof typeof columnsFormCtrl.values
-
-    const handleRemoveColumn = (key: columnsFormCtrlKeys) => () => {
-        const updatedValues = { ...columnsFormCtrl.values }
+    const handleRemoveColumn = (key: valueKeys) => () => {
+        const updatedValues = { ...values }
 
         if (typeof updatedValues[key] === "string") delete updatedValues[key]
-        columnsFormCtrl.setValues(updatedValues)
+        setValues(updatedValues)
+    }
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        
     }
 
     const buildcolumns = (): React.ReactNode => {
-        if(columnsFormCtrl?.values){
-            return Object.keys(columnsFormCtrl.values).map((col, i) => {
+        if(values){
+            return Object.keys(values).map((col, i) => {
                 return (
                     <Draggable draggableId={col} index={i} key={col}>
                         {
@@ -78,10 +99,12 @@ const ReorderColumnsModalContent = ({
                                     {...provided.dragHandleProps}
                                     ref={provided.innerRef}
                                 >
-                                    <TextFieldFormCtrl
+                                    <TextField
+                                        fullWidth
                                         variant='standard'
-                                        formCtrl={columnsFormCtrl}
                                         name={col}
+                                        value={values[col].title}
+                                        onChange={handleTitleChange}
                                         label="Column Title"
                                         slotProps={{
                                             input: {
@@ -108,17 +131,19 @@ const ReorderColumnsModalContent = ({
     }
 
     const addColumn = () => {
-        if(Object.keys(columnsFormCtrl.values).length < 5){
-            columnsFormCtrl.setValues({
-                ...columnsFormCtrl.values,
-                ["columnTitle_" + columnsKey.current]: ""
+        if(Object.keys(values).length < 5){
+            setValues({
+                ...values,
+                ["columnTitle_" + columnsKey.current]: {
+                    title: ""
+                }
             })
             columnsKey.current++
         }
     }
 
     const validateNumberOfColumns = () => {
-        if (Object.keys(columnsFormCtrl.values).length < 3) {
+        if (Object.keys(values).length < 3) {
             enqueueSnackbar("A Project Board requires at least 3 columns.", {variant: "error"})
             return false
         }
@@ -128,20 +153,20 @@ const ReorderColumnsModalContent = ({
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault()
 
-        if (columnsFormCtrl.isValidatedForm() && formCtrl.isValidatedForm() && validateNumberOfColumns()){
+        if (validateNumberOfColumns()){
 
-            const data = {
-                ...formCtrl.values,
-                columns: [...Object.values(columnsFormCtrl.values)]
-            }
-
-            createBoardCall(data)
-            .then(json => {
-                dispatch(fetchBoardNavList())
-                navigate(routes.BOARD.base + json._id)
-            }).catch(e => {
-                enqueueSnackbar(e, {variant: "error"})
+            const data = Object.values(values).map(item => {
+                return item.columnId
             })
+
+            console.log(data)
+
+            // createBoardCall(data)
+            // .then(json => {
+            //     dispatch(fetchBoardNavList())
+            // }).catch(e => {
+            //     enqueueSnackbar(e, {variant: "error"})
+            // })
         }
     }
 
@@ -157,22 +182,22 @@ const ReorderColumnsModalContent = ({
             )
         ) { return }
 
-        const workingList = Object.entries(columnsFormCtrl.values)
+        const workingList = Object.entries(values)
         const activeItem = workingList[source.index];
 
         workingList.splice(source.index, 1)
         workingList.splice(destination.index, 0, activeItem)
 
-        const newState: {[key: string]: string} = {}
+        const newState: valuesTypes = {}
         workingList.forEach(([key, value]) => {
             newState[key] = value
         })
 
-        columnsFormCtrl.setValues(newState)
+        setValues(newState)
     }
     
 
-    const hasMaxColumns = Object.keys(columnsFormCtrl.values).length >= 5
+    const hasMaxColumns = Object.keys(values).length >= 5
 
     return (
         <>

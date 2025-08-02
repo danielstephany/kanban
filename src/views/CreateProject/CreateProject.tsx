@@ -59,6 +59,74 @@ const CreateProject = () => {
         columnsFormCtrl.setValues(updatedValues)
     }
 
+    
+    const addColumn = () => {
+        if(Object.keys(columnsFormCtrl.values).length < 5){
+            columnsFormCtrl.setValues({
+                ...columnsFormCtrl.values,
+                ["columnTitle_" + columnsKey.current]: ""
+            })
+            columnsKey.current++
+        }
+    }
+    
+    const validateNumberOfColumns = () => {
+        if (Object.keys(columnsFormCtrl.values).length < 3) {
+            enqueueSnackbar("A Project Board requires at least 3 columns.", {variant: "error"})
+            return false
+        }
+        return true
+    }
+    
+    const handleSubmit = (e: React.SyntheticEvent) => {
+        e.preventDefault()
+        
+        if (columnsFormCtrl.isValidatedForm() && formCtrl.isValidatedForm() && validateNumberOfColumns()){
+            
+            const data = {
+                ...formCtrl.values,
+                columns: [...Object.values(columnsFormCtrl.values)]
+            }
+            
+            createBoardCall(data)
+            .then(json => {
+                dispatch(fetchBoardNavList())
+                navigate(routes.BOARD.base + json._id)
+            }).catch(e => {
+                enqueueSnackbar(e, {variant: "error"})
+            })
+        }
+    }
+    
+    const onDragEnd: OnDragEndResponder = (result: DropResult) => {
+        const { destination, source, draggableId } = result;
+        
+        if (!destination) return
+        
+        if (
+            !destination || (
+                destination?.droppableId === source.droppableId &&
+                destination?.index === source.index
+            )
+        ) { return }
+        
+        const workingList = Object.entries(columnsFormCtrl.values)
+        const activeItem = workingList[source.index];
+        
+        workingList.splice(source.index, 1)
+        workingList.splice(destination.index, 0, activeItem)
+        
+        const newState: {[key: string]: string} = {}
+        workingList.forEach(([key, value]) => {
+            newState[key] = value
+        })
+        
+        columnsFormCtrl.setValues(newState)
+    }
+    
+    
+    const hasMaxColumns = Object.keys(columnsFormCtrl.values).length >= 5
+
     const buildcolumns = (): React.ReactNode => {
         if(columnsFormCtrl?.values){
             return Object.keys(columnsFormCtrl.values).map((col, i) => {
@@ -100,73 +168,6 @@ const CreateProject = () => {
         }
         return null
     }
-
-    const addColumn = () => {
-        if(Object.keys(columnsFormCtrl.values).length < 5){
-            columnsFormCtrl.setValues({
-                ...columnsFormCtrl.values,
-                ["columnTitle_" + columnsKey.current]: ""
-            })
-            columnsKey.current++
-        }
-    }
-
-    const validateNumberOfColumns = () => {
-        if (Object.keys(columnsFormCtrl.values).length < 3) {
-            enqueueSnackbar("A Project Board requires at least 3 columns.", {variant: "error"})
-            return false
-        }
-        return true
-    }
-
-    const handleSubmit = (e: React.SyntheticEvent) => {
-        e.preventDefault()
-
-        if (columnsFormCtrl.isValidatedForm() && formCtrl.isValidatedForm() && validateNumberOfColumns()){
-
-            const data = {
-                ...formCtrl.values,
-                columns: [...Object.values(columnsFormCtrl.values)]
-            }
-
-            createBoardCall(data)
-            .then(json => {
-                dispatch(fetchBoardNavList())
-                navigate(routes.BOARD.base + json._id)
-            }).catch(e => {
-                enqueueSnackbar(e, {variant: "error"})
-            })
-        }
-    }
-
-    const onDragEnd: OnDragEndResponder = (result: DropResult) => {
-        const { destination, source, draggableId } = result;
-
-        if (!destination) return
-
-        if (
-            !destination || (
-                destination?.droppableId === source.droppableId &&
-                destination?.index === source.index
-            )
-        ) { return }
-
-        const workingList = Object.entries(columnsFormCtrl.values)
-        const activeItem = workingList[source.index];
-
-        workingList.splice(source.index, 1)
-        workingList.splice(destination.index, 0, activeItem)
-
-        const newState: {[key: string]: string} = {}
-        workingList.forEach(([key, value]) => {
-            newState[key] = value
-        })
-
-        columnsFormCtrl.setValues(newState)
-    }
-    
-
-    const hasMaxColumns = Object.keys(columnsFormCtrl.values).length >= 5
 
     return (
         <>

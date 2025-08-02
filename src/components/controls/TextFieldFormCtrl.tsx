@@ -14,7 +14,13 @@ type TextFieldFormCtrlProps = TextFieldProps & {
     name: string,
 }
 
-const TextFieldFormCtrl = ({ formCtrl, helperText, name, fullWidth=true, ...others }: TextFieldFormCtrlProps) => {
+const TextFieldFormCtrl = ({ 
+    formCtrl, 
+    helperText, 
+    name, 
+    fullWidth=true, 
+    ...others 
+}: TextFieldFormCtrlProps) => {
 
     return (
         <>

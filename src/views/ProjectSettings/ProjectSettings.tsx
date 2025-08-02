@@ -1,4 +1,6 @@
 import React, {useEffect, useState} from 'react'
+import { useAppDispatch } from '@src/store/hooks'
+import { setBoard } from '@src/store/slices/board'
 import {
     Typography,
     Box,
@@ -32,6 +34,7 @@ const initialModalStates = {
 type modalName = keyof typeof initialModalStates;
 
 export default function ProjectSettings(){
+    const dispatch = useAppDispatch()
     const {enqueueSnackbar} = useSnackbar()
     const {id} = useParams()
     const { loading, call:callGetBoard, result:boardData } = useQuery<boardDataInterface, string>({fetchFunc: getBoard})
@@ -42,7 +45,7 @@ export default function ProjectSettings(){
             title: ""
         }
     })
-
+    console.log(boardData)
     const loadBoardData = (id?: string) => {
         if (id) {
             callGetBoard(id)
@@ -50,6 +53,7 @@ export default function ProjectSettings(){
                 if(json?.title){
                     formCtrl.setValues({title: json.title})
                 }
+                dispatch(setBoard(json))
             })
             .catch(e => {
                 enqueueSnackbar(errorMessage, {variant: "error"})
@@ -135,8 +139,6 @@ export default function ProjectSettings(){
             />
             <ReorderColumnsModal
                 open={modalOpen[REORDER_COLUMNS_MODAL]}
-                boardId={id}
-                boardTitle={boardData?.title}
                 handleClose={handleCloseModals}
             />
         </>

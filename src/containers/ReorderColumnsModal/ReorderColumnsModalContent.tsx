@@ -264,6 +264,14 @@ const ReorderColumnsModalContent = ({
                             </Grid>
                         </Box>
                         <SectionActions 
+                            leftActions={
+                                <Button
+                                    variant="outlined"
+                                    onClick={handleClose}
+                                >
+                                    Cancel
+                                </Button>
+                            }
                             rightActions={
                                 <>
                                     <LoadStateButton

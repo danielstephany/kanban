@@ -37,7 +37,9 @@ interface valuesTypes {
     [key: string]: { 
         title: string, 
         initialTitle?: string,
-        columnId?: string
+        columnId?: string,
+        delete: boolean,
+        moveTasksTo: string
     }
 }
 
@@ -49,7 +51,9 @@ const parseColumnValues = (boardData: boardDataInterface) => {
         res[item + "_" + index] = {
             title: boardData.columns[item].title,
             initialTitle: boardData.columns[item].title,
-            columnId: item
+            columnId: item,
+            delete: false,
+            moveTasksTo: ""
         }
     })
     
@@ -78,6 +82,7 @@ const ReorderColumnsModalContent = ({
     const handleRemoveColumn = (key: valueKeys) => () => {
         const updatedValues = { ...values }
 
+        // TODO: if has tasks ask to update status or delete all tasks
         if (typeof updatedValues[key] === "string") delete updatedValues[key]
         setValues(updatedValues)
     }
@@ -135,7 +140,11 @@ const ReorderColumnsModalContent = ({
             setValues({
                 ...values,
                 ["columnTitle_" + columnsKey.current]: {
-                    title: ""
+                    title: "",
+                    initialTitle: "",
+                    columnId: "item",
+                    delete: false,
+                    moveTasksTo: ""
                 }
             })
             columnsKey.current++
@@ -155,9 +164,14 @@ const ReorderColumnsModalContent = ({
 
         if (validateNumberOfColumns()){
 
-            const data = Object.values(values).map(item => {
+            const columnOrder = Object.values(values).map(item => {
                 return item.columnId
             })
+
+            const data = {
+                columnOrder,
+                updatedColumnData: values
+            }
 
             console.log(data)
 
@@ -226,8 +240,8 @@ const ReorderColumnsModalContent = ({
                                 </Grid>
                                 <Grid size={12}>
                                     <Box py={1}>
-                                        <Typography variant='h3' gutterBottom>Create board columns</Typography>
-                                        <Typography>Add up to 5 columns to your to you projects board.<br />The board should also have at least 3 columns.</Typography>
+                                        <Typography variant='h3' gutterBottom>Update board columns</Typography>
+                                        <Typography>Add up to 5 columns to your to you projects board.<br />The board should also must have at least 3 columns.</Typography>
                                     </Box>
                                 </Grid>
                                 <Grid size={12}>
@@ -278,7 +292,7 @@ const ReorderColumnsModalContent = ({
                                         type="submit"
                                         variant='contained'
                                         loading={loading}
-                                    >Create Project</LoadStateButton>
+                                    >Update Project</LoadStateButton>
                                 </>
                             }
                         />

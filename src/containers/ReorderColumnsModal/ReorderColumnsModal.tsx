@@ -19,7 +19,7 @@ const ReorderColumnsModal = ({
             open={open}
             onClose={handleClose}
             fullWidth
-            maxWidth="sm"
+            maxWidth="lg"
         >
             <ReorderColumnsModalContent
                 handleClose={handleClose}

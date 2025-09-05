@@ -1,17 +1,24 @@
 import React, { forwardRef } from 'react'
-import { Paper } from "@mui/material"
+import { 
+    Paper,
+    IconButton
+} from "@mui/material"
 import type {
     PaperProps
 } from "@mui/material"
+import {Trash} from 'react-feather'
 import styled from 'styled-components'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 const DragItemBase = styled.div`
     padding: 8px 0;
+    margin: 0 4px;
+    flex-grow: 1;
 `
 
 const DragItemContent = styled(Paper) <{ $isDragging?: boolean }>`
     display: flex; 
+    flex-direction: column;
     align-items: stretch;
     background-color: transparent;
     overflow: hidden;
@@ -26,27 +33,34 @@ const DragInputContainer = styled.div`
 const DragIconContainer = styled.div`
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     background-color: ${({ theme }) => theme.palette.primary.light};
 `
 
 interface DragItemProps extends PaperProps {
     children: React.ReactNode,
-    isDragging?: boolean
+    isDragging?: boolean,
+    handleDelete?: () => void
 }
 
 export type Ref = HTMLDivElement;
 
-const ColumnOrderDragItem = forwardRef<Ref, DragItemProps>(({ isDragging, children, ...others }, ref) => {
+const ColumnOrderDragItem = forwardRef<Ref, DragItemProps>(({ 
+    isDragging, 
+    children, 
+    handleDelete, 
+    ...others 
+}, ref) => {
     return (
         <DragItemBase {...others} ref={ref}>
             <DragItemContent $isDragging={isDragging} variant='outlined'>
+                <DragIconContainer>
+                    <DragIndicatorIcon fontSize="medium" />
+                    {handleDelete ? <IconButton onClick={handleDelete}><Trash size={18}/></IconButton>: null}
+                </DragIconContainer>
                 <DragInputContainer>
                     {children}
                 </DragInputContainer>
-                <DragIconContainer>
-                    <DragIndicatorIcon fontSize="medium" />
-                </DragIconContainer>
             </DragItemContent>
         </DragItemBase>
     )

@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Helmet from 'react-helmet'
 import { useNavigate } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
@@ -9,8 +9,6 @@ import {
     Card,
     Grid2 as Grid,
     Button,
-    InputAdornment,
-    IconButton,
     TextField
 } from "@mui/material"
 import SectionHeader from '@src/components/modules/SectionHeader'
@@ -60,16 +58,37 @@ const parseColumnValues = (boardData: boardDataInterface) => {
     return res
 }
 
+const resizeValue = 1100
+
 const ReorderColumnsModalContent = ({ 
     handleClose
 }: ReorderColumnsModalContentProps) => {
     const {enqueueSnackbar} = useSnackbar()
     const boardData = useAppSelector(getBoardState)
     const columnsKey = useRef(5)
+    const cachedHorizontalLayout = useRef(true)
+    const [horizontalLayout, setHorizontalLayout] = useState(true);
     const [values, setValues] = useState<valuesTypes>(boardData ? parseColumnValues(boardData) : {})
     const { loading, call: createBoardCall } = useQuery<boardDataInterface, createBoardDataInterface>({ fetchFunc: createBoard })
 
     console.log(values)
+
+    const handleResize = () => {
+        if (window.innerWidth <= resizeValue && cachedHorizontalLayout.current) {
+            cachedHorizontalLayout.current = false
+            setHorizontalLayout(false)
+        } else if (window.innerWidth > resizeValue && !cachedHorizontalLayout.current) {
+            cachedHorizontalLayout.current = true
+            setHorizontalLayout(true)
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        }
+    }, [])
 
     const formCtrl = useFormControl({
         initialValues: {
@@ -88,7 +107,7 @@ const ReorderColumnsModalContent = ({
     }
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        
+            
     }
 
     const buildcolumns = (): React.ReactNode => {
@@ -103,6 +122,7 @@ const ReorderColumnsModalContent = ({
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                     ref={provided.innerRef}
+                                    handleDelete={handleRemoveColumn(col)}
                                 >
                                     <TextField
                                         fullWidth
@@ -110,20 +130,7 @@ const ReorderColumnsModalContent = ({
                                         name={col}
                                         value={values[col].title}
                                         onChange={handleTitleChange}
-                                        label="Column Title"
-                                        slotProps={{
-                                            input: {
-                                                endAdornment: (
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            onClick={handleRemoveColumn(col as columnsFormCtrlKeys)}
-                                                        >
-                                                            <Trash size={20}/>
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                )
-                                            },
-                                        }}
+                                        label="Column Title"                           
                                     />                                        
                                 </ColumnOrderDragItem>
                             )
@@ -222,7 +229,7 @@ const ReorderColumnsModalContent = ({
                     alignItems: "center", 
                     justifyContent: "center",
                     width: "100%",
-                    maxWidth: "600px",
+                    // maxWidth: "600px",
                     margin: "0 auto"
                 }}
             >
@@ -246,13 +253,17 @@ const ReorderColumnsModalContent = ({
                                 </Grid>
                                 <Grid size={12}>
                                     <DragDropContext onDragEnd={onDragEnd}>
-                                        <Droppable droppableId="col-container">
+                                        <Droppable 
+                                            droppableId="col-container" 
+                                            direction={horizontalLayout ? "horizontal" : "vertical"}
+                                        >
                                             {
                                                 (provided, snapshot) => (
                                                     <ColumnOrderDropContainer
                                                         ref={provided.innerRef}
                                                         {...provided.droppableProps}
                                                         isDraggingOver={snapshot.isDraggingOver}
+                                                        horizontal={horizontalLayout}
                                                     >
                                                         {buildcolumns()}
                                                         {provided.placeholder}

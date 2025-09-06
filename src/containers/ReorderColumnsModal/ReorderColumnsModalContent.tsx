@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Helmet from 'react-helmet'
-import { useNavigate } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { useAppDispatch, useAppSelector } from '@src/store/hooks.ts'
 import {
@@ -9,35 +8,32 @@ import {
     Card,
     Grid2 as Grid,
     Button,
-    TextField
+    TextField,
+    InputAdornment,
+    IconButton
 } from "@mui/material"
 import SectionHeader from '@src/components/modules/SectionHeader'
-import TextFieldFormCtrl from '@src/components/controls/TextFieldFormCtrl'
 import useFormControl from '@src/hooks/useFormCtrl'
-import LoadStateButton from '@src/components/controls/LoadStateButton'
 import SectionActions from '@src/components/modules/SectionActions'
-import {Plus, Trash} from 'react-feather'
+import { Plus, Edit2 } from 'react-feather'
 import { createBoard } from "@src/endpoints/board"
 import type { boardDataInterface, createBoardDataInterface } from '@src/endpoints/board/types'
 import useQuery from "@src/hooks/useQuery"
-import * as routes from '@src/Router/routes'
-import { fetchBoardNavList } from "@src/store/slices/boardNav.ts"
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import type { OnDragEndResponder, DropResult } from '@hello-pangea/dnd'
 import ColumnOrderDragItem from '@src/components/modules/ColumnOrderDragItem'
 import ColumnOrderDropContainer from '@src/components/modules/ColumnOrderDropContainer'
 import type {ReorderColumnsModalProps} from './ReorderColumnsModal'
 import { getBoardState } from '@src/store/selectors/boardSelectors'
+import ConfirmationDialog from '@src/containers/ConfirmationDialog'
+import type successResultInterface from '@src/containers/ConfirmationDialog'
 
 interface ReorderColumnsModalContentProps extends Omit<ReorderColumnsModalProps, "open"> {}
 
 interface valuesTypes { 
     [key: string]: { 
         title: string, 
-        initialTitle?: string,
         columnId?: string,
-        delete: boolean,
-        moveTasksTo: string
     }
 }
 
@@ -48,10 +44,7 @@ const parseColumnValues = (boardData: boardDataInterface) => {
     boardData.columnOrder.forEach((item, index) => {
         res[item + "_" + index] = {
             title: boardData.columns[item].title,
-            initialTitle: boardData.columns[item].title,
             columnId: item,
-            delete: false,
-            moveTasksTo: ""
         }
     })
     
@@ -59,6 +52,7 @@ const parseColumnValues = (boardData: boardDataInterface) => {
 }
 
 const resizeValue = 1100
+
 
 const ReorderColumnsModalContent = ({ 
     handleClose
@@ -68,10 +62,28 @@ const ReorderColumnsModalContent = ({
     const columnsKey = useRef(5)
     const cachedHorizontalLayout = useRef(true)
     const [horizontalLayout, setHorizontalLayout] = useState(true);
+    const [openDeleteColumnModal, setOpenDeleteColumnModal] = useState({
+        open: false,
+        column: ""
+    })
     const [values, setValues] = useState<valuesTypes>(boardData ? parseColumnValues(boardData) : {})
     const { loading, call: createBoardCall } = useQuery<boardDataInterface, createBoardDataInterface>({ fetchFunc: createBoard })
 
-    console.log(values)
+    type valueKeys = keyof typeof values
+
+    const handleOpenDeleteColumnModal = (name: string ) => () => {
+        setOpenDeleteColumnModal({
+            open: true,
+            column: name
+        })
+    }
+
+    const handleCloseDeleteColumnModal = () => {
+        setOpenDeleteColumnModal({
+            open: false,
+            column: ""
+        })
+    }
 
     const handleResize = () => {
         if (window.innerWidth <= resizeValue && cachedHorizontalLayout.current) {
@@ -90,25 +102,14 @@ const ReorderColumnsModalContent = ({
         }
     }, [])
 
-    const formCtrl = useFormControl({
-        initialValues: {
-            title: "",
-        }
-    })
-
-    type valueKeys = keyof typeof values
-
-    const handleRemoveColumn = (key: valueKeys) => () => {
+    const handleRemoveColumn = (key: valueKeys) => () => new Promise<{ message: string }>((resolve, reject) => {
         const updatedValues = { ...values }
-
+debugger
         // TODO: if has tasks ask to update status or delete all tasks
-        if (typeof updatedValues[key] === "string") delete updatedValues[key]
+        if (typeof updatedValues[key] ) delete updatedValues[key]
         setValues(updatedValues)
-    }
-
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            
-    }
+        resolve({message: "success"})
+    })
 
     const buildcolumns = (): React.ReactNode => {
         if(values){
@@ -122,15 +123,30 @@ const ReorderColumnsModalContent = ({
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                     ref={provided.innerRef}
-                                    handleDelete={handleRemoveColumn(col)}
+                                    handleDelete={handleOpenDeleteColumnModal(col)}
                                 >
                                     <TextField
                                         fullWidth
                                         variant='standard'
                                         name={col}
                                         value={values[col].title}
-                                        onChange={handleTitleChange}
-                                        label="Column Title"                           
+                                        label="Column Title"   
+                                        disabled                              
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true,
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label={`Edit the ${values[col].title} column`}
+                                                            onClick={() => {}}
+                                                        >
+                                                            <Edit2 size={18}/>
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                )
+                                            },
+                                        }}
                                     />                                        
                                 </ColumnOrderDragItem>
                             )
@@ -147,11 +163,8 @@ const ReorderColumnsModalContent = ({
             setValues({
                 ...values,
                 ["columnTitle_" + columnsKey.current]: {
-                    title: "",
-                    initialTitle: "",
-                    columnId: "item",
-                    delete: false,
-                    moveTasksTo: ""
+                    title: "",           
+                    columnId: "item"
                 }
             })
             columnsKey.current++
@@ -224,27 +237,18 @@ const ReorderColumnsModalContent = ({
         <>
             <Helmet title="Create Project"/>
             <Box 
-                // p={4} 
                 sx={{
                     alignItems: "center", 
                     justifyContent: "center",
                     width: "100%",
-                    // maxWidth: "600px",
                     margin: "0 auto"
                 }}
             >
                 <Card>
                     <form onSubmit={handleSubmit}>
-                        <SectionHeader title="Create a new project" />
+                        <SectionHeader title="Update board columns" />
                         <Box p={4}>
-                            <Grid container spacing={2}>
-                                <Grid size={12}>
-                                    <TextFieldFormCtrl 
-                                        formCtrl={formCtrl}
-                                        name="title"
-                                        label="Title"
-                                    />
-                                </Grid>
+                            <Grid container spacing={2}>                
                                 <Grid size={12}>
                                     <Box py={1}>
                                         <Typography variant='h3' gutterBottom>Update board columns</Typography>
@@ -289,27 +293,25 @@ const ReorderColumnsModalContent = ({
                             </Grid>
                         </Box>
                         <SectionActions 
-                            leftActions={
-                                <Button
-                                    variant="outlined"
-                                    onClick={handleClose}
-                                >
-                                    Cancel
-                                </Button>
-                            }
                             rightActions={
                                 <>
-                                    <LoadStateButton
-                                        type="submit"
+                                    <Button
+                                        onClick={handleClose}
                                         variant='contained'
-                                        loading={loading}
-                                    >Update Project</LoadStateButton>
+                                    >Close</Button>
                                 </>
                             }
                         />
                     </form>
                 </Card>
             </Box>
+            <ConfirmationDialog
+                open={openDeleteColumnModal.open}
+                handleClose={handleCloseDeleteColumnModal}
+                action={handleRemoveColumn(openDeleteColumnModal.column)}
+                title="Delete Item?"
+                description="Are you sure you would like to delete this item from your project?"
+            />
         </>
     )
 }

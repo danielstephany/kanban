@@ -228,6 +228,8 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
                 open={confirmDialogOpen}
                 handleClose={handleCloseConfirmDeleteModal}
                 action={handleDelete}
+                title="Delete Item?"
+                description="Are you sure you would like to delete this item from your project?"
             />
         </>
     )

@@ -27,7 +27,7 @@ const DragItemContent = styled(Paper) <{ $isDragging?: boolean }>`
 `
 const DragInputContainer = styled.div`
     flex-grow: 1;
-    padding: 12px 8px 12px 16px;
+    padding: 12px 8px 12px 8px;
 `
 
 const DragIconContainer = styled.div`

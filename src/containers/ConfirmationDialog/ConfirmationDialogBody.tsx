@@ -14,12 +14,19 @@ interface successResultInterface {
 }
 
 export interface ConfirmationDialogBodyPropTypes {
-    handleClose: () => void,
     action: () => Promise<successResultInterface>,
+    handleClose: () => void,
+    title: string,
+    description: string,
 }
 
 
-const ConfirmationDialogBody = ({ handleClose, action }: ConfirmationDialogBodyPropTypes) => {
+const ConfirmationDialogBody = ({ 
+    action, 
+    description,
+    handleClose, 
+    title
+}: ConfirmationDialogBodyPropTypes) => {
     const {enqueueSnackbar} = useSnackbar()
     const [loading, setLoading] = useState(false)
 
@@ -38,16 +45,17 @@ const ConfirmationDialogBody = ({ handleClose, action }: ConfirmationDialogBodyP
                 enqueueSnackbar(res.message, { variant: 'error' })
             }
         }).catch(e => {
-            debugger
             enqueueSnackbar(e.message || errorMessage, {variant: 'error'})
+        }).finally(() => {
+            handleClose()
         })
     }
 
     return (
         <form noValidate onSubmit={handleSubmit}>
             <Box p={4}>       
-                <Typography variant='h3' gutterBottom>Delete Item?</Typography>
-                <Typography variant='body2'>Are you sure you would like to delete this item from your project?</Typography>
+                <Typography variant='h3' gutterBottom>{title}</Typography>
+                <Typography variant='body2'>{description}</Typography>
             </Box>
             <SectionActions
                 leftActions={

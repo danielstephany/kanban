@@ -31,6 +31,16 @@ export interface createBoardDataInterface {
     usersWithAccess?: string[]
 }
 
+export interface deleteBoardColumnInterface {
+    boardId: string,
+    columnId: string
+}
+
+export interface moveBoardColumnInterface {
+    boardId: string,
+    columnOrder: string[]
+}
+
 export interface boardColumnInterface {
     title: string,
     columnId: string,

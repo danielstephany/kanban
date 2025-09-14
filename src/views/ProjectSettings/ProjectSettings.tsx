@@ -137,10 +137,15 @@ export default function ProjectSettings(){
                 boardTitle={boardData?.title}
                 handleClose={handleCloseModals}
             />
-            <ReorderColumnsModal
-                open={modalOpen[REORDER_COLUMNS_MODAL]}
-                handleClose={handleCloseModals}
-            />
+            {
+                id ? 
+                <ReorderColumnsModal
+                    open={modalOpen[REORDER_COLUMNS_MODAL]}
+                    handleClose={handleCloseModals}
+                    boardId={id}
+                />
+                : null
+            }
         </>
     )
 }

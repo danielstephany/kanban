@@ -5,13 +5,15 @@ import {
 import ReorderColumnsModalContent from './ReorderColumnsModalContent'
 
 export interface ReorderColumnsModalProps {
+    boardId: string,
     open: boolean,
     handleClose: () => void
 }
 
 const ReorderColumnsModal = ({
     open,
-    handleClose
+    handleClose,
+    boardId
 }: ReorderColumnsModalProps) => {
 
     return (
@@ -23,6 +25,7 @@ const ReorderColumnsModal = ({
         >
             <ReorderColumnsModalContent
                 handleClose={handleClose}
+                boardId={boardId}
             />
         </Dialog>
     )

@@ -4,20 +4,30 @@ import { Typography } from '@mui/material'
 
 interface SectionHeaderProps  {
     className?: string,
-    title: string
+    title: string,
+    indicators?: React.ReactNode
 }
 
-const SectionHeaderComp = ({ title, className}: SectionHeaderProps) => {
+const SectionHeaderComp = ({ title, indicators,  className}: SectionHeaderProps) => {
     
     return (
         <div className={className}>
             <Typography variant='h2'>{title}</Typography>
+            {
+                indicators ? 
+                    <div>
+                        {indicators}
+                    </div>
+                : null
+            }
         </div>
     )
 }
 
 const SectionHeader = styled(SectionHeaderComp)`
     display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     background-color: ${({ theme }) => theme.palette.primaryBackground};
     padding: 16px 24px;
     h2 {

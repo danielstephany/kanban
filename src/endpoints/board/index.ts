@@ -5,7 +5,9 @@ import type {
     boardNavListResponseInterface,
     createBoardDataInterface,
     boardDataInterface,
-    moveTaskDataInterface
+    moveTaskDataInterface,
+    moveBoardColumnInterface,
+    deleteBoardColumnInterface
 } from './types.ts'
 import type {
     ApiResponse,
@@ -28,7 +30,7 @@ export const boardNavList = () => createFetchCall<boardNavListResponseInterface>
 export const createBoard = (data: createBoardDataInterface) => createFetchCall<boardDataInterface>({
     url: `${process.env.KANBAN_API}/boards`,
     fetchOptions: {
-        method: "Post",
+        method: "POST",
         body: JSON.stringify(data)
     }
 })
@@ -36,7 +38,23 @@ export const createBoard = (data: createBoardDataInterface) => createFetchCall<b
 export const moveTask = (data: moveTaskDataInterface) => createFetchCall<boardDataInterface>({
     url: `${process.env.KANBAN_API}/boards/move-task`,
     fetchOptions: {
-        method: "Post",
+        method: "POST",
+        body: JSON.stringify(data)
+    }
+})
+
+export const deleteColumn = (data: deleteBoardColumnInterface) => createFetchCall<boardDataInterface>({
+    url: `${process.env.KANBAN_API}/boards/delete-column`,
+    fetchOptions: {
+        method: "PATCH",
+        body: JSON.stringify(data)
+    }
+})
+
+export const moveColumn = (data: moveBoardColumnInterface) => createFetchCall<boardDataInterface>({
+    url: `${process.env.KANBAN_API}/boards/move-column`,
+    fetchOptions: {
+        method: "PATCH",
         body: JSON.stringify(data)
     }
 })
@@ -44,7 +62,7 @@ export const moveTask = (data: moveTaskDataInterface) => createFetchCall<boardDa
 export const deleteBoard = (boardId: string) => createFetchCall<null>({
     url: `${process.env.KANBAN_API}/boards/${boardId}`,
     fetchOptions: {
-        method: "Delete",
+        method: "DELETE",
     },
     expectedStatus: 204
 })

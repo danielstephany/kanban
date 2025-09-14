@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Helmet from 'react-helmet'
 import { useSnackbar } from 'notistack'
-import { useAppDispatch, useAppSelector } from '@src/store/hooks.ts'
 import {
     Typography,
     Box,
@@ -10,30 +9,41 @@ import {
     Button,
     TextField,
     InputAdornment,
-    IconButton
+    IconButton,
+    Chip,
+    CircularProgress
 } from "@mui/material"
 import SectionHeader from '@src/components/modules/SectionHeader'
-import useFormControl from '@src/hooks/useFormCtrl'
+import CenteredLoader from '@src/components/modules/CenteredLoader.tsx'
 import SectionActions from '@src/components/modules/SectionActions'
 import { Plus, Edit2 } from 'react-feather'
-import { createBoard } from "@src/endpoints/board"
-import type { boardDataInterface, createBoardDataInterface } from '@src/endpoints/board/types'
+import { deleteColumn } from "@src/endpoints/board"
 import useQuery from "@src/hooks/useQuery"
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import type { OnDragEndResponder, DropResult } from '@hello-pangea/dnd'
 import ColumnOrderDragItem from '@src/components/modules/ColumnOrderDragItem'
 import ColumnOrderDropContainer from '@src/components/modules/ColumnOrderDropContainer'
 import type {ReorderColumnsModalProps} from './ReorderColumnsModal'
-import { getBoardState } from '@src/store/selectors/boardSelectors'
 import ConfirmationDialog from '@src/containers/ConfirmationDialog'
+import DeleteColumnDialog from '@src/containers/DeleteColumnDialog'
 import type successResultInterface from '@src/containers/ConfirmationDialog'
+import { 
+    getBoard,
+    moveColumn
+} from '@src/endpoints/board'
+import type { 
+    boardDataInterface, 
+    deleteBoardColumnInterface, 
+    moveBoardColumnInterface
+} from '@src/endpoints/board/types'
+import { errorMessage } from "@src/constants"
 
 interface ReorderColumnsModalContentProps extends Omit<ReorderColumnsModalProps, "open"> {}
 
 interface valuesTypes { 
     [key: string]: { 
         title: string, 
-        columnId?: string,
+        columnId: string
     }
 }
 
@@ -55,10 +65,10 @@ const resizeValue = 1100
 
 
 const ReorderColumnsModalContent = ({ 
-    handleClose
+    handleClose,
+    boardId
 }: ReorderColumnsModalContentProps) => {
     const {enqueueSnackbar} = useSnackbar()
-    const boardData = useAppSelector(getBoardState)
     const columnsKey = useRef(5)
     const cachedHorizontalLayout = useRef(true)
     const [horizontalLayout, setHorizontalLayout] = useState(true);
@@ -66,10 +76,26 @@ const ReorderColumnsModalContent = ({
         open: false,
         column: ""
     })
-    const [values, setValues] = useState<valuesTypes>(boardData ? parseColumnValues(boardData) : {})
-    const { loading, call: createBoardCall } = useQuery<boardDataInterface, createBoardDataInterface>({ fetchFunc: createBoard })
+    const { loading: loadingBoard, call: callGetBoard, result: boardData } = useQuery<boardDataInterface, string>({ fetchFunc: getBoard })
+    const [values, setValues] = useState<valuesTypes>({})
+    const { loading: deleteColumnLoading, call: deleteColumnCall } = useQuery<boardDataInterface, deleteBoardColumnInterface>({ fetchFunc: deleteColumn })
+    const { loading: moveColumnLoading, call: moveColumnCall } = useQuery<boardDataInterface, moveBoardColumnInterface>({ fetchFunc: moveColumn })
 
     type valueKeys = keyof typeof values
+
+    const loadBoardData = (id?: string) => {
+        if (id) {
+            callGetBoard(id)
+            .then(json => {
+                if(json){
+                    setValues(parseColumnValues(json))
+                }
+            })
+            .catch(e => {
+                enqueueSnackbar(errorMessage, {variant: "error"})
+            })
+        }
+    }
 
     const handleOpenDeleteColumnModal = (name: string ) => () => {
         setOpenDeleteColumnModal({
@@ -96,20 +122,42 @@ const ReorderColumnsModalContent = ({
     }
 
     useEffect(() => {
+        loadBoardData(boardId)
         window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('resize', handleResize);
         }
     }, [])
 
-    const handleRemoveColumn = (key: valueKeys) => () => new Promise<{ message: string }>((resolve, reject) => {
-        const updatedValues = { ...values }
-debugger
-        // TODO: if has tasks ask to update status or delete all tasks
-        if (typeof updatedValues[key] ) delete updatedValues[key]
-        setValues(updatedValues)
-        resolve({message: "success"})
-    })
+    const validateNumberOfColumns = () => {
+        if (Object.keys(values).length < 3) {
+            enqueueSnackbar("A Project Board requires at least 3 columns.", { variant: "error" })
+            return false
+        }
+        return true
+    }
+
+    const handleRemoveColumn = (columnId: string) => (e: React.FormEvent) => {
+        e.preventDefault()
+
+        if (boardData && values[columnId].columnId){
+
+            const data = {
+                boardId: boardData._id,
+                columnId: values[columnId].columnId
+            }
+            console.log(data)
+    
+            deleteColumnCall(data)
+                .then(json => {
+                    if (json) setValues(parseColumnValues(json))
+                    handleCloseDeleteColumnModal()
+                })
+                .catch(e => {
+                    enqueueSnackbar(errorMessage, { variant: "error" })
+                })
+        }   
+    }
 
     const buildcolumns = (): React.ReactNode => {
         if(values){
@@ -171,38 +219,17 @@ debugger
         }
     }
 
-    const validateNumberOfColumns = () => {
-        if (Object.keys(values).length < 3) {
-            enqueueSnackbar("A Project Board requires at least 3 columns.", {variant: "error"})
-            return false
-        }
-        return true
-    }
+    const handleMoveColumn = (updatedColumnOrder: string[]) => {
 
-    const handleSubmit = (e: React.SyntheticEvent) => {
-        e.preventDefault()
-
-        if (validateNumberOfColumns()){
-
-            const columnOrder = Object.values(values).map(item => {
-                return item.columnId
+        if(boardData){
+            moveColumnCall({
+                boardId: boardData?._id,
+                columnOrder: updatedColumnOrder
             })
-
-            const data = {
-                columnOrder,
-                updatedColumnData: values
-            }
-
-            console.log(data)
-
-            // createBoardCall(data)
-            // .then(json => {
-            //     dispatch(fetchBoardNavList())
-            // }).catch(e => {
-            //     enqueueSnackbar(e, {variant: "error"})
-            // })
         }
+        
     }
+
 
     const onDragEnd: OnDragEndResponder = (result: DropResult) => {
         const { destination, source, draggableId } = result;
@@ -228,10 +255,14 @@ debugger
         })
 
         setValues(newState)
+        const updatedColumnOrder = Object.values(newState).map(val => val.columnId)
+        handleMoveColumn(updatedColumnOrder)
     }
     
 
     const hasMaxColumns = Object.keys(values).length >= 5
+
+    const isPendingUpdate = moveColumnLoading
 
     return (
         <>
@@ -245,72 +276,80 @@ debugger
                 }}
             >
                 <Card>
-                    <form onSubmit={handleSubmit}>
-                        <SectionHeader title="Update board columns" />
-                        <Box p={4}>
-                            <Grid container spacing={2}>                
-                                <Grid size={12}>
-                                    <Box py={1}>
-                                        <Typography variant='h3' gutterBottom>Update board columns</Typography>
-                                        <Typography>Add up to 5 columns to your to you projects board.<br />The board should also must have at least 3 columns.</Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid size={12}>
-                                    <DragDropContext onDragEnd={onDragEnd}>
-                                        <Droppable 
-                                            droppableId="col-container" 
-                                            direction={horizontalLayout ? "horizontal" : "vertical"}
-                                        >
-                                            {
-                                                (provided, snapshot) => (
-                                                    <ColumnOrderDropContainer
-                                                        ref={provided.innerRef}
-                                                        {...provided.droppableProps}
-                                                        isDraggingOver={snapshot.isDraggingOver}
-                                                        horizontal={horizontalLayout}
-                                                    >
-                                                        {buildcolumns()}
-                                                        {provided.placeholder}
-                                                    </ColumnOrderDropContainer>
-                                                )
-                                            }                                                
-                                        </Droppable>
-                                    </DragDropContext>
-                                </Grid>
-                                {
-                                    !hasMaxColumns ?
-                                    <Grid size={12}>
-                                        <Button 
-                                            startIcon={<Plus/>}
-                                            fullWidth
-                                            onClick={addColumn}
-                                            variant='outlined'
-                                            color="secondary"
-                                        >Add Column</Button>
+                    <SectionHeader 
+                        title="Update board columns" 
+                        indicators={isPendingUpdate && <Chip size="small" label="Saving" icon={<CircularProgress size="12px"/>} /> }
+                    />                    
+                        {
+                            !loadingBoard ? 
+                                <Box p={4}>
+                                    <Grid container spacing={2}>                
+                                        <Grid size={12}>
+                                            <Box py={1}>
+                                                <Typography variant='h3' gutterBottom>Update board columns</Typography>
+                                                <Typography>Add up to 5 columns to your to you projects board.<br />The board should also must have at least 3 columns.</Typography>
+                                            </Box>
+                                        </Grid>
+                                        <Grid size={12}>
+                                            <DragDropContext onDragEnd={onDragEnd}>
+                                                <Droppable 
+                                                    droppableId="col-container" 
+                                                    direction={horizontalLayout ? "horizontal" : "vertical"}
+                                                >
+                                                    {
+                                                        (provided, snapshot) => (
+                                                            <ColumnOrderDropContainer
+                                                                ref={provided.innerRef}
+                                                                {...provided.droppableProps}
+                                                                isDraggingOver={snapshot.isDraggingOver}
+                                                                horizontal={horizontalLayout}
+                                                            >
+                                                                {buildcolumns()}
+                                                                {provided.placeholder}
+                                                            </ColumnOrderDropContainer>
+                                                        )
+                                                    }                                                
+                                                </Droppable>
+                                            </DragDropContext>
+                                        </Grid>
+                                        {
+                                            !hasMaxColumns ?
+                                            <Grid size={12}>
+                                                <Button 
+                                                    startIcon={<Plus/>}
+                                                    fullWidth
+                                                    onClick={addColumn}
+                                                    variant='outlined'
+                                                    color="secondary"
+                                                >Add Column</Button>
+                                            </Grid>
+                                            : null
+                                        }
                                     </Grid>
-                                    : null
-                                }
-                            </Grid>
-                        </Box>
-                        <SectionActions 
-                            rightActions={
-                                <>
-                                    <Button
-                                        onClick={handleClose}
-                                        variant='contained'
-                                    >Close</Button>
-                                </>
-                            }
-                        />
-                    </form>
+                                </Box>
+                            : 
+                            <CenteredLoader minHeight='150px' />
+                        }
+                    <SectionActions 
+                        rightActions={
+                            <>
+                                <Button
+                                    onClick={handleClose}
+                                    variant='contained'
+                                >Close</Button>
+                            </>
+                        }
+                    />
                 </Card>
             </Box>
             <ConfirmationDialog
                 open={openDeleteColumnModal.open}
                 handleClose={handleCloseDeleteColumnModal}
-                action={handleRemoveColumn(openDeleteColumnModal.column)}
-                title="Delete Item?"
-                description="Are you sure you would like to delete this item from your project?"
+                onSubmit={handleRemoveColumn(openDeleteColumnModal.column)}
+                loading={deleteColumnLoading}
+                title={<>Delete the selected column</>}
+                description="Warning any tasks within the selected column will be deleted and can not be undone. Remove any tasks you do not wish to delete."
+                actionText='Delete Column'
             />
         </>
     )

@@ -136,17 +136,18 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
         return statusList.map(item => (<MenuItem key={item.value} value={item.value}>{item.displayName}</MenuItem>))
     }    
 
-    const handleDelete = () => new Promise<{message: string }>((resolve, reject) => {
+    const handleDelete = (e: React.FormEvent) => {
+        e.preventDefault()
         if(taskId){
             deleteTaskCall(taskId)
             .then(() => {
                 handleClose()
                 refresh()
-                resolve({message: "Task deleted successfully"})
+                enqueueSnackbar("Task deleted successfully", {variant: "success"})
             })
-            .catch(() => { reject({ message: "error deleting item"})})
+            .catch(() => { enqueueSnackbar("error deleting item", { variant: "error"})})
         }
-    })
+    }
 
     const handleOpenConfirmDeleteModal = () => {
         setConfirmDialogOpen(true)
@@ -227,9 +228,11 @@ const TaskDialogBody = ({ handleClose, refresh, taskId }: TaskDialogBodyProps) =
             <ConfirmationDialog
                 open={confirmDialogOpen}
                 handleClose={handleCloseConfirmDeleteModal}
-                action={handleDelete}
+                onSubmit={handleDelete}
+                loading={loadingdelete}
                 title="Delete Item?"
                 description="Are you sure you would like to delete this item from your project?"
+                actionText="Delete Task"
             />
         </>
     )

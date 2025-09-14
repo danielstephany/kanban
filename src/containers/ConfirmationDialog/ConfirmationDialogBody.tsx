@@ -4,55 +4,30 @@ import {
     Typography,
     Button,
 } from '@mui/material'
-import { useSnackbar } from 'notistack'
 import SectionActions from '@src/components/modules/SectionActions'
 import LoadStateButton from '@src/components/controls/LoadStateButton'
-import { errorMessage } from '@src/constants'
-
-interface successResultInterface {
-    message?: string
-}
 
 export interface ConfirmationDialogBodyPropTypes {
-    action: () => Promise<successResultInterface>,
+    onSubmit: (e: React.FormEvent) => void,
     handleClose: () => void,
-    title: string,
+    title: string | React.ReactNode,
     description: string,
+    loading: boolean,
+    actionText: string,
 }
 
 
 const ConfirmationDialogBody = ({ 
-    action, 
+    onSubmit, 
     description,
     handleClose, 
-    title
+    title,
+    loading,
+    actionText
 }: ConfirmationDialogBodyPropTypes) => {
-    const {enqueueSnackbar} = useSnackbar()
-    const [loading, setLoading] = useState(false)
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        setLoading(true)
-        action()
-        .then((res) => {
-            setLoading(false)
-            if(res.message){
-                enqueueSnackbar(res.message, { variant: 'success'})
-            }
-        }, (res) => {
-            setLoading(false)
-            if(res.message){
-                enqueueSnackbar(res.message, { variant: 'error' })
-            }
-        }).catch(e => {
-            enqueueSnackbar(e.message || errorMessage, {variant: 'error'})
-        }).finally(() => {
-            handleClose()
-        })
-    }
 
     return (
-        <form noValidate onSubmit={handleSubmit}>
+        <form noValidate onSubmit={onSubmit}>
             <Box p={4}>       
                 <Typography variant='h3' gutterBottom>{title}</Typography>
                 <Typography variant='body2'>{description}</Typography>
@@ -72,7 +47,7 @@ const ConfirmationDialogBody = ({
                             variant='contained'
                             type="submit"
                             disabled={loading}
-                        >Delete Task</LoadStateButton>
+                        >{actionText}</LoadStateButton>
                     </>
                 }
             />

@@ -12,9 +12,11 @@ interface ConfirmationDialogPropTypes extends ConfirmationDialogBodyPropTypes {
 const ConfirmationDialog = ({ 
     open, 
     handleClose, 
-    action,
+    onSubmit,
+    loading,
     title,
-    description
+    description,
+    actionText
 }: ConfirmationDialogPropTypes) => {
 
     return (
@@ -26,9 +28,11 @@ const ConfirmationDialog = ({
         >
             <ConfirmationDialogBody
                 handleClose={handleClose}
-                action={action}
+                onSubmit={onSubmit}
+                loading={loading}
                 title={title}
                 description={description}
+                actionText={actionText}
             />
         </Dialog>
     )

@@ -25,8 +25,7 @@ import ColumnOrderDragItem from '@src/components/modules/ColumnOrderDragItem'
 import ColumnOrderDropContainer from '@src/components/modules/ColumnOrderDropContainer'
 import type {ReorderColumnsModalProps} from './ReorderColumnsModal'
 import ConfirmationDialog from '@src/containers/ConfirmationDialog'
-import DeleteColumnDialog from '@src/containers/DeleteColumnDialog'
-import type successResultInterface from '@src/containers/ConfirmationDialog'
+import CreateColumnModal from '@src/containers/CreateColumnModal'
 import { 
     getBoard,
     moveColumn
@@ -63,6 +62,8 @@ const parseColumnValues = (boardData: boardDataInterface) => {
 
 const resizeValue = 1100
 
+const DELETE_COLUMN = "deleteColumn",
+    CREATE_COLUMN = "createColumn"
 
 const ReorderColumnsModalContent = ({ 
     handleClose,
@@ -72,9 +73,10 @@ const ReorderColumnsModalContent = ({
     const columnsKey = useRef(5)
     const cachedHorizontalLayout = useRef(true)
     const [horizontalLayout, setHorizontalLayout] = useState(true);
-    const [openDeleteColumnModal, setOpenDeleteColumnModal] = useState({
-        open: false,
-        column: ""
+    const [selectedColumn, setSelectedColumn] = useState<string>('')
+    const [openModal, setOpenModal] = useState({
+        [CREATE_COLUMN]: false,
+        [DELETE_COLUMN]: false
     })
     const { loading: loadingBoard, call: callGetBoard, result: boardData } = useQuery<boardDataInterface, string>({ fetchFunc: getBoard })
     const [values, setValues] = useState<valuesTypes>({})
@@ -97,18 +99,21 @@ const ReorderColumnsModalContent = ({
         }
     }
 
-    const handleOpenDeleteColumnModal = (name: string ) => () => {
-        setOpenDeleteColumnModal({
-            open: true,
-            column: name
-        })
+    const refresh = () => {
+        loadBoardData(boardId)
     }
 
-    const handleCloseDeleteColumnModal = () => {
-        setOpenDeleteColumnModal({
-            open: false,
-            column: ""
-        })
+    const handleOpenModal = (name: keyof typeof openModal) => () => {
+        setOpenModal({...openModal, [name]: true})
+    }
+
+    const handleCloseModal = (name: keyof typeof openModal) => () => {
+        setOpenModal({ ...openModal, [name]: false })
+    }
+
+    const handleOpenDeleteColumnModal = (name: string ) => () => {
+        handleOpenModal(DELETE_COLUMN)()
+        setSelectedColumn(name)
     }
 
     const handleResize = () => {
@@ -139,7 +144,7 @@ const ReorderColumnsModalContent = ({
 
     const handleRemoveColumn = (columnId: string) => (e: React.FormEvent) => {
         e.preventDefault()
-
+debugger
         if (boardData && values[columnId].columnId){
 
             const data = {
@@ -151,7 +156,7 @@ const ReorderColumnsModalContent = ({
             deleteColumnCall(data)
                 .then(json => {
                     if (json) setValues(parseColumnValues(json))
-                    handleCloseDeleteColumnModal()
+                    handleCloseModal(DELETE_COLUMN)
                 })
                 .catch(e => {
                     enqueueSnackbar(errorMessage, { variant: "error" })
@@ -318,7 +323,7 @@ const ReorderColumnsModalContent = ({
                                                 <Button 
                                                     startIcon={<Plus/>}
                                                     fullWidth
-                                                    onClick={addColumn}
+                                                    onClick={handleOpenModal(CREATE_COLUMN)}
                                                     variant='outlined'
                                                     color="secondary"
                                                 >Add Column</Button>
@@ -343,13 +348,19 @@ const ReorderColumnsModalContent = ({
                 </Card>
             </Box>
             <ConfirmationDialog
-                open={openDeleteColumnModal.open}
-                handleClose={handleCloseDeleteColumnModal}
-                onSubmit={handleRemoveColumn(openDeleteColumnModal.column)}
+                open={openModal[DELETE_COLUMN]}
+                handleClose={handleCloseModal(DELETE_COLUMN)}
+                onSubmit={handleRemoveColumn(selectedColumn)}
                 loading={deleteColumnLoading}
                 title={<>Delete the selected column</>}
                 description="Warning any tasks within the selected column will be deleted and can not be undone. Remove any tasks you do not wish to delete."
                 actionText='Delete Column'
+            />
+            <CreateColumnModal
+                refresh={refresh}
+                boardId={boardId}
+                open={openModal[CREATE_COLUMN]}
+                handleClose={handleCloseModal(CREATE_COLUMN)}
             />
         </>
     )

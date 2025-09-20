@@ -36,6 +36,11 @@ export interface deleteBoardColumnInterface {
     columnId: string
 }
 
+export interface createBoardColumnInterface {
+    boardId: string,
+    title: string
+}
+
 export interface moveBoardColumnInterface {
     boardId: string,
     columnOrder: string[]

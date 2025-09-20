@@ -7,7 +7,8 @@ import type {
     boardDataInterface,
     moveTaskDataInterface,
     moveBoardColumnInterface,
-    deleteBoardColumnInterface
+    deleteBoardColumnInterface,
+    createBoardColumnInterface
 } from './types.ts'
 import type {
     ApiResponse,
@@ -45,6 +46,14 @@ export const moveTask = (data: moveTaskDataInterface) => createFetchCall<boardDa
 
 export const deleteColumn = (data: deleteBoardColumnInterface) => createFetchCall<boardDataInterface>({
     url: `${process.env.KANBAN_API}/boards/delete-column`,
+    fetchOptions: {
+        method: "PATCH",
+        body: JSON.stringify(data)
+    }
+})
+
+export const createColumn = (data: createBoardColumnInterface) => createFetchCall<boardDataInterface>({
+    url: `${process.env.KANBAN_API}/boards/create-column`,
     fetchOptions: {
         method: "PATCH",
         body: JSON.stringify(data)

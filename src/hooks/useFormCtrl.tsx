@@ -19,7 +19,7 @@ export interface iUseFormCtrlRes {
     setErrors: (value: any)=> void,
     handleChange: (e: { target: { name: string, value: string } }) => void,
     handleBlure: (e: { target: { name: string, value: string } }) => void,
-    validate: (values: tFormCtrlValues, storedValues:tFormCtrlValues) => void,
+    validate: (values: tFormCtrlValues, storedValues: tFormCtrlValues) => tValidationObj,
     isValidatedForm: () => boolean
 }
 

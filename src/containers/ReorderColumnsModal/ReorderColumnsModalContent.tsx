@@ -70,7 +70,6 @@ const ReorderColumnsModalContent = ({
     boardId
 }: ReorderColumnsModalContentProps) => {
     const {enqueueSnackbar} = useSnackbar()
-    const columnsKey = useRef(5)
     const cachedHorizontalLayout = useRef(true)
     const [horizontalLayout, setHorizontalLayout] = useState(true);
     const [selectedColumn, setSelectedColumn] = useState<string>('')
@@ -144,7 +143,7 @@ const ReorderColumnsModalContent = ({
 
     const handleRemoveColumn = (columnId: string) => (e: React.FormEvent) => {
         e.preventDefault()
-debugger
+
         if (boardData && values[columnId].columnId){
 
             const data = {
@@ -156,7 +155,7 @@ debugger
             deleteColumnCall(data)
                 .then(json => {
                     if (json) setValues(parseColumnValues(json))
-                    handleCloseModal(DELETE_COLUMN)
+                    handleCloseModal(DELETE_COLUMN)()
                 })
                 .catch(e => {
                     enqueueSnackbar(errorMessage, { variant: "error" })
@@ -211,19 +210,6 @@ debugger
         return null
     }
 
-    const addColumn = () => {
-        if(Object.keys(values).length < 5){
-            setValues({
-                ...values,
-                ["columnTitle_" + columnsKey.current]: {
-                    title: "",           
-                    columnId: "item"
-                }
-            })
-            columnsKey.current++
-        }
-    }
-
     const handleMoveColumn = (updatedColumnOrder: string[]) => {
 
         if(boardData){
@@ -234,7 +220,6 @@ debugger
         }
         
     }
-
 
     const onDragEnd: OnDragEndResponder = (result: DropResult) => {
         const { destination, source, draggableId } = result;
@@ -359,6 +344,7 @@ debugger
             <CreateColumnModal
                 refresh={refresh}
                 boardId={boardId}
+                columnKeys={boardData?.columnOrder}
                 open={openModal[CREATE_COLUMN]}
                 handleClose={handleCloseModal(CREATE_COLUMN)}
             />

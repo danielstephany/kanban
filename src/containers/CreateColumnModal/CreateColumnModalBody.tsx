@@ -16,16 +16,36 @@ import type {
 import useQuery from '@src/hooks/useQuery'
 import useFormCtrl from '@src/hooks/useFormCtrl'
 import { errorMessage } from '@src/constants'
+import type { 
+    tFormCtrlValues,
+    tValidationObj
+} from '@src/hooks/useFormCtrl'
+import { kebabCase } from "@src/utils/stringFormaters"
 
 
 export interface CreateColumnModalBodyPropTypes {
     boardId: string,
+    columnKeys?: string[],
     handleClose: () => void,
     refresh: () => void
 }
 
+const validate = (columnkeys?: string[]) => (values: tFormCtrlValues, _: tFormCtrlValues) => {
+    const errors: tValidationObj = {};
+    const title = values.title
+
+    if (!title) {
+        errors.title = true;
+    } else if (title && columnkeys?.includes(kebabCase(title))) {
+        errors.title = `The Column ${title} already exists`;
+    }
+
+    return errors
+}
+
 const CreateColumnModalBody = ({
     boardId,
+    columnKeys,
     handleClose,
     refresh
 }: CreateColumnModalBodyPropTypes) => {
@@ -33,7 +53,8 @@ const CreateColumnModalBody = ({
     const { loading, call: callCreateColumn } = useQuery<boardDataInterface, createBoardColumnInterface>({ fetchFunc: createColumn})
 
     const formCtrl = useFormCtrl({
-        initialValues: { title: ""}
+        initialValues: { title: ""},
+        validate: validate(columnKeys)
     })
 
     const handleOnSubmit = (e: React.FormEvent) => {
@@ -42,9 +63,10 @@ const CreateColumnModalBody = ({
         if(formCtrl.isValidatedForm()){
             callCreateColumn({boardId, ...formCtrl.values})
             .then(() => {
-                handleClose()
+                // debugger
                 refresh()
                 enqueueSnackbar(`column ${formCtrl.values.title} was added successfully.`, {variant: "success"})
+                handleClose()
             }).catch(e => {
                 enqueueSnackbar(errorMessage, {variant: "error"})
             })

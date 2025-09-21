@@ -13,6 +13,7 @@ const CreateColumnModal = ({
     open,
     handleClose,
     boardId,
+    columnKeys,
     refresh
 }: CreateColumnModalPropTypes) => {
 
@@ -26,6 +27,7 @@ const CreateColumnModal = ({
             <CreateColumnModalBody
                 handleClose={handleClose}
                 boardId={boardId}
+                columnKeys={columnKeys}
                 refresh={refresh}
             />
         </Dialog>

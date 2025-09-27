@@ -8,10 +8,10 @@ import {
 import SectionActions from '@src/components/modules/SectionActions'
 import LoadStateButton from '@src/components/controls/LoadStateButton'
 import TextFieldFormCtrl from '@src/components/controls/TextFieldFormCtrl'
-import { createColumn } from '@src/endpoints/board'
+import { renameColumn } from '@src/endpoints/board'
 import type {
     boardDataInterface,
-    createBoardColumnInterface,
+    renameBoardColumnInterface,
 } from '@src/endpoints/board/types'
 import useQuery from '@src/hooks/useQuery'
 import useFormCtrl from '@src/hooks/useFormCtrl'
@@ -23,48 +23,50 @@ import type {
 import { kebabCase } from "@src/utils/stringFormaters"
 
 
-export interface CreateColumnModalBodyPropTypes {
+export interface renameColumnModalBodyPropTypes {
     boardId: string,
-    columnKeys?: string[],
+    columnId?: string,
+    columnName?: string,
     handleClose: () => void,
     refresh: () => void
 }
 
-const validate = (columnkeys?: string[]) => (values: tFormCtrlValues, _: tFormCtrlValues) => {
+const validate = (columnId?: string) => (values: tFormCtrlValues, _: tFormCtrlValues) => {
     const errors: tValidationObj = {};
     const title = values.title
 
     if (!title) {
         errors.title = true;
-    } else if (title && columnkeys?.includes(kebabCase(title))) {
+    } else if (title && columnId === kebabCase(title)) {
         errors.title = `The Column ${title} already exists`;
     }
 
     return errors
 }
 
-const CreateColumnModalBody = ({
+const RenameColumnModalBody = ({
     boardId,
-    columnKeys,
+    columnId,
+    columnName,
     handleClose,
     refresh
-}: CreateColumnModalBodyPropTypes) => {
+}: renameColumnModalBodyPropTypes) => {
     const {enqueueSnackbar} = useSnackbar()
-    const { loading, call: callCreateColumn } = useQuery<boardDataInterface, createBoardColumnInterface>({ fetchFunc: createColumn})
+    const { loading, call: callRenameColumn } = useQuery<boardDataInterface, renameBoardColumnInterface>({ fetchFunc: renameColumn })
 
     const formCtrl = useFormCtrl({
-        initialValues: { title: ""},
-        validate: validate(columnKeys)
+        initialValues: { title: columnName || ""},
+        validate: validate(columnId)
     })
 
     const handleOnSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if(formCtrl.isValidatedForm()){
-            callCreateColumn({boardId, ...formCtrl.values})
+        if (formCtrl.isValidatedForm() && boardId && columnId){
+            callRenameColumn({boardId, columnId, ...formCtrl.values})
             .then(() => {
                 refresh()
-                enqueueSnackbar(`column ${formCtrl.values.title} was added successfully.`, {variant: "success"})
+                enqueueSnackbar(`column ${formCtrl.values.title} was updated successfully.`, {variant: "success"})
                 handleClose()
             }).catch(e => {
                 enqueueSnackbar(errorMessage, {variant: "error"})
@@ -76,8 +78,8 @@ const CreateColumnModalBody = ({
     return (
         <form noValidate onSubmit={handleOnSubmit}>
             <Box p={4}>
-                <Typography variant='h3' gutterBottom>Create New Column</Typography>
-                <Typography variant='body2'>Enter the desired title of the new column below and submit to create a new column.</Typography>
+                <Typography variant='h3' gutterBottom>Rename Column</Typography>
+                <Typography variant='body2'>Enter the desired title of the column below and submit to rename the column.</Typography>
                 <Box mt={2}>
                     <TextFieldFormCtrl 
                         name="title"
@@ -102,7 +104,7 @@ const CreateColumnModalBody = ({
                             variant='contained'
                             type="submit"
                             disabled={loading}
-                        >Create Column</LoadStateButton>
+                        >Rename Column</LoadStateButton>
                     </>
                 }
             />
@@ -110,4 +112,4 @@ const CreateColumnModalBody = ({
     )
 }
 
-export default CreateColumnModalBody
+export default RenameColumnModalBody

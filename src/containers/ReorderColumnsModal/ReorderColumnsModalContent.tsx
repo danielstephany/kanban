@@ -36,6 +36,7 @@ import type {
     moveBoardColumnInterface
 } from '@src/endpoints/board/types'
 import { errorMessage } from "@src/constants"
+import RenameColumnModal from '@src/containers/RenameColumnModal'
 
 interface ReorderColumnsModalContentProps extends Omit<ReorderColumnsModalProps, "open"> {}
 
@@ -63,7 +64,8 @@ const parseColumnValues = (boardData: boardDataInterface) => {
 const resizeValue = 1100
 
 const DELETE_COLUMN = "deleteColumn",
-    CREATE_COLUMN = "createColumn"
+    CREATE_COLUMN = "createColumn",
+    RENAME_COLUMN = "renameColumn";
 
 const ReorderColumnsModalContent = ({ 
     handleClose,
@@ -75,7 +77,8 @@ const ReorderColumnsModalContent = ({
     const [selectedColumn, setSelectedColumn] = useState<string>('')
     const [openModal, setOpenModal] = useState({
         [CREATE_COLUMN]: false,
-        [DELETE_COLUMN]: false
+        [DELETE_COLUMN]: false,
+        [RENAME_COLUMN]: false
     })
     const { loading: loadingBoard, call: callGetBoard, result: boardData } = useQuery<boardDataInterface, string>({ fetchFunc: getBoard })
     const [values, setValues] = useState<valuesTypes>({})
@@ -110,9 +113,9 @@ const ReorderColumnsModalContent = ({
         setOpenModal({ ...openModal, [name]: false })
     }
 
-    const handleOpenDeleteColumnModal = (name: string ) => () => {
-        handleOpenModal(DELETE_COLUMN)()
-        setSelectedColumn(name)
+    const handleOpenModalWithSelectedColumn = (modalName: keyof typeof openModal, columnId: string ) => () => {
+        handleOpenModal(modalName)()
+        setSelectedColumn(columnId)
     }
 
     const handleResize = () => {
@@ -165,9 +168,9 @@ const ReorderColumnsModalContent = ({
 
     const buildcolumns = (): React.ReactNode => {
         if(values){
-            return Object.keys(values).map((col, i) => {
+            return Object.keys(values).map((columnKey, i) => {
                 return (
-                    <Draggable draggableId={col} index={i} key={col}>
+                    <Draggable draggableId={columnKey} index={i} key={columnKey}>
                         {
                             (provided, snapshot) => (
                                 <ColumnOrderDragItem
@@ -175,13 +178,13 @@ const ReorderColumnsModalContent = ({
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                     ref={provided.innerRef}
-                                    handleDelete={handleOpenDeleteColumnModal(col)}
+                                    handleDelete={handleOpenModalWithSelectedColumn(DELETE_COLUMN, columnKey)}
                                 >
                                     <TextField
                                         fullWidth
                                         variant='standard'
-                                        name={col}
-                                        value={values[col].title}
+                                        name={columnKey}
+                                        value={values[columnKey].title}
                                         label="Column Title"   
                                         disabled                              
                                         slotProps={{
@@ -190,8 +193,8 @@ const ReorderColumnsModalContent = ({
                                                 endAdornment: (
                                                     <InputAdornment position="end">
                                                         <IconButton
-                                                            aria-label={`Edit the ${values[col].title} column`}
-                                                            onClick={() => {}}
+                                                            aria-label={`Edit the ${values[columnKey].title} column`}
+                                                            onClick={handleOpenModalWithSelectedColumn(RENAME_COLUMN, columnKey)}
                                                         >
                                                             <Edit2 size={18}/>
                                                         </IconButton>
@@ -347,6 +350,14 @@ const ReorderColumnsModalContent = ({
                 columnKeys={boardData?.columnOrder}
                 open={openModal[CREATE_COLUMN]}
                 handleClose={handleCloseModal(CREATE_COLUMN)}
+            />
+            <RenameColumnModal
+                refresh={refresh}
+                boardId={boardId}
+                columnId={values[selectedColumn]?.columnId}
+                columnName={values[selectedColumn]?.title}
+                open={openModal[RENAME_COLUMN]}
+                handleClose={handleCloseModal(RENAME_COLUMN)}
             />
         </>
     )

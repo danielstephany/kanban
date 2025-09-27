@@ -24,8 +24,6 @@ export const getBoardStatusList = createSelector(
             }
         })
 
-        return statusList
-    
-        // return Object.entries(boardData?.board?.columns).map(([key, value]) => ({ displayName: value.title, value: key }))
+        return statusList    
     }
 )

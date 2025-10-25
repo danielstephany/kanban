@@ -6,22 +6,28 @@ import {
     Box,
     Paper,
     Grid2 as Grid,
-    Button
+    Button,
+    InputAdornment,
+    CircularProgress
 } from "@mui/material"
 import LoadingWrapper from '@src/components/modules/LoadingWrapper.tsx'
-import TextFieldFormCtrl from '@src/components/controls/TextFieldFormCtrl'
 import SectionActions from '@src/components/modules/SectionActions'
 import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import Helmet from 'react-helmet'
-import { getBoard } from '@src/endpoints/board'
-import type { boardDataInterface } from '@src/endpoints/board/types.ts'
+import { 
+    getBoard,
+    updateBoardTitle
+} from '@src/endpoints/board'
+import type { 
+    boardDataInterface,
+    updateBoardTitleInterface
+} from '@src/endpoints/board/types.ts'
 import useQuery from '@src/hooks/useQuery.tsx'
 import DeleteBoardModal from '@src/containers/DeleteBoardModal'
 import { errorMessage } from '@src/constants'
-import useFormCtrl from '@src/hooks/useFormCtrl'
-import { Description } from '@mui/icons-material'
 import ReorderColumnsModal from '@src/containers/ReorderColumnsModal'
+import DebouncedTextField from '@src/components/controls/DebouncedTextField'
 
 const DELETE_BOARD_MODAL = "deleteBoardModal",
     REORDER_COLUMNS_MODAL = "reorderColumnsModal"
@@ -38,20 +44,16 @@ export default function ProjectSettings(){
     const {enqueueSnackbar} = useSnackbar()
     const {id} = useParams()
     const { loading, call:callGetBoard, result:boardData } = useQuery<boardDataInterface, string>({fetchFunc: getBoard})
+    const { loading: loaingTitle, call: callUpdateBoardTitle } = useQuery<boardDataInterface, updateBoardTitleInterface>({ fetchFunc: updateBoardTitle })
     const [modalOpen, setModalOpen] = useState(initialModalStates)
+    const [title, setTitle] = useState('')
 
-    const formCtrl = useFormCtrl({
-        initialValues: {
-            title: ""
-        }
-    })
-    console.log(boardData)
     const loadBoardData = (id?: string) => {
         if (id) {
             callGetBoard(id)
             .then(json => {
                 if(json?.title){
-                    formCtrl.setValues({title: json.title})
+                    setTitle(json.title)
                 }
                 dispatch(setBoard(json))
             })
@@ -73,6 +75,15 @@ export default function ProjectSettings(){
         setModalOpen(initialModalStates)
     }
 
+    const handleUpdateTitle = (name: string, value: string) => {
+        if (value.trim() && boardData){
+            callUpdateBoardTitle({boardId: boardData._id, title: value})
+            .catch(e => {
+                enqueueSnackbar(errorMessage, {variant: 'error'})
+            })
+        }
+    }
+
     return (
         <>
             <Helmet title="Project Settings" />
@@ -85,12 +96,20 @@ export default function ProjectSettings(){
                                 <Paper elevation={3}>
                                     <Box p={3}>
                                         <Grid container spacing={4}>
-                                            <Grid size={12}>
-                                                <TextFieldFormCtrl 
+                                            <Grid size={12}>                                                
+                                                <DebouncedTextField 
                                                     label="Title"
                                                     name="title"
-                                                    formCtrl={formCtrl}
-                                                />                                                
+                                                    callbackFn={handleUpdateTitle}
+                                                    value={title}
+                                                    setValueFn={setTitle}
+                                                    fullWidth
+                                                    slotProps={{
+                                                        input: {
+                                                            endAdornment: loaingTitle ? <InputAdornment position="end"><CircularProgress size={20}/></InputAdornment> : null,
+                                                        }
+                                                    }}
+                                                />                                             
                                             </Grid>                                         
                                             <Grid size={12}>
                                                 <Typography variant='h4' component="h3" gutterBottom >Modify Board Columns</Typography> 

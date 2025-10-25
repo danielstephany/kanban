@@ -41,9 +41,20 @@ export interface createBoardColumnInterface {
     title: string
 }
 
+export interface renameBoardColumnInterface {
+    boardId: string,
+    columnId: string,
+    title: string
+}
+
 export interface moveBoardColumnInterface {
     boardId: string,
     columnOrder: string[]
+}
+
+export interface updateBoardTitleInterface {
+    boardId: string,
+    title: string
 }
 
 export interface boardColumnInterface {

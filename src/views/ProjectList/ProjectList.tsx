@@ -99,7 +99,7 @@ const ProjectList = ({}) => {
                                         name="search"
                                         placeholder="Search By Title"
                                         aria-label="Search By Title"
-                                        searchFn={handleSearchChange}
+                                        callbackFn={handleSearchChange}
                                         value={searchValue}
                                         setValueFn={setSearchValue}
                                         fullWidth

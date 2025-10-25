@@ -9,7 +9,8 @@ import type {
     moveBoardColumnInterface,
     deleteBoardColumnInterface,
     createBoardColumnInterface,
-    renameBoardColumnInterface
+    renameBoardColumnInterface,
+    updateBoardTitleInterface
 } from './types.ts'
 import type {
     ApiResponse,
@@ -71,6 +72,14 @@ export const renameColumn = (data: renameBoardColumnInterface) => createFetchCal
 
 export const moveColumn = (data: moveBoardColumnInterface) => createFetchCall<boardDataInterface>({
     url: `${process.env.KANBAN_API}/boards/move-column`,
+    fetchOptions: {
+        method: "PATCH",
+        body: JSON.stringify(data)
+    }
+})
+
+export const updateBoardTitle = (data: updateBoardTitleInterface) => createFetchCall<boardDataInterface>({
+    url: `${process.env.KANBAN_API}/boards/title`,
     fetchOptions: {
         method: "PATCH",
         body: JSON.stringify(data)

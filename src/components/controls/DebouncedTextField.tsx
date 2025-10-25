@@ -6,15 +6,15 @@ import type {
 
 type DebouncedTextFieldProps = TextFieldProps & {
     debounceTime?: number,
-    searchFn: (name: string, value: string) => void,
+    callbackFn: (name: string, value: string) => void,
     setValueFn: React.Dispatch<React.SetStateAction<string>>,
     value: string
 }
 
 export default function DebouncedTextField({ 
     name="", 
-    debounceTime=400, 
-    searchFn,
+    debounceTime=300, 
+    callbackFn,
     setValueFn,
     value,
     ...others
@@ -24,7 +24,7 @@ export default function DebouncedTextField({
 
     const handleCallSearch = (searchValue: string) => {
         debounceFn.current = setTimeout(() => {
-            searchFn(name, searchValue)            
+            callbackFn(name, searchValue)            
         }, debounceTime)
     }
 

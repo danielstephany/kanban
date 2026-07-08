@@ -23,7 +23,23 @@ const DragItemContent = styled(Paper) <{ $isDragging?: boolean }>`
     background-color: transparent;
     overflow: hidden;
     ${({ theme, $isDragging }) => $isDragging ? "background: " + theme.palette.primary.light : ""};
-    ${({ theme, $isDragging }) => $isDragging ? "color: " + theme.palette.primary.contrastText : ""};
+    ${({ $isDragging }) => {
+        let res = ""
+        if($isDragging){
+            res = `
+                label, 
+                .MuiInputBase-root, 
+                .MuiInputBase-root::after,
+                .MuiInputBase-root::before {
+                color: #fff;
+                border-color: #fff !important;
+            }
+        `
+        }
+        return res;
+    }};
+    color: #fff;
+    
 `
 const DragInputContainer = styled.div`
     flex-grow: 1;
@@ -34,7 +50,10 @@ const DragIconContainer = styled.div`
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    background-color: ${({ theme }) => theme.palette.primary.light};
+    background-color: ${({ theme }) => theme.palette.primary.light}; 
+    svg {
+        color: #fff;
+    }
 `
 
 interface DragItemProps extends PaperProps {

@@ -4,16 +4,16 @@ export interface themeInterface {
         mode: "dark" | "light"
         background: {default: string}
         primary: {
-            main?: string,
-            light?: string,
-            dark?: string,
-            contrastText?: string,
+            main: string,
+            // light: string,
+            // dark: string,
+            // contrastText: string,
         },
         secondary: {
-            main?: string,
-            light?: string,
-            dark?: string,
-            contrastText?: string,
+            main: string,
+            // light: string,
+            // dark: string,
+            // contrastText: string,
         },
         primaryBackground: string
     },
@@ -59,5 +59,7 @@ const mainTheme = (isDark: boolean): themeInterface => ({
         },
     },
 })
+
+
 
 export default mainTheme
